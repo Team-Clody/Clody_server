@@ -4,7 +4,7 @@ import com.donkeys_today.server.application.user.dto.request.UserSignUpRequest;
 import com.donkeys_today.server.application.user.dto.response.UserResponse;
 import com.donkeys_today.server.application.user.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.persistence.user.UserRepository;
+import com.donkeys_today.server.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final UserCreater userCreater;
+  private final UserRetriever userRetriever;
+  private final UserUpdater userUpdater;
+  private final UserRemover userRemover;
 
   @Transactional
   public UserSignUpResponse signUp(UserSignUpRequest request) {

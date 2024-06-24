@@ -1,6 +1,5 @@
-package com.donkeys_today.server.persistence.user;
+package com.donkeys_today.server.domain.user;
 
-import com.donkeys_today.server.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
