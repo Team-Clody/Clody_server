@@ -1,4 +1,4 @@
-package com.donkeys_today.server.common.dto.type;
+package com.donkeys_today.server.support.dto.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

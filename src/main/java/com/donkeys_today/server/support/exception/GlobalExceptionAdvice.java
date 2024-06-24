@@ -1,4 +1,4 @@
-package com.donkeys_today.server.common.exception;
+package com.donkeys_today.server.support.exception;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

@@ -1,7 +1,7 @@
-package com.donkeys_today.server.common.dto;
+package com.donkeys_today.server.support.dto;
 
-import com.donkeys_today.server.common.dto.type.ErrorType;
-import com.donkeys_today.server.common.dto.type.SuccessType;
+import com.donkeys_today.server.support.dto.type.ErrorType;
+import com.donkeys_today.server.support.dto.type.SuccessType;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Optional;
 
