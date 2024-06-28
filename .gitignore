@@ -57,3 +57,5 @@ replay_pid*
 /build
 !/.idea/
 /.idea
+
+/out
