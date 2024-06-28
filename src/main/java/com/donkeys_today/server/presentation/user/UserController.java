@@ -21,7 +21,7 @@ public class UserController {
 
   private final UserService userService;
 
-  @PostMapping("/user/signup")
+  @PostMapping("/user/signUp")
   public ResponseEntity<ApiResponse<?>> signUpUser(@RequestBody UserSignUpRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, userService.signUp(request)));
