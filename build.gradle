@@ -35,6 +35,7 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -44,6 +45,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    //SECURITY
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     //Api
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:'+ restdocsApiSpecVersion
@@ -52,6 +56,11 @@ dependencies {
     testImplementation "io.rest-assured:json-path:5.4.0"
     testImplementation "io.rest-assured:xml-path:5.4.0"
     swaggerUI 'org.webjars:swagger-ui:4.11.1'
+
+
+
+
+
 }
 
 tasks.named('test') {
