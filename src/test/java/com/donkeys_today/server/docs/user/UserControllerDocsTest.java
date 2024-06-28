@@ -69,32 +69,6 @@ public class UserControllerDocsTest extends RestDocsSupport {
                 .build()
             )));
 
-
-//    mockMvc.perform(
-//            RestDocumentationRequestBuilders.get("http://localhost:8080/api/v1/user")
-//                .param("id", "1")
-//        )
-//        .andDo(print())
-//        .andExpect(status().isOk())
-//        .andDo(document("findUser",
-//            preprocessRequest(prettyPrint()),
-//            preprocessResponse(prettyPrint()),
-//            resource(ResourceSnippetParameters.builder()
-//                    .tag("User API")
-//                    .summary("유저 관련 API")
-//                    .queryParameters(
-//                        parameterWithName("id").description("유저 ID")
-//                    ).responseFields(
-//                        fieldWithPath("status").type(NUMBER).description("상태 코드"),
-//                        fieldWithPath("message").type(STRING).description("상태 메세지"),
-//                        fieldWithPath("data.id").type(NUMBER).description("유저 ID"),
-//                        fieldWithPath("data.userName").type(STRING).description("사용자 이름"),
-//                        fieldWithPath("data.phoneNum").type(STRING).description("사용자 전화번호"),
-//                        fieldWithPath("data.email").type(STRING).description("사용자 이메일"))
-////                .requestSchema(Schema.schema("FormParameter"))
-//                    .responseSchema(Schema.schema("UserResponse"))
-//                    .build()
-//            )));
   }
   @Test
   public void 유저_생성_테스트(){
