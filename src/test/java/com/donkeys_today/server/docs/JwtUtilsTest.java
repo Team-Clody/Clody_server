@@ -16,7 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -26,11 +28,14 @@ public class JwtUtilsTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private  RedisTemplate<String,String> refreshTokenRepository;
 
 
     @Autowired
     private JWTUtil jwtUtil;
+  @Qualifier("redisTemplate")
+  @Autowired
+  private RedisTemplate redisTemplate;
 
 
     @Test
@@ -79,12 +84,11 @@ public class JwtUtilsTest {
         jwtUtil.validateRefreshToken(refreshToken);
     }
 
-
     @Test
     @DisplayName("리프레시 저장 확인 테스트")
     public void saveAndGetRefreshToken() {
         String token = jwtTokenProvider.issueRefreshToken(2L, "ADMIN");
-        RefreshToken findRefreshToken = refreshTokenRepository.findByRefresh(token);
+        String findRefreshToken = redisTemplate.(token);
 
         // 유효성 검사 메서드 호출. 예외가 발생하지 않으면 성공.
         jwtUtil.validateRefreshToken(findRefreshToken.getRefresh());
