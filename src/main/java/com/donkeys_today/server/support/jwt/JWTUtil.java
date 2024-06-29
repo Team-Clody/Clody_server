@@ -6,7 +6,6 @@ import static com.donkeys_today.server.support.dto.type.ErrorType.UNKNOWN_TOKEN;
 import static com.donkeys_today.server.support.dto.type.ErrorType.UNSUPPORTED_TOKEN;
 import static com.donkeys_today.server.support.dto.type.ErrorType.WRONG_SIGNATURE_TOKEN;
 
-import com.donkeys_today.server.domain.refresh.RefreshTokenRepository;
 import com.donkeys_today.server.support.exception.InternalServerException;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
@@ -16,7 +15,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,11 +23,12 @@ import org.springframework.stereotype.Component;
 public class JWTUtil {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void validateRefreshToken(String refreshToken) {
         validateToken(refreshToken);
-        if (!refreshTokenRepository.existsByRefresh(refreshToken)) {
+        if (!redisTemplate.hasKey(getUserFromJwt(refreshToken))) {
             throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
         }
     }
@@ -56,8 +56,12 @@ public class JWTUtil {
     }
 
     public void deleteRefreshToken(String refreshToken) {
-        if (refreshTokenRepository.existsByRefresh(refreshToken)) {
-            refreshTokenRepository.deleteByRefresh(refreshToken);
+
+        validateToken(refreshToken);
+        String userId = getUserFromJwt(refreshToken);
+
+        if (redisTemplate.hasKey(userId)) {
+            redisTemplate.delete(userId);
         } else {
             throw new InternalServerException();
         }
