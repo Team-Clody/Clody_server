@@ -27,3 +27,5 @@ services:
       - "8080:8080"
     depends_on:
       - redis
+volumes:
+  redis-data:
