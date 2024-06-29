@@ -112,6 +112,10 @@ task copyDocument(type: Copy) {
     into file("src/main/resources/static/docs")
 }
 
+processResources {
+    dependsOn copyDocument
+}
+
 //Jar 로 빌드
 bootJar{
     dependsOn copyDocument
