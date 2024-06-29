@@ -1,4 +1,5 @@
 package com.donkeys_today.server.support.jwt;
+
 import static com.donkeys_today.server.support.dto.type.ErrorType.EXPIRED_TOKEN;
 import static com.donkeys_today.server.support.dto.type.ErrorType.INVALID_REFRESH_TOKEN;
 import static com.donkeys_today.server.support.dto.type.ErrorType.INVALID_TOKEN;
@@ -57,7 +58,7 @@ public class JWTUtil {
 
     public void deleteRefreshToken(String refreshToken) {
 
-        validateToken(refreshToken);
+        validateRefreshToken(refreshToken);
         String userId = getUserFromJwt(refreshToken);
 
         if (redisTemplate.hasKey(userId)) {
