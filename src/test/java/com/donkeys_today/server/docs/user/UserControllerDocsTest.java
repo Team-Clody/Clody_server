@@ -1,3 +1,4 @@
+
 package com.donkeys_today.server.docs.user;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
