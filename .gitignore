@@ -56,6 +56,6 @@ replay_pid*
 /build
 !/.idea/
 /.idea
-
+./gradle
 /out
 /secret
