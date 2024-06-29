@@ -1,4 +1,4 @@
-package com.donkeys_today.server.auth.config;
+package com.donkeys_today.server.support.auth.config;
 
 import java.util.List;
 
