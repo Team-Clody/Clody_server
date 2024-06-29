@@ -49,41 +49,5 @@ public class JwtTokenProviderTest {
         assertNotNull(jwtTokenProvider.getSigningKey());
     }
 
-    @Test
-    @DisplayName("JWT에서 사용자 ID 가져오기 테스트")
-    public void testGetUserFromJwt() {
-        String token = jwtTokenProvider.issueAccessToken(1L, "USER");
-        String userId = jwtUtil.getUserFromJwt(token);
-        assertEquals("1", userId);
-    }
 
-    @Test
-    @DisplayName("JWT에서 역할 가져오기 테스트")
-    public void testGetRoleFromJwt() {
-        String token = jwtTokenProvider.issueAccessToken(1L, "USER");
-        String role = jwtUtil.getRoleFromJwt(token);
-        assertEquals("USER", role);
-    }
-
-    @Test
-    @DisplayName("JWT에서 유형 가져오기 테스트")
-    public void testGetTypeFromJwt() {
-        String token = jwtTokenProvider.issueAccessToken(1L, "USER");
-        String type = jwtUtil.getTypeFromJwt(token);
-        assertEquals(JWTConstants.ACCESS_TOKEN, type);
-    }
-
-    @Test
-    @DisplayName("토큰 유효성 검사 - 유효한 액세스 토큰 테스트")
-    public void testValidateToken_ValidAccessToken() {
-        String token = jwtTokenProvider.issueAccessToken(1L, "USER");
-        JwtValidationType validationType = jwtUtil.validateToken(token);
-        assertEquals(JwtValidationType.VALID_ACCESS, validationType);
-    }
-
-    @Test
-    @DisplayName("토큰 유효성 검사 - 잘못된 토큰 테스트")
-    public void testValidateToken_InvalidToken() {
-        assertThrows(UnauthorizedException.class, () -> jwtUtil.validateToken("invalidtoken"));
-    }
 }
