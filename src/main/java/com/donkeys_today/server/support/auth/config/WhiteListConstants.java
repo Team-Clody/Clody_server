@@ -19,5 +19,6 @@ public class WhiteListConstants {
     public static final String[] SECURITY_WHITE_LIST = {
             "/login/**",
             "/",
+            "/actuator/**"
     };
 }

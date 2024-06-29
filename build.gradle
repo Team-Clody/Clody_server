@@ -105,20 +105,22 @@ tasks.withType(GenerateSwaggerUI).configureEach {
     }
 }
 
+// 태스크 순서 재정의
+tasks.named('generateSwaggerUISample') {
+    mustRunAfter 'test'
+    mustRunAfter 'processResources'
+}
+
 //정적 파일 호스팅을 위한 파일 복사
 task copyDocument(type: Copy) {
-    dependsOn generateSwaggerUISample
+    dependsOn 'generateSwaggerUISample'
     from file("build/swagger-ui-sample")
     into file("src/main/resources/static/docs")
 }
 
-processResources {
-    dependsOn copyDocument
-}
-
 //Jar 로 빌드
 bootJar{
-    dependsOn copyDocument
+    dependsOn processResources
     from("${generateSwaggerUISample.outputDir}"){
         into 'static/docs'
     }
