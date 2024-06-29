@@ -1,5 +1,7 @@
 package com.donkeys_today.server.support.jwt;
 
+import com.donkeys_today.server.domain.refresh.RefreshToken;
+import com.donkeys_today.server.domain.refresh.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
     @Value("${jwt.secret}")
     private String JWT_SECRET;
     public String issueAccessToken(Long userId, String role) {
@@ -27,19 +31,28 @@ public class JwtTokenProvider {
 
     public String generateToken(String type, Long userId, String role, Long tokenExpirationTime) {
         final Date now = new Date();
+        final Date ExpiredTime = new Date(now.getTime() + tokenExpirationTime);
         final Claims claims = Jwts.claims()
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenExpirationTime));      // 만료 시간
+                .setExpiration(ExpiredTime);      // 만료 시간
 
         claims.put(JWTConstants.TOKEN_TYPE, type);
         claims.put(JWTConstants.USER_ID, String.valueOf(userId));
         claims.put(JWTConstants.ROLE, role);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // Header
                 .setClaims(claims) // Claim
                 .signWith(getSigningKey()) // Signature
                 .compact();
+
+        if (type.equals(JWTConstants.REFRESH_TOKEN)) {
+            RefreshToken refreshToken = RefreshToken.builder().userId(String.valueOf(userId)).refresh(token)
+                    .expiration(ExpiredTime.toString()).build();
+            refreshTokenRepository.save(refreshToken);
+        }
+
+        return token;
     }
 
     public SecretKey getSigningKey() {
