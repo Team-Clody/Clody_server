@@ -45,8 +45,8 @@ jobs:
 
       - name: docker image 빌드 및 푸시
         run: |
-          docker-compose build
-          docker-compose push
+          docker build -t hyunw9/clody:latest .
+          docker push hyunw9/clody:latest
         working-directory: ${{ env.working-directory }}
 
   cd:
