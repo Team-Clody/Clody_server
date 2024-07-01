@@ -1,4 +1,4 @@
-package com.donkeys_today.server.support.auth.config;
+package com.donkeys_today.server.support.security.config;
 
 import java.util.List;
 
@@ -19,5 +19,8 @@ public class WhiteListConstants {
     public static final String[] SECURITY_WHITE_LIST = {
             "/login/**",
             "/",
+            "/actuator/health",
+            "/api-docs/**",
+            "swagger-ui/**"
     };
 }

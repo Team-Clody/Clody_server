@@ -1,4 +1,4 @@
-package com.donkeys_today.server.support.auth.config;
+package com.donkeys_today.server.support.security.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
