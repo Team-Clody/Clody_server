@@ -6,35 +6,41 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor
-@Table(name = "users")
 public class User {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
-  private long id;
+  private Long id;
 
-  @Column(name = "username")
-  private String userName;
-
-  @Column(name = "phone_num")
-  private String phoneNum;
+  private Long platformID;
 
   @Column(name = "email")
   private String email;
 
-  @Builder
-  public User(String userName, String phoneNum, String email) {
-    this.userName = userName;
-    this.phoneNum = phoneNum;
-    this.email = email;
-  }
+  @Column(name = "username")
+  private String userName;
 
+  private String nickName;
+
+  private boolean alarmAgreement;
+
+  private boolean replyAgreement;
+
+  private boolean is_deleted;
+
+  @Builder
+  public User(String email, String userName, String nickName, boolean alarmAgreement,
+      boolean replyAgreement, boolean is_deleted) {
+    this.email = email;
+    this.userName = userName;
+    this.nickName = nickName;
+    this.alarmAgreement = alarmAgreement;
+    this.replyAgreement = replyAgreement;
+    this.is_deleted = is_deleted;
+  }
 }
