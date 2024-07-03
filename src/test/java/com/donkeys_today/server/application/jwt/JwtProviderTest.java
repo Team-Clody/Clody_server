@@ -1,4 +1,4 @@
-package com.donkeys_today.server.unit.application.jwt;
+package com.donkeys_today.server.application.jwt;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
