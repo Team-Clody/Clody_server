@@ -23,21 +23,23 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import java.util.Base64;
 import java.util.Date;
 import javax.crypto.SecretKey;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class JwtProviderImpl implements JwtProvider {
 
+  private final SecretKey secretKey;
   private final RefreshTokenRepository refreshTokenRepository;
+  private final String JWT_SECRET;
 
-  @Value("${jwt.secret}")
-  private String JWT_SECRET;
+  public JwtProviderImpl(@Value("${jwt.secret}") String secret, RefreshTokenRepository refreshTokenRepository) {
+    this.JWT_SECRET = secret;
+    this.refreshTokenRepository  = refreshTokenRepository;
+    this.secretKey = Keys.hmacShaKeyFor(JWT_SECRET.getBytes());
+  }
 
   @Override
   public String issueAccessToken(Long userId) {
@@ -66,7 +68,7 @@ public class JwtProviderImpl implements JwtProvider {
     return Jwts.builder()
         .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
         .setClaims(claims)
-        .signWith(getSigningKey())
+        .signWith(secretKey)
         .compact();
   }
 
@@ -127,15 +129,6 @@ public class JwtProviderImpl implements JwtProvider {
 
   private JwtParser getJwtParser(){
     return Jwts.parserBuilder()
-        .setSigningKey(getSigningKey()).build();
-  }
-
-  private SecretKey getSigningKey() {
-    return Keys.hmacShaKeyFor(encodeSecretKey().getBytes());
-  }
-
-  private String encodeSecretKey(){
-    return Base64.getEncoder()
-        .encodeToString(JWT_SECRET.getBytes());
+        .setSigningKey(secretKey).build();
   }
 }
