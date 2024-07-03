@@ -1,10 +1,15 @@
 package com.donkeys_today.server.support.feign.dto.response;
 
 public record KakaoTokenResponse(
-    String accessToken,
-    String refreshToken
+    String accessToken
 ) {
-  public static KakaoTokenResponse of (String accessToken, String refreshToken) {
-    return new KakaoTokenResponse(accessToken, refreshToken);
+  private static final String BEARER = "Bearer ";
+
+  public static KakaoTokenResponse createAccessToken(String accessToken) {
+    return new KakaoTokenResponse(accessToken);
+  }
+
+  public static String getTokenWithPrefix(String accessToken) {
+    return BEARER + accessToken;
   }
 }
