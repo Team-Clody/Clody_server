@@ -26,6 +26,10 @@ public enum ErrorType {
   INVALID_PLATFORM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR.value(), "지원하지 않는 로그인 플랫폼입니다."),
   DUPLICATED_USER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미 가입된 유저입니다."),
 
+  /**
+   * 회원 관련 오류
+   */
+  USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"존재하지 않는 사용자입니다."),
   ;
   private final int status;
   private final String message;

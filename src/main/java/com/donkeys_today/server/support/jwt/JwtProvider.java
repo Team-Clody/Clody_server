@@ -8,6 +8,8 @@ public interface JwtProvider {
 
   Long getUserIdFromJwtSubject(String token);
 
+  String generateToken(String type, Long userId, Long tokenExpirationTime);
+
   void validateAccessToken(String accessToken);
 
   void validateRefreshToken(String refreshToken);
