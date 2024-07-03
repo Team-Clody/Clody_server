@@ -3,10 +3,9 @@ package com.donkeys_today.server.application.user;
 import static com.donkeys_today.server.support.jwt.JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME;
 
 import com.donkeys_today.server.application.user.sterategy.KakaoAuthStrategy;
-import com.donkeys_today.server.application.user.sterategy.UserAuthSterategy;
+import com.donkeys_today.server.application.user.sterategy.SocialRegisterSterategy;
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.domain.user.UserRepository;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
@@ -21,11 +20,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserAuthenticator {
 
-  private final Map<Platform, UserAuthSterategy> provider = new HashMap<>();
+  private final Map<Platform, SocialRegisterSterategy> provider = new HashMap<>();
 
   private final KakaoAuthStrategy kakaoAuthStrategy;
   private final JwtProvider jwtProvider;
-  private final UserRepository userRepository;
   private final RefreshTokenRepository refreshTokenRepository;
 
   @PostConstruct
@@ -34,17 +32,17 @@ public class UserAuthenticator {
   }
 
   public User signUp(String authToken, Platform platform) {
-    return provider.get(platform).signUp(authToken);
+    return provider.get(platform).signUp(platform, authToken);
   }
 
   public User signIn(String authToken, Platform platform) {
-    return provider.get(platform).signIn(authToken);
+    return provider.get(platform).signIn(platform, authToken);
   }
 
   public void setUserAlarm(User user, boolean agreement, LocalTime localTime) {
     if (agreement) {
       user.updateUserAlarmAgreement(true);
-      //알람 객체 생성
+      //TODO 해당 부분은 와이어프레임에 따라서, 온보딩 과정에서 알람을 설정할지, 아니면 따로 설정할 지 정해지는 것 보고 구현
     }
   }
 
@@ -59,7 +57,4 @@ public class UserAuthenticator {
     refreshTokenRepository.saveRefreshToken(id, refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
   }
 
-  public String getKakaoRedirectRequest() {
-    return kakaoAuthStrategy.getRedirectUri();
-  }
 }
