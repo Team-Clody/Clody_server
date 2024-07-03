@@ -7,6 +7,7 @@ import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.security.auth.UserAuthentication;
+import com.donkeys_today.server.support.security.config.WhiteListConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,5 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     WebAuthenticationDetailsSource webAuthenticationDetailsSource = new WebAuthenticationDetailsSource();
     WebAuthenticationDetails webAuthenticationDetails = webAuthenticationDetailsSource.buildDetails(request);
     authentication.setDetails(webAuthenticationDetails);
+  }
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException{
+    String requestUri = request.getRequestURI();
+    return WhiteListConstants.FILTER_WHITE_LIST.stream().anyMatch(requestUri::startsWith);
   }
 }
