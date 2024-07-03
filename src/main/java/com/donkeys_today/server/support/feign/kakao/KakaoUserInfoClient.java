@@ -10,5 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface KakaoUserInfoClient {
 
   @GetMapping(value = "/v2/user/me")
-  KakaoUserInfoResponse getUserInformation(@RequestParam(HttpHeaders.AUTHORIZATION) String accessToken);
+  KakaoUserInfoResponse getUserInformation(
+      @RequestParam(HttpHeaders.AUTHORIZATION) String accessToken);
 }
