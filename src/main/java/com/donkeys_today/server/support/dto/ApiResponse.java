@@ -20,7 +20,7 @@ public record ApiResponse<T>(
     }
 
     public static <T> ApiResponse<T> error(ErrorType errorType){
-      return new ApiResponse<>(errorType.getStatus(), errorType.getMessage(), Optional.empty());
+      return new ApiResponse<>(errorType.getStatus(), errorType.getMessage(),null);
     }
 
     public static <T> ApiResponse<T> error(ErrorType errorType, T data){

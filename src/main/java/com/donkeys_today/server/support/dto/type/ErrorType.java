@@ -23,7 +23,9 @@ public enum ErrorType {
   UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "지원하지 않는 토큰 방식입니다."),
   WRONG_SIGNATURE_TOKEN(HttpStatus.UNAUTHORIZED.value(), "Signature가 잘못된 Token입니다."),
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 오류"),
-  INVALID_PLATFORM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR.value(), "지원하지 않는 로그인 플랫폼입니다.")
+  INVALID_PLATFORM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR.value(), "지원하지 않는 로그인 플랫폼입니다."),
+  DUPLICATED_USER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미 가입된 유저입니다."),
+
   ;
   private final int status;
   private final String message;
