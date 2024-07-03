@@ -45,8 +45,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    //Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
     //SECURITY
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     //JWT
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
