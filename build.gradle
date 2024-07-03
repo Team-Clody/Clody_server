@@ -42,12 +42,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 
     //Thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
 
     //SECURITY
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -65,15 +63,14 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:'+ restdocsApiSpecVersion
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
+
+    //Test
     testImplementation 'io.rest-assured:spring-mock-mvc:5.4.0'
     testImplementation "io.rest-assured:json-path:5.4.0"
     testImplementation "io.rest-assured:xml-path:5.4.0"
-    swaggerUI 'org.webjars:swagger-ui:4.11.1'
-
-
-
-
-
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
