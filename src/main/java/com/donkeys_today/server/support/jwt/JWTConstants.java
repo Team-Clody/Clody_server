@@ -1,5 +1,8 @@
 package com.donkeys_today.server.support.jwt;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class JwtConstants {
 
   public static final String USER_ID = "userId";

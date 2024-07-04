@@ -1,5 +1,8 @@
 package com.donkeys_today.server.support.jwt;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum JwtValidationType {
     VALID_ACCESS,
     VALID_REFRESH,
