@@ -1,13 +1,13 @@
-package com.donkeys_today.server.support.auth.config;
+package com.donkeys_today.server.support.security.config;
 
 import java.util.List;
 
 public class WhiteListConstants {
+
     public static final List<String> FILTER_WHITE_LIST = List.of(
-            "/login/oauth2/code/kakao",
-            "/login/oauth2/code/google",
-            "/api/v1",
-            "/login",
+            "/api/v1/auth/**",
+            "/",
+            "/api/v1/kakao",
             "/oauth/authorize",
             "/actuator/health",
             "/error",
@@ -17,8 +17,13 @@ public class WhiteListConstants {
     );
 
     public static final String[] SECURITY_WHITE_LIST = {
-            "/login/**",
+            "/api/v1/kakao",
+            "/api/v1/auth/**",
             "/",
-            "/actuator/**"
+            "/actuator/health",
+            "/api-docs/**",
+            "swagger-ui/**",
+            "/redirect",
+            "/login/oauth2/code/kakao",
     };
 }

@@ -4,8 +4,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -19,41 +17,39 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, name = "email")
-    private String email;
+  private Long platformID;
 
-    @Column(nullable = false, name = "nickname")
-    private String nickname;
+  private Platform platform;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private RoleType roleType;
+  @Column(name = "email")
+  private String email;
 
-    @Column(name = "provider")
-    private ProviderType providerType;
+  private String nickName;
 
-    @Column(name = "alarm_agreement")
-    private Boolean alarm_agreemente;
+  private boolean alarmAgreement;
 
-    @Column(name = "reply_agreement")
-    private Boolean reply_agreemente;
+  private boolean replyAgreement;
 
-    @Column(name = "is_deleted")
-    private Boolean is_deleted;
+  private boolean is_deleted;
 
-    @Builder
-    public User(String email, String nickname, RoleType roleType, ProviderType providerType, Boolean alarm_agreemente,
-                Boolean reply_agreemente, Boolean is_deleted) {
-        this.email = email;
-        this.nickname = nickname;
-        this.roleType = roleType;
-        this.providerType = providerType;
-        this.alarm_agreemente = alarm_agreemente;
-        this.reply_agreemente = reply_agreemente;
-        this.is_deleted = is_deleted;
-    }
+  @Builder
+  public User(Long platformID, Platform platform, String email, String nickName,
+      boolean alarmAgreement, boolean replyAgreement, boolean is_deleted) {
+    this.platformID = platformID;
+    this.platform = platform;
+    this.email = email;
+    this.nickName = nickName;
+    this.alarmAgreement = alarmAgreement;
+    this.replyAgreement = replyAgreement;
+    this.is_deleted = is_deleted;
+  }
+
+  public void updateUserAlarmAgreement(boolean alarmAgreement) {
+    this.alarmAgreement = alarmAgreement;
+  }
+
 }
