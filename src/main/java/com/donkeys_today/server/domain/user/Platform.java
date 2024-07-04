@@ -3,10 +3,12 @@ package com.donkeys_today.server.domain.user;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.InternalServerException;
 import java.util.Arrays;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public enum Platform{
 
