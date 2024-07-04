@@ -53,11 +53,10 @@ replay_pid*
 .idea/
 .github/
 /src/main/resources/
-/.gradle
 /build
 !/.idea/
 /.idea
-
+./gradle
 /out
 /secret
 /.gradle

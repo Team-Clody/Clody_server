@@ -42,14 +42,11 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
-
-
-    //Thymeleaf
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     //SECURITY
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     //JWT
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
@@ -63,14 +60,15 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:'+ restdocsApiSpecVersion
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
-    swaggerUI 'org.webjars:swagger-ui:4.11.1'
-
-    //Test
     testImplementation 'io.rest-assured:spring-mock-mvc:5.4.0'
     testImplementation "io.rest-assured:json-path:5.4.0"
     testImplementation "io.rest-assured:xml-path:5.4.0"
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
+
+    //actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+
 }
 
 tasks.named('test') {
@@ -107,16 +105,22 @@ tasks.withType(GenerateSwaggerUI).configureEach {
     }
 }
 
+// 태스크 순서 재정의
+tasks.named('generateSwaggerUISample') {
+    mustRunAfter 'test'
+    mustRunAfter 'processResources'
+}
+
 //정적 파일 호스팅을 위한 파일 복사
 task copyDocument(type: Copy) {
-    dependsOn generateSwaggerUISample
+    dependsOn 'generateSwaggerUISample'
     from file("build/swagger-ui-sample")
     into file("src/main/resources/static/docs")
 }
 
 //Jar 로 빌드
 bootJar{
-    dependsOn copyDocument
+    dependsOn processResources
     from("${generateSwaggerUISample.outputDir}"){
         into 'static/docs'
     }
