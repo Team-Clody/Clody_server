@@ -38,7 +38,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
     return User.builder()
         .platformID(userInfo.id())
         .platform(platform)
-        .nickName(userInfo.kakaoAccount().name())
+        .nickName(userInfo.kakaoAccount().profile().nickname())
         .email(userInfo.kakaoAccount().email())
         .build();
   }
