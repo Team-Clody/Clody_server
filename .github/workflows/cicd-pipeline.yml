@@ -27,6 +27,17 @@ jobs:
           cat ./application.yml
         working-directory: ${{ env.working-directory }}
 
+      # Gradle 캐싱
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: 빌드
         run: |
           chmod +x gradlew
