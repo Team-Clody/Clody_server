@@ -1,5 +1,6 @@
 package com.donkeys_today.server.support.feign.kakao;
 
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.donkeys_today.server.support.feign.dto.response.KakaoUserInfoResponse;
@@ -13,4 +14,5 @@ public interface KakaoUserInfoClient {
     @GetMapping(value = "/v2/user/me")
     KakaoUserInfoResponse getUserInformation(
             @RequestHeader(AUTHORIZATION) String accessToken);
+
 }
