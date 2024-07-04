@@ -28,9 +28,6 @@ public class User {
   @Column(name = "email")
   private String email;
 
-  @Column(name = "username")
-  private String userName;
-
   private String nickName;
 
   private boolean alarmAgreement;
@@ -40,12 +37,11 @@ public class User {
   private boolean is_deleted;
 
   @Builder
-  public User(Long platformID, Platform platform, String email, String userName, String nickName,
+  public User(Long platformID, Platform platform, String email, String nickName,
       boolean alarmAgreement, boolean replyAgreement, boolean is_deleted) {
     this.platformID = platformID;
     this.platform = platform;
     this.email = email;
-    this.userName = userName;
     this.nickName = nickName;
     this.alarmAgreement = alarmAgreement;
     this.replyAgreement = replyAgreement;
