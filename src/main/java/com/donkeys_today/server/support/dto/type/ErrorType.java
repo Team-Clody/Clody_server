@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
 public enum ErrorType {
 
   /**
