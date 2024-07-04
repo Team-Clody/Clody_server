@@ -2,12 +2,10 @@ package com.donkeys_today.server.support.dto.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
 public enum ErrorType {
 
   /**
