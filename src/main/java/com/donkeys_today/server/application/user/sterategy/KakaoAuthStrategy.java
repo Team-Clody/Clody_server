@@ -51,7 +51,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
         return findByPlatformAndPlatformId(platform, userInfo.id());
     }
 
-    private User findByPlatformAndPlatformId(Platform platform, Long platformId) {
+    private User findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
                 () -> new NotFoundException(ErrorType.DUPLICATED_USER_ERROR)
         );

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record KakaoUserInfoResponse(
         @JsonProperty("kakao_account") KakaoAccount kakaoAccount,
-        Long id
+        String id
 ) {
 
     public record KakaoAccount(
