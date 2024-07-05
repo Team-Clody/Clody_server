@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface GoogleAuthClient {
 
     @PostMapping
-    GoogleTokenResponse googleAuth(
+    GoogleTokenResponse getOauth2AccessToken(
             @RequestParam(name = "code") String code,
             @RequestParam(name = "clientId") String clientId,
             @RequestParam(name = "clientSecret") String clientSecret,
