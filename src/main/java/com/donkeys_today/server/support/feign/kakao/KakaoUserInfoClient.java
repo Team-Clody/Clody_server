@@ -3,7 +3,7 @@ package com.donkeys_today.server.support.feign.kakao;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.donkeys_today.server.support.feign.dto.response.KakaoUserInfoResponse;
+import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoUserInfoResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
