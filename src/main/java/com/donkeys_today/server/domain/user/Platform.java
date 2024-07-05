@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 public enum Platform {
 
     KAKAO("kakao"),
-    GOOGLE("google");
+    GOOGLE("google"),
+    APPLE("apple");
 
     private final String name;
 
