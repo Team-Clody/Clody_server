@@ -2,6 +2,7 @@ package com.donkeys_today.server.application.user;
 
 import static com.donkeys_today.server.support.jwt.JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME;
 
+import com.donkeys_today.server.application.user.sterategy.AppleAuthStrategy;
 import com.donkeys_today.server.application.user.sterategy.GoogleAuthStrategy;
 import com.donkeys_today.server.application.user.sterategy.KakaoAuthStrategy;
 import com.donkeys_today.server.application.user.sterategy.SocialRegisterSterategy;
@@ -25,6 +26,7 @@ public class UserAuthenticator {
 
     private final KakaoAuthStrategy kakaoAuthStrategy;
     private final GoogleAuthStrategy googleAuthStrategy;
+    private final AppleAuthStrategy appleAuthStrategy;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -32,6 +34,7 @@ public class UserAuthenticator {
     public void initSocialLoginProvider() {
         provider.put(Platform.KAKAO, kakaoAuthStrategy);
         provider.put(Platform.GOOGLE, googleAuthStrategy);
+        provider.put(Platform.APPLE, appleAuthStrategy);
     }
 
     public User signUp(String authToken, Platform platform) {

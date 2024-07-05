@@ -1,5 +1,6 @@
 package com.donkeys_today.server.application.user.sterategy;
 
+import static com.donkeys_today.server.support.dto.type.ErrorType.INVALID_TOKEN;
 import static com.donkeys_today.server.support.feign.apple.AppleLoginUtil.createClientSecret;
 
 import com.donkeys_today.server.domain.user.Platform;
@@ -8,10 +9,16 @@ import com.donkeys_today.server.domain.user.UserRepository;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;
+import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.feign.apple.AppleAuthClient;
 import com.donkeys_today.server.support.feign.dto.response.apple.AppleTokenResponse;
-import com.donkeys_today.server.support.feign.dto.response.apple.AppleUserInfoResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import java.text.ParseException;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +27,6 @@ import org.springframework.stereotype.Service;
 public class AppleAuthStrategy implements SocialRegisterSterategy {
 
     private final AppleAuthClient appleAuthClient;
-    //    private final AppleUserInfoClient AppleUserInfoClient;
     private final UserRepository userRepository;
 
     @Value("${apple.client-id}")
@@ -37,28 +43,45 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
 
     @Override
     public User signUp(Platform platform, String authToken) {
-        AppleTokenResponse token = getAppleToken(authToken);
+        try {
+            AppleTokenResponse token = getAppleToken(authToken);
+            SignedJWT signedJWT = SignedJWT.parse(token.id_token());
+            ReadOnlyJWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JSONObject payload = objectMapper.readValue(getPayload.toJSONObject().toJSONString(), JSONObject.class);
 
+            String userId = String.valueOf(payload.get("sub"));
+            String email = String.valueOf(payload.get("email"));
+            validateDuplicateUser(userId);
+            return User.builder()
+                    .platformID(userId)
+                    .platform(platform)
+                    .nickName("nickname")
+                    .email(email)
+                    .build();
+        } catch (JsonProcessingException | ParseException e) {
+            throw new UnauthorizedException(INVALID_TOKEN);
+        }
 
-        token 안에 있는 id_token 을 검증 해야함!!!!!
-
-
-        validateDuplicateUser(userInfo);
-        return User.builder()
-                .platformID(userInfo.sub())
-                .platform(platform)
-                .nickName(userInfo.name())
-                .email(userInfo.email())
-                .build();
     }
 
     @Override
     public User signIn(Platform platform, String authToken) {
-        AppleTokenResponse token = getAppleToken(authToken);
+        try {
+            AppleTokenResponse token = getAppleToken(authToken);
+            SignedJWT signedJWT = SignedJWT.parse(token.id_token());
+            ReadOnlyJWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JSONObject payload = objectMapper.readValue(getPayload.toJSONObject().toJSONString(), JSONObject.class);
 
-        token.id_token 검증 해야함 .
+            String userId = String.valueOf(payload.get("sub"));
+            String email = String.valueOf(payload.get("email"));
 
-        return findByPlatformAndPlatformId(platform, userInfo.sub());
+            return findByPlatformAndPlatformId(platform, userId);
+        } catch (ParseException | JsonProcessingException e) {
+            throw new UnauthorizedException(INVALID_TOKEN);
+        }
+
     }
 
     private User findByPlatformAndPlatformId(Platform platform, String platformId) {
@@ -80,8 +103,8 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
         );
     }
 
-    private void validateDuplicateUser(AppleUserInfoResponse userInfo) {
-        if (userRepository.existsByPlatformAndPlatformID(Platform.GOOGLE, userInfo.sub())) {
+    private void validateDuplicateUser(String userId) {
+        if (userRepository.existsByPlatformAndPlatformID(Platform.APPLE, userId)) {
             throw new BusinessException(ErrorType.DUPLICATED_USER_ERROR);
         }
     }
