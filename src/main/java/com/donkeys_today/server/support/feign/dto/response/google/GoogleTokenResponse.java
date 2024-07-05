@@ -14,14 +14,6 @@ public record GoogleTokenResponse(
         return new GoogleTokenResponse(accessToken, idToken);
     }
 
-    @Override
-    public String toString() {
-        return "GoogleTokenResponse{" +
-                "access_token='" + access_token + '\'' +
-                ", id_token='" + id_token + '\'' +
-                '}';
-    }
-
     public static String getTokenWithPrefix(String accessToken) {
         return BEARER + accessToken;
     }
