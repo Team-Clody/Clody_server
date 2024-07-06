@@ -8,11 +8,12 @@ import com.donkeys_today.server.presentation.user.dto.response.UserSignUpRespons
 import com.donkeys_today.server.support.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,15 +26,23 @@ public interface UserController {
   @Operation(summary = "유저 회원가입 ", description = "Authorization code 와 UserSignUpRequest 로 회원가입을 진행합니다.")
   @PostMapping("/auth/signup")
   ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(
-      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "auth_code", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String auth_code,
-      @RequestBody @Parameter(name = "UserSignUpRequest", description = "회원가입을 위하여 부가적으로 받는 정보 객체", schema = @Schema(contains = UserSignUpRequest.class)) final UserSignUpRequest request
+      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "Authorization", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String auth_code,
+      @RequestBody(
+          description = "회원가입을 위하여 부가적으로 받는 정보 객체",
+          required = true,
+          content = @Content(schema = @Schema(implementation = UserSignUpRequest.class))
+      ) final UserSignUpRequest request
   );
 
   @Operation(summary = "유저 로그인 ", description = "Authorization code로 로그인을 진행합니다.")
   @PostMapping("/auth/signin")
   ResponseEntity<ApiResponse<UserSignInResponse>> signIn(
-      @RequestHeader @Parameter(name = "auth_code", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String auth_code,
-      @RequestBody @Parameter(name = "UserSignInRequest", description = "로그인을 위하여 부가적으로 받는 정보 객체", schema = @Schema(contains = UserSignInRequest.class))final UserSignInRequest userSignInRequest
+      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "Authorization", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String auth_code,
+      @RequestBody(
+          description = "로그인을 위하여 부가적으로 받는 정보 객체",
+          required = true,
+          content = @Content(schema = @Schema(implementation = UserSignInRequest.class))
+      ) final UserSignInRequest userSignInRequest
   );
 
 
