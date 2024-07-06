@@ -11,9 +11,9 @@ public class WhiteListConstants {
             "/oauth/authorize",
             "/actuator/health",
             "/error",
-            "/swagger-ui/",
-            "/swagger-resources/",
-            "/api-docs/"
+            "/swagger",
+            "/swagger-ui/**",
+            "/api-docs/**"
     );
 
     public static final String[] SECURITY_WHITE_LIST = {
@@ -21,9 +21,11 @@ public class WhiteListConstants {
             "/api/v1/auth/**",
             "/",
             "/actuator/health",
-            "/api-docs/**",
-            "swagger-ui/**",
+            "/swagger",
+            "/swagger-ui/**",
             "/redirect",
             "/login/oauth2/code/kakao",
+            "/v3/api-docs/**",
+
     };
 }

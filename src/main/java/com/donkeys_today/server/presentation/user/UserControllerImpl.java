@@ -2,6 +2,7 @@ package com.donkeys_today.server.presentation.user;
 
 import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.common.constants.Constants;
+import com.donkeys_today.server.presentation.api.UserController;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
@@ -15,18 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class UserController {
+public class UserControllerImpl implements UserController {
 
   private final UserService userService;
 
   @PostMapping("/auth/signup")
-  public ResponseEntity<ApiResponse<?>> signUp(
+  @Override
+  public ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(
       @RequestHeader(Constants.AUTHORIZATION) final String authorization_code,
       @RequestBody final UserSignUpRequest userSignUpRequest) {
     final UserSignUpResponse response = userService.signUp(authorization_code,userSignUpRequest);
@@ -34,9 +35,9 @@ public class UserController {
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
   }
 
-  @ResponseBody
+  @Override
   @PostMapping("/auth/signin")
-  public ResponseEntity<?> signIn(@RequestHeader(Constants.AUTHORIZATION) String code,
+  public ResponseEntity<ApiResponse<UserSignInResponse>> signIn(@RequestHeader(Constants.AUTHORIZATION) String code,
       @RequestBody final UserSignInRequest userSignInRequest) {
     System.out.println(code);
     final UserSignInResponse response = userService.signIn(code,userSignInRequest);
