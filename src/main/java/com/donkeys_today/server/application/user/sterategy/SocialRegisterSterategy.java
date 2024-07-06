@@ -5,7 +5,7 @@ import com.donkeys_today.server.domain.user.User;
 
 public interface SocialRegisterSterategy {
 
-  User signUp(Platform platform, String authToken);
+    User signUp(Platform platform, String authToken);
 
-  User signIn(Platform platform, String authToken);
+    User signIn(Platform platform, String authToken);
 }

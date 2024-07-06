@@ -1,6 +1,5 @@
 package com.donkeys_today.server.application.user.sterategy;
 
-import static com.donkeys_today.server.support.dto.type.ErrorType.INVALID_TOKEN;
 import static com.donkeys_today.server.support.feign.apple.AppleLoginUtil.createClientSecret;
 
 import com.donkeys_today.server.domain.user.Platform;
@@ -9,16 +8,11 @@ import com.donkeys_today.server.domain.user.UserRepository;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;
-import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.feign.apple.AppleAuthClient;
+import com.donkeys_today.server.support.feign.apple.AppleIdTokenPayload;
+import com.donkeys_today.server.support.feign.apple.TokenDecoder;
 import com.donkeys_today.server.support.feign.dto.response.apple.AppleTokenResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import java.text.ParseException;
 import lombok.RequiredArgsConstructor;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -43,44 +37,31 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
 
     @Override
     public User signUp(Platform platform, String authToken) {
-        try {
-            AppleTokenResponse token = getAppleToken(authToken);
-            SignedJWT signedJWT = SignedJWT.parse(token.id_token());
-            ReadOnlyJWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
-            ObjectMapper objectMapper = new ObjectMapper();
-            JSONObject payload = objectMapper.readValue(getPayload.toJSONObject().toJSONString(), JSONObject.class);
 
-            String userId = String.valueOf(payload.get("sub"));
-            String email = String.valueOf(payload.get("email"));
-            validateDuplicateUser(userId);
-            return User.builder()
-                    .platformID(userId)
-                    .platform(platform)
-                    .nickName("nickname")
-                    .email(email)
-                    .build();
-        } catch (JsonProcessingException | ParseException e) {
-            throw new UnauthorizedException(INVALID_TOKEN);
-        }
+        AppleTokenResponse token = getAppleToken(authToken);
+        AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(token.id_token(),
+                AppleIdTokenPayload.class);
+        String userId = appleIdTokenPayload.getSub();
+        String email = appleIdTokenPayload.getEmail();
+        validateDuplicateUser(userId);
+        return User.builder()
+                .platformID(userId)
+                .platform(platform)
+                .nickName("???????")
+                .email(email)
+                .build();
 
     }
 
     @Override
     public User signIn(Platform platform, String authToken) {
-        try {
-            AppleTokenResponse token = getAppleToken(authToken);
-            SignedJWT signedJWT = SignedJWT.parse(token.id_token());
-            ReadOnlyJWTClaimsSet getPayload = signedJWT.getJWTClaimsSet();
-            ObjectMapper objectMapper = new ObjectMapper();
-            JSONObject payload = objectMapper.readValue(getPayload.toJSONObject().toJSONString(), JSONObject.class);
 
-            String userId = String.valueOf(payload.get("sub"));
-            String email = String.valueOf(payload.get("email"));
+        AppleTokenResponse token = getAppleToken(authToken);
+        AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(token.id_token(),
+                AppleIdTokenPayload.class);
 
-            return findByPlatformAndPlatformId(platform, userId);
-        } catch (ParseException | JsonProcessingException e) {
-            throw new UnauthorizedException(INVALID_TOKEN);
-        }
+        String userId = appleIdTokenPayload.getSub();
+        return findByPlatformAndPlatformId(platform, userId);
 
     }
 
