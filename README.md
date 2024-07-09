@@ -113,10 +113,10 @@
 
 | IDE | IntelliJ |
 |:---|:---|
-| Language | Java 17 |
+| Language | Java 21 |
 | Framework | Spring Boot 3.3.1, Gradle |
 | Authentication | Spring Security, JSON Web Tokens |
-| Orm | Spring Data JPA |
+| ORM | Spring Data JPA |
 | Database | PostgreSQL |
 | External | AWS EC2, AWS RDS, Nginx, Docker, Docker-Compose, Redis, FCM |
 | CI/CD | Github Action |
