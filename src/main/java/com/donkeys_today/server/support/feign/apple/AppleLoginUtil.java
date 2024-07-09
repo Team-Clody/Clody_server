@@ -54,6 +54,7 @@ public class AppleLoginUtil {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
+
         return jwt.serialize();
     }
 

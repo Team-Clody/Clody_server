@@ -3,6 +3,8 @@ package com.donkeys_today.server.application.user.sterategy;
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
+import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;
@@ -31,7 +33,9 @@ public class GoogleAuthStrategy implements SocialRegisterSterategy {
     private String redirect_uri;
 
     @Override
-    public User signUp(Platform platform, String authToken) {
+    public User signUp(UserSignUpRequest request, String authToken) {
+
+        Platform platform = getPlatformFromRequestString(request.platform());
         GoogleTokenResponse token = getGoogleToken(authToken);
         String accessTokenWithPrefix = GoogleTokenResponse.getTokenWithPrefix(token.access_token());
         GoogleUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
@@ -39,13 +43,14 @@ public class GoogleAuthStrategy implements SocialRegisterSterategy {
         return User.builder()
                 .platformID(userInfo.sub())
                 .platform(platform)
-                .nickName(userInfo.name())
+                .nickName(request.name())
                 .email(userInfo.email())
                 .build();
     }
 
     @Override
-    public User signIn(Platform platform, String authToken) {
+    public User signIn(UserSignInRequest request, String authToken) {
+        Platform platform = getPlatformFromRequestString(request.platform());
         GoogleTokenResponse token = getGoogleToken(authToken);
         String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(token.access_token());
         GoogleUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
@@ -54,7 +59,7 @@ public class GoogleAuthStrategy implements SocialRegisterSterategy {
 
     private User findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
-                () -> new NotFoundException(ErrorType.DUPLICATED_USER_ERROR)
+                () -> new NotFoundException(ErrorType.NOTFOUND_USER_ERROR)
         );
     }
 
@@ -76,5 +81,9 @@ public class GoogleAuthStrategy implements SocialRegisterSterategy {
         if (userRepository.existsByPlatformAndPlatformID(Platform.GOOGLE, userInfo.sub())) {
             throw new BusinessException(ErrorType.DUPLICATED_USER_ERROR);
         }
+    }
+
+    private Platform getPlatformFromRequestString(String request) {
+        return Platform.fromString(request);
     }
 }

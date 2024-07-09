@@ -8,4 +8,8 @@ public class AppleIdTokenPayload {
     private String sub;
 
     private String email;
+
+    private String exp;
+
+    
 }

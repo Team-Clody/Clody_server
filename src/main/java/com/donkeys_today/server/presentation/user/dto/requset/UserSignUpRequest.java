@@ -5,7 +5,9 @@ public record UserSignUpRequest(
 
         String email,
 
-        String name
+        String name,
+
+        String id_token
 
 ) {
 }

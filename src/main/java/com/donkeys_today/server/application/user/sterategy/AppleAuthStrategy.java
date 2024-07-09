@@ -5,13 +5,20 @@ import static com.donkeys_today.server.support.feign.apple.AppleLoginUtil.create
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
+import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;
 import com.donkeys_today.server.support.feign.apple.AppleAuthClient;
-import com.donkeys_today.server.support.feign.apple.AppleIdTokenPayload;
-import com.donkeys_today.server.support.feign.apple.TokenDecoder;
+import com.donkeys_today.server.support.feign.apple.AppleIdentityTokenParser;
+import com.donkeys_today.server.support.feign.apple.ApplePublicKeyGenerator;
+import com.donkeys_today.server.support.feign.apple.ApplePublicKeysClient;
+import com.donkeys_today.server.support.feign.dto.response.apple.ApplePublicKeys;
 import com.donkeys_today.server.support.feign.dto.response.apple.AppleTokenResponse;
+import io.jsonwebtoken.Claims;
+import java.security.PublicKey;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +29,9 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
 
     private final AppleAuthClient appleAuthClient;
     private final UserRepository userRepository;
+    private final AppleIdentityTokenParser appleIdentityTokenParser;
+    private final ApplePublicKeysClient applePublicKeysClient;
+    private final ApplePublicKeyGenerator applePublicKeyGenerator;
 
     @Value("${apple.client-id}")
     private String appleClientId;
@@ -36,31 +46,29 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
 
 
     @Override
-    public User signUp(Platform platform, String authToken) {
-
-        AppleTokenResponse token = getAppleToken(authToken);
-        AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(token.id_token(),
-                AppleIdTokenPayload.class);
-        String userId = appleIdTokenPayload.getSub();
-        String email = appleIdTokenPayload.getEmail();
+    public User signUp(UserSignUpRequest userSignUpRequest, String authToken) {
+        String userId = getApplePlatformId(userSignUpRequest.id_token());
         validateDuplicateUser(userId);
+        Platform platform = getPlatformFromRequestString(userSignUpRequest.platform());
+        AppleTokenResponse appleTokenResponse = getAppleToken(authToken);
+
         return User.builder()
                 .platformID(userId)
                 .platform(platform)
-                .nickName("???????")
-                .email(email)
+                .nickName(userSignUpRequest.name())
+                .email(userSignUpRequest.email())
                 .build();
 
     }
 
     @Override
-    public User signIn(Platform platform, String authToken) {
+    public User signIn(UserSignInRequest userSignInRequest, String authToken) {
 
-        AppleTokenResponse token = getAppleToken(authToken);
-        AppleIdTokenPayload appleIdTokenPayload = TokenDecoder.decodePayload(token.id_token(),
-                AppleIdTokenPayload.class);
+        String userId = getApplePlatformId(userSignInRequest.id_token());
+        validateDuplicateUser(userId);
+        Platform platform = getPlatformFromRequestString(userSignInRequest.platform());
+        AppleTokenResponse appleTokenResponse = getAppleToken(authToken);
 
-        String userId = appleIdTokenPayload.getSub();
         return findByPlatformAndPlatformId(platform, userId);
 
     }
@@ -89,4 +97,19 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
             throw new BusinessException(ErrorType.DUPLICATED_USER_ERROR);
         }
     }
+
+    private Platform getPlatformFromRequestString(String request) {
+        return Platform.fromString(request);
+    }
+
+    public String getApplePlatformId(String identityToken) {
+        Map<String, String> headers = appleIdentityTokenParser.parseHeaders(identityToken);
+        ApplePublicKeys applePublicKeys = applePublicKeysClient.getApplePublicKeys();
+
+        PublicKey publicKey = applePublicKeyGenerator.generatePublicKeyWithApplePublicKeys(headers, applePublicKeys);
+        Claims claims = appleIdentityTokenParser.parseWithPublicKeyAndGetClaims(identityToken, publicKey);
+
+        return claims.getSubject();
+    }
+
 }

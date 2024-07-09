@@ -32,8 +32,7 @@ public class UserService {
                                      final UserSignUpRequest request) {
         //플랫폼에서 플랫폼 추출해야 함
         //그래서 해당 플랫폼에다가 유저 생성 기능 위임
-        Platform platform = getPlatformFromRequestString(request.platform());
-        User newUser = userAuthenticator.signUp(authorizationCode, platform);
+        User newUser = userAuthenticator.signUp(authorizationCode, request);
         User savedUser = userRepository.save(newUser);
         //알람 설정했을 경우, 알람 설정 (이벤트 분리)
 //    userAuthenticator.setUserAlarm(savedUser,request.alarmAgreement(),request.alarmTime());
@@ -45,8 +44,7 @@ public class UserService {
     public UserSignInResponse signIn(final String authorizationCode,
                                      final UserSignInRequest request) {
 
-        Platform platform = getPlatformFromRequestString(request.platform());
-        User foundUser = userAuthenticator.signIn(authorizationCode, platform);
+        User foundUser = userAuthenticator.signIn(authorizationCode, request);
         Token token = userAuthenticator.issueToken(foundUser.getId());
         return UserSignInResponse.of(foundUser.getId(), token.accessToken(), token.refreshToken());
     }

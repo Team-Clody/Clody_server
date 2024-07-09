@@ -8,6 +8,8 @@ import com.donkeys_today.server.application.user.sterategy.KakaoAuthStrategy;
 import com.donkeys_today.server.application.user.sterategy.SocialRegisterSterategy;
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
+import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
+import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
@@ -37,12 +39,14 @@ public class UserAuthenticator {
         provider.put(Platform.APPLE, appleAuthStrategy);
     }
 
-    public User signUp(String authToken, Platform platform) {
-        return provider.get(platform).signUp(platform, authToken);
+    public User signUp(String authToken, UserSignUpRequest request) {
+        Platform platform = getPlatformFromRequestString(request.platform());
+        return provider.get(platform).signUp(request, authToken);
     }
 
-    public User signIn(String authToken, Platform platform) {
-        return provider.get(platform).signIn(platform, authToken);
+    public User signIn(String authToken, UserSignInRequest request) {
+        Platform platform = getPlatformFromRequestString(request.platform());
+        return provider.get(platform).signIn(request, authToken);
     }
 
     public void setUserAlarm(User user, boolean agreement, LocalTime localTime) {
@@ -63,4 +67,7 @@ public class UserAuthenticator {
         refreshTokenRepository.saveRefreshToken(id, refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
+    private Platform getPlatformFromRequestString(String platform) {
+        return Platform.fromString(platform);
+    }
 }
