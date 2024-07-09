@@ -4,13 +4,14 @@
 ## Contributors ✨
 
 <div align=center>
-  
-| [@hyukjinKimm](https://github.com/hyukjinKimm) | [@hyunw9](https://github.com/hyunw9) |[@Yangdaehan](https://github.com/Yangdaehan) |
-| :---: | :---: |:---:|
 
-<img width="300" height="400" src="https://github.com/Team-Clody/Clody_server/assets/107605573/5238b646-ba71-40c5-8fcd-3126b202ccbf">|
-<img width="300" height="400" src="https://github.com/Team-Clody/Clody_server/assets/107605573/52bd1605-faca-46fa-9243-217460ce49e6">|
-<img width="300" height="400" src="https://github.com/Team-Clody/Clody_server/assets/107605573/6109a1f3-2159-4f51-8c7a-40d7de70e8fb">
+## Member
+| [@hyukjinKimm](https://github.com/hyukjinKimm) | [@hyunw9](https://github.com/hyunw9) |[@Yangdaehan](https://github.com/Yangdaehan)|
+|:---:|:---:|:---:|
+|<img src="https://github.com/Team-Clody/Clody_server/assets/107605573/5238b646-ba71-40c5-8fcd-3126b202ccbf" width="180" height="180" >|<img src="https://github.com/hyunw9.png" width="180" height="180" >|<img src="https://github.com/Team-Clody/Clody_server/assets/107605573/6109a1f3-2159-4f51-8c7a-40d7de70e8fb" width="180" height="180" >|
+
+  
+
 </div>
 
 <br>
