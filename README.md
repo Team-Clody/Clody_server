@@ -25,6 +25,73 @@
 
 <br>
 
+## 폴더 구조
+```
+├─main
+│  ├─java
+│  │  └─com
+│  │      └─donkeys_today
+│  │          └─server
+│  │              ├─application
+│  │              │  ├─auth
+│  │              │  └─user
+│  │              │      └─sterategy
+│  │              ├─common
+│  │              │  └─constants
+│  │              ├─domain
+│  │              │  ├─alarm
+│  │              │  ├─diary
+│  │              │  ├─reply
+│  │              │  └─user
+│  │              ├─infrastructure
+│  │              │  └─redis
+│  │              ├─presentation
+│  │              │  └─user
+│  │              │      └─dto
+│  │              │          ├─requset
+│  │              │          └─response
+│  │              └─support
+│  │                  ├─auditing
+│  │                  ├─config
+│  │                  ├─dto
+│  │                  │  └─type
+│  │                  ├─exception
+│  │                  ├─feign
+│  │                  │  ├─apple
+│  │                  │  ├─config
+│  │                  │  ├─dto
+│  │                  │  │  └─response
+│  │                  │  │      ├─apple
+│  │                  │  │      ├─google
+│  │                  │  │      └─kakao
+│  │                  │  ├─google
+│  │                  │  └─kakao
+│  │                  ├─jwt
+│  │                  └─security
+│  │                      ├─auth
+│  │                      ├─config
+│  │                      └─filter
+│  └─resources
+│      ├─static
+│      │  └─apple
+│      └─templates
+└─test
+    └─java
+        ├─com
+        │  └─donkeys_today
+        │      └─server
+        │          ├─application
+        │          │  └─jwt
+        │          └─docs
+        │              └─user
+        └─resources
+            └─org
+                └─springframework
+                    └─restdocs
+                        └─templates
+```
+
+
 ## Architecture ✨
 
 <div align=center>
@@ -34,6 +101,7 @@
 </div>
 
 <br>
+
 
 ## ERD ✨
 
