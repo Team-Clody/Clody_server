@@ -10,7 +10,6 @@ import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
 import jakarta.annotation.PostConstruct;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +36,6 @@ public class UserAuthenticator {
 
   public User signIn(String authToken, Platform platform) {
     return provider.get(platform).signIn(platform, authToken);
-  }
-
-  public void setUserAlarm(User user, boolean agreement, LocalTime localTime) {
-    if (agreement) {
-      user.updateUserAlarmAgreement(true);
-      //TODO 해당 부분은 와이어프레임에 따라서, 온보딩 과정에서 알람을 설정할지, 아니면 따로 설정할 지 정해지는 것 보고 구현
-    }
   }
 
   public Token issueToken(Long id) {

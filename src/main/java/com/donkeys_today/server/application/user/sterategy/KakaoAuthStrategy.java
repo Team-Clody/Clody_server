@@ -2,7 +2,7 @@ package com.donkeys_today.server.application.user.sterategy;
 
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;

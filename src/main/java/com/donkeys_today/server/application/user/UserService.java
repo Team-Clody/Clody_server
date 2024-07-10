@@ -1,8 +1,9 @@
 package com.donkeys_today.server.application.user;
 
+import com.donkeys_today.server.application.user.event.UserSignUpEvent;
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
@@ -11,6 +12,7 @@ import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class UserService {
 
   private final RefreshTokenRepository refreshTokenRepository;
   private final JwtProvider jwtProvider;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   @Transactional
   public UserSignUpResponse signUp(final String authorizationCode,
@@ -39,6 +42,8 @@ public class UserService {
     userAuthenticator.setUserAlarm(savedUser,request.alarmAgreement(),request.alarmTime());
     //토큰 생성하고 redis에 저장.
     Token token = userAuthenticator.issueToken(savedUser.getId());
+
+    applicationEventPublisher.publishEvent(new UserSignUpEvent(this,savedUser));
     return UserSignUpResponse.of(savedUser.getId(), token.accessToken(),token.refreshToken());
   }
 
@@ -49,6 +54,10 @@ public class UserService {
     User foundUser = userAuthenticator.signIn(authorizationCode,platform);
     Token token = userAuthenticator.issueToken(foundUser.getId());
     return UserSignInResponse.of(foundUser.getId(), token.accessToken(),token.refreshToken());
+  }
+
+  public User findUserById(final Long userId){
+    return userRetriever.findUserById(userId);
   }
 
   private Platform getPlatformFromRequestString(String request) {
