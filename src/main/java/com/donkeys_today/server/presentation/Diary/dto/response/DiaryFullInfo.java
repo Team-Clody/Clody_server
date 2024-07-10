@@ -1,4 +1,4 @@
-package com.donkeys_today.server.presentation.Diary.dto;
+package com.donkeys_today.server.presentation.Diary.dto.response;
 
 import com.donkeys_today.server.domain.diary.ReplyStatus;
 import java.time.LocalDate;
