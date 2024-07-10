@@ -3,6 +3,7 @@ package com.donkeys_today.server.presentation.Diary;
 import com.donkeys_today.server.application.diary.DiaryService;
 import com.donkeys_today.server.presentation.Diary.dto.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.Diary.dto.DiaryListResponse;
+import com.donkeys_today.server.presentation.Diary.dto.DiaryResponse;
 import com.donkeys_today.server.presentation.api.DiaryController;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
@@ -33,7 +34,17 @@ public class DiaryControllerImpl implements DiaryController {
     @Override
     public ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(@RequestParam final int year,
                                                                                @RequestParam final int month) {
+
         final DiaryCalenderResponse response = diaryService.getDiaryCalender(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
+
+    @GetMapping("/diary")
+    @Override
+    public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int day) {
+
+        final DiaryResponse response = diaryService.getDiary(year, month, day);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+    }
+    
 }

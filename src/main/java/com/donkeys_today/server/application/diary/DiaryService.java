@@ -9,6 +9,7 @@ import com.donkeys_today.server.presentation.Diary.dto.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.Diary.dto.DiaryContent;
 import com.donkeys_today.server.presentation.Diary.dto.DiaryFullInfo;
 import com.donkeys_today.server.presentation.Diary.dto.DiaryListResponse;
+import com.donkeys_today.server.presentation.Diary.dto.DiaryResponse;
 import com.donkeys_today.server.presentation.Diary.dto.DiarySimpleInfo;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,11 +32,9 @@ public class DiaryService {
     private final ReplyRepository replyRepository;
 
     public DiaryListResponse getDiaryList(int year, int month) {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        Long userId = Long.valueOf(authentication.getName());
-
-        Long userId = 3L;
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Long userId = Long.valueOf(authentication.getName());
         List<Diary> diaries = diaryRepository.findContentsByUserIdAndYearAndMonth(userId, year, month);
         List<Reply> replies = replyRepository.findRepliesByUserIdAndYearAndMonth(userId, year, month);
 
@@ -66,15 +68,13 @@ public class DiaryService {
 
         });
         diaryData.sort(Comparator.comparing(DiaryFullInfo::date));
-
         return DiaryListResponse.of(totalMonthlyCount.get(), diaryData);
     }
 
     public DiaryCalenderResponse getDiaryCalender(int year, int month) {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        Long userId = Long.valueOf(authentication.getName());
-        Long userId = 3L;
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Long userId = Long.valueOf(authentication.getName());
         List<Diary> diaries = diaryRepository.findContentsByUserIdAndYearAndMonth(userId, year, month);
         List<Reply> replies = replyRepository.findRepliesByUserIdAndYearAndMonth(userId, year, month);
 
@@ -88,7 +88,6 @@ public class DiaryService {
         List<DiarySimpleInfo> diaryData = new ArrayList<>();
         for (int i = 0; i < daysInMonth; i++) {
             diaryData.add(DiarySimpleInfo.of(0, ReplyStatus.UNREADY)); // 빈 요소 추가
-
         }
         diariesByDate.forEach((k, v) -> {
             ReplyStatus replyStatus;
@@ -106,9 +105,18 @@ public class DiaryService {
             int dayOfMonth = k.getDayOfMonth();
             DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(v.size(), replyStatus);
             diaryData.set(dayOfMonth - 1, diarySimpleInfo);
-
         });
-
         return DiaryCalenderResponse.of(totalMonthlyCount.get(), diaryData);
+    }
+
+    public DiaryResponse getDiary(int year, int month, int day) {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Long userId = Long.valueOf(authentication.getName());
+        List<DiaryContent> diaries = diaryRepository.findContentsByUserIdAndYearAndMonthAndDay(
+                        userId, year, month, day).stream().map(diary -> new DiaryContent(diary.getContent()))
+                .collect(Collectors.toList());
+        return DiaryResponse.of(diaries);
     }
 }

@@ -2,6 +2,7 @@ package com.donkeys_today.server.presentation.api;
 
 import com.donkeys_today.server.presentation.Diary.dto.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.Diary.dto.DiaryListResponse;
+import com.donkeys_today.server.presentation.Diary.dto.DiaryResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,15 @@ public interface DiaryController {
     ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month
+
+    );
+
+    @Operation(summary = "일단위 일기 조회 ", description = "QueryString 을 이용해 일단위 일기 조회를 합니다..")
+    @GetMapping("/dairy")
+    ResponseEntity<ApiResponse<DiaryResponse>> getDiary(
+            @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
+            @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
+            @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int day
 
     );
 
