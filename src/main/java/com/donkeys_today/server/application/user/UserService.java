@@ -38,8 +38,6 @@ public class UserService {
     Platform platform = getPlatformFromRequestString(request.platform());
     User newUser= userAuthenticator.signUp(authorizationCode, platform);
     User savedUser = userRepository.save(newUser);
-    //알람 설정했을 경우, 알람 설정 (이벤트 분리)
-    userAuthenticator.setUserAlarm(savedUser,request.alarmAgreement(),request.alarmTime());
     //토큰 생성하고 redis에 저장.
     Token token = userAuthenticator.issueToken(savedUser.getId());
 
