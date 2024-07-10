@@ -4,9 +4,9 @@ import java.util.List;
 
 public record DiaryListResponse(
         int totalMonthlyCount,
-        List<DiaryInfo> diaries
+        List<DiaryFullInfo> diaries
 ) {
-    public static DiaryListResponse of(int totalMonthlyCount, List<DiaryInfo> diaryInfo) {
+    public static DiaryListResponse of(int totalMonthlyCount, List<DiaryFullInfo> diaryInfo) {
         return new DiaryListResponse(totalMonthlyCount, diaryInfo);
     }
 }
