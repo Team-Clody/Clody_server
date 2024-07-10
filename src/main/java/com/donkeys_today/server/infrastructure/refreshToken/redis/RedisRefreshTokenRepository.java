@@ -1,4 +1,4 @@
-package com.donkeys_today.server.infrastructure.redis;
+package com.donkeys_today.server.infrastructure.refreshToken.redis;
 
 import com.donkeys_today.server.support.jwt.JwtConstants;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
