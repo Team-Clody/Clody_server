@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +25,6 @@ public class Alarm {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
-    @Column(name = "time")
-    private LocalDateTime time;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
