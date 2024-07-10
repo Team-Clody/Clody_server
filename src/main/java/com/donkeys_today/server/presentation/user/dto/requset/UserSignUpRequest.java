@@ -6,7 +6,9 @@ import java.time.LocalTime;
 public record UserSignUpRequest(
     @Schema(description = "로그인 플랫폼", example = "apple/kakao")
     String platform,
-    boolean alarmAgreement,
-    LocalTime alarmTime
+    String email,
+    String name,
+    @Schema(description = "애플 로그인", example = "ey23asdf.asdasdd.asdasd")
+    String id_token
 ) {
 }

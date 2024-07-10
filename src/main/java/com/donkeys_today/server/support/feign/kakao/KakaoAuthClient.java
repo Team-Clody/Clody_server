@@ -1,6 +1,6 @@
 package com.donkeys_today.server.support.feign.kakao;
 
-import com.donkeys_today.server.support.feign.dto.response.KakaoTokenResponse;
+import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
