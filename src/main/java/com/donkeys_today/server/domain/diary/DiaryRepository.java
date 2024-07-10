@@ -12,4 +12,9 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "FROM Diary d WHERE d.user.id = :userId AND YEAR(d.createdAt) = :year AND MONTH(d.createdAt) = :month")
     List<Diary> findContentsByUserIdAndYearAndMonth(@Param("userId") Long userId, @Param("year") int year,
                                                     @Param("month") int month);
+
+    @Query("SELECT d " +
+            "FROM Diary d WHERE d.user.id = :userId AND YEAR(d.createdAt) = :year AND MONTH(d.createdAt) = :month AND DAY(d.createdAt) = :day")
+    List<Diary> findContentsByUserIdAndYearAndMonthAndDay(@Param("userId") Long userId, @Param("year") int year,
+                                                          @Param("month") int month, @Param("day") int day);
 }
