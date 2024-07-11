@@ -1,10 +1,8 @@
 package com.donkeys_today.server.application.diary;
 
 import com.donkeys_today.server.domain.diary.Diary;
-import com.donkeys_today.server.domain.diary.DiaryRepository;
 import com.donkeys_today.server.domain.diary.ReplyStatus;
 import com.donkeys_today.server.domain.reply.Reply;
-import com.donkeys_today.server.domain.reply.ReplyRepository;
 import com.donkeys_today.server.presentation.Diary.dto.response.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.Diary.dto.response.DiaryContent;
 import com.donkeys_today.server.presentation.Diary.dto.response.DiaryFullInfo;
@@ -12,13 +10,11 @@ import com.donkeys_today.server.presentation.Diary.dto.response.DiaryListRespons
 import com.donkeys_today.server.presentation.Diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.Diary.dto.response.DiarySimpleInfo;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,29 +22,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DiaryService {
 
-    private final DiaryRepository diaryRepository;
-    private final ReplyRepository replyRepository;
+    private final DiaryReplyUtil diaryReplyUtil;
 
     public DiaryListResponse getDiaryList(int year, int month) {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        Long userId = Long.valueOf(authentication.getName());
-        Long userId = 2L;
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = start.plusMonths(1);
-        List<Diary> diaries = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
-        List<Reply> replies = replyRepository.findByUserIdAndCreatedDateBetween(userId, start.toLocalDate(),
-                end.toLocalDate());
 
-        Map<LocalDate, Reply> repliesByDate = replies.stream()
-                .collect(Collectors.toMap(Reply::getCreatedDate, reply -> reply));
-        Map<LocalDate, List<Diary>> diariesByDate = diaries.stream()
-                .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
+        Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year, month);
+        Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(getUserId(), year, month);
 
         AtomicInteger totalMonthlyCount = new AtomicInteger();
-
         List<DiaryFullInfo> diaryData = new ArrayList<>();
-
         diariesByDate.forEach((k, v) -> {
             ReplyStatus replyStatus;
             if (repliesByDate.containsKey(k)) {
@@ -74,20 +56,9 @@ public class DiaryService {
     }
 
     public DiaryCalenderResponse getDiaryCalender(int year, int month) {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        Long userId = Long.valueOf(authentication.getName());
-        Long userId = 2L;
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = start.plusMonths(1);
-        List<Diary> diaries = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
-        List<Reply> replies = replyRepository.findByUserIdAndCreatedDateBetween(userId, start.toLocalDate(),
-                end.toLocalDate());
 
-        Map<LocalDate, Reply> repliesByDate = replies.stream()
-                .collect(Collectors.toMap(Reply::getCreatedDate, reply -> reply));
-        Map<LocalDate, List<Diary>> diariesByDate = diaries.stream()
-                .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
+        Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year, month);
+        Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(getUserId(), year, month);
 
         int daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
         AtomicInteger totalMonthlyCount = new AtomicInteger();
@@ -117,16 +88,16 @@ public class DiaryService {
 
     public DiaryResponse getDiary(int year, int month, int day) {
 
+        List<DiaryContent> diaries = diaryReplyUtil.getDiaryByDate(getUserId(), year, month, day);
+        return DiaryResponse.of(diaries);
+    }
+
+    private Long getUserId() {
 //        SecurityContext context = SecurityContextHolder.getContext();
 //        Authentication authentication = context.getAuthentication();
 //        Long userId = Long.valueOf(authentication.getName());
-        Long userId = 2L;
-        LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
-        LocalDateTime end = start.plusDays(1);
-        List<DiaryContent> diaries = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end).stream()
-                .map(diary -> new DiaryContent(diary.getContent()))
-                .collect(Collectors.toList());
+//        return userId;
+        return 1L;
 
-        return DiaryResponse.of(diaries);
     }
 }
