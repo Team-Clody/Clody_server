@@ -1,5 +1,7 @@
 package com.donkeys_today.server.support.jwt;
 
+import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
+
 public interface JwtProvider {
 
     String issueAccessToken(Long userId);
@@ -15,4 +17,6 @@ public interface JwtProvider {
     void validateRefreshToken(String refreshToken);
 
     boolean equalsRefreshToken(String refreshToken, String savedRefreshToken);
+
+    TokenReissueResponse getTokenReissueResponse(String refreshTokenWithBearer);
 }
