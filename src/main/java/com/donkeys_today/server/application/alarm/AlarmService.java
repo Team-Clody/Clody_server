@@ -153,4 +153,11 @@ public class AlarmService {
   public List<Alarm> findAlarmsByCurrentTime(LocalTime currentTime) {
     return alarmJpaRepository.findAllByTime(currentTime);
   }
+
+  public AlarmResponse getUserAlarm() {
+    User user = userService.findUserById(JwtUtil.getLoginMemberId());
+    Alarm alarm = findAlarmByUser(user);
+    return AlarmResponse.of(alarm.getFcmToken(), alarm.getTime().toString(), alarm.isDiaryAlarm(),
+        alarm.isReplyAlarm());
+  }
 }
