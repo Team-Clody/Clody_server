@@ -25,23 +25,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserControllerImpl implements UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @PostMapping("/auth/signup")
-    public ResponseEntity<ApiResponse<?>> signUp(
-            @RequestHeader(Constants.AUTHORIZATION) final String authorization_code,
-            @RequestBody final UserSignUpRequest userSignUpRequest) {
-        final UserSignUpResponse response = userService.signUp(authorization_code, userSignUpRequest);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
-    }
+  @PostMapping("/auth/signup")
+  public ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(
+      @RequestHeader(Constants.AUTHORIZATION) final String authorization_code,
+      @RequestBody final UserSignUpRequest userSignUpRequest) {
+    System.out.println(authorization_code);
+    final UserSignUpResponse response = userService.signUp(authorization_code, userSignUpRequest);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
+  }
 
-    @ResponseBody
-    @PostMapping("/auth/signin")
-    public ResponseEntity<?> signIn(@RequestHeader(Constants.AUTHORIZATION) String authorization_code,
-                                    @RequestBody final UserSignInRequest userSignInRequest) {
-        final UserSignInResponse response = userService.signIn(authorization_code, userSignInRequest);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+  @PostMapping("/auth/signin")
+  public ResponseEntity<ApiResponse<UserSignInResponse>> signIn(
+      @RequestHeader(Constants.AUTHORIZATION) String authorization_code,
+      @RequestBody final UserSignInRequest userSignInRequest) {
+    final UserSignInResponse response = userService.signIn(authorization_code, userSignInRequest);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 }

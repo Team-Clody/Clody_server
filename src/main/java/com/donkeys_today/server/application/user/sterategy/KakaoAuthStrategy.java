@@ -2,14 +2,14 @@ package com.donkeys_today.server.application.user.sterategy;
 
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;
-import com.donkeys_today.server.support.feign.dto.response.KakaoTokenResponse;
-import com.donkeys_today.server.support.feign.dto.response.KakaoUserInfoResponse;
+import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoTokenResponse;
+import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoUserInfoResponse;
 import com.donkeys_today.server.support.feign.kakao.KakaoAuthClient;
 import com.donkeys_today.server.support.feign.kakao.KakaoUserInfoClient;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
 
     private User findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
-                () -> new NotFoundException(ErrorType.NOTFOUND_USER_ERROR)
+                () -> new NotFoundException(ErrorType.USER_NOT_FOUND)
         );
     }
 
