@@ -1,8 +1,8 @@
 package com.donkeys_today.server.application.user;
 
-import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
@@ -49,7 +49,8 @@ public class UserService {
         return UserSignInResponse.of(foundUser.getId(), token.accessToken(), token.refreshToken());
     }
 
-    private Platform getPlatformFromRequestString(String request) {
-        return Platform.fromString(request);
+    public TokenReissueResponse reissueAccessToken(String refreshTokenWithBearer) {
+        return jwtProvider.getTokenReissueResponse(refreshTokenWithBearer);
+
     }
 }
