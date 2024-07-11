@@ -31,12 +31,12 @@ public class DiaryService {
 
         AtomicInteger totalMonthlyCount = new AtomicInteger();
         List<DiaryFullInfo> diaryData = new ArrayList<>();
-        diariesByDate.forEach((k, v) -> {
+        diariesByDate.forEach((date, dairies) -> {
             ReplyStatus replyStatus;
-            if (repliesByDate.containsKey(k)) {
-                Reply reply = repliesByDate.get(k);
-                if (reply.getIs_read()) {
-                    totalMonthlyCount.addAndGet(1);
+            if (isReplyReady(date, repliesByDate)) {
+                Reply reply = getReply(date, repliesByDate);
+                if (isRead(reply)) {
+                    plusCount(totalMonthlyCount);
                     replyStatus = ReplyStatus.READY_READ;
                 } else { // 준비됐으나 안읽음
                     replyStatus = ReplyStatus.READY_NOT_READ;
@@ -44,11 +44,7 @@ public class DiaryService {
             } else {
                 replyStatus = ReplyStatus.UNREADY;
             }
-
-            diaryData.add(
-                    DiaryFullInfo.of(v.size(), replyStatus, k,
-                            v.stream().map(diary -> new DiaryContent(diary.getContent()))
-                                    .toList()));
+            diaryData.add(getDiaryFullInfo(date, dairies, replyStatus));
 
         });
         diaryData.sort(Comparator.comparing(DiaryFullInfo::date));
@@ -66,12 +62,13 @@ public class DiaryService {
         for (int i = 0; i < daysInMonth; i++) {
             diaryData.add(DiarySimpleInfo.of(0, ReplyStatus.UNREADY)); // 빈 요소 추가
         }
-        diariesByDate.forEach((k, v) -> {
+
+        diariesByDate.forEach((date, diaries) -> {
             ReplyStatus replyStatus;
-            if (repliesByDate.containsKey(k)) {
-                Reply reply = repliesByDate.get(k);
-                if (reply.getIs_read()) {
-                    totalMonthlyCount.addAndGet(1);
+            if (isReplyReady(date, repliesByDate)) {
+                Reply reply = getReply(date, repliesByDate);
+                if (isRead(reply)) {
+                    plusCount(totalMonthlyCount);
                     replyStatus = ReplyStatus.READY_READ;
                 } else { // 준비됐으나 안읽음
                     replyStatus = ReplyStatus.READY_NOT_READ;
@@ -79,11 +76,40 @@ public class DiaryService {
             } else {
                 replyStatus = ReplyStatus.UNREADY;
             }
-            int dayOfMonth = k.getDayOfMonth();
-            DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(v.size(), replyStatus);
-            diaryData.set(dayOfMonth - 1, diarySimpleInfo);
+
+            int day = date.getDayOfMonth();
+            setDiarySimpleInfo(day, diaries, replyStatus, diaryData);
         });
         return DiaryCalenderResponse.of(totalMonthlyCount.get(), diaryData);
+    }
+
+    private static DiaryFullInfo getDiaryFullInfo(LocalDate date, List<Diary> dairies, ReplyStatus replyStatus) {
+        return DiaryFullInfo.of(dairies.size(), replyStatus, date,
+                dairies.stream().map(diary -> new DiaryContent(diary.getContent()))
+                        .toList());
+    }
+
+    private static void plusCount(AtomicInteger totalMonthlyCount) {
+        totalMonthlyCount.addAndGet(1);
+    }
+
+    private static Boolean isRead(Reply reply) {
+        return reply.getIs_read();
+    }
+
+    private static Reply getReply(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
+        return repliesByDate.get(date);
+    }
+
+    private static boolean isReplyReady(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
+        return repliesByDate.containsKey(date);
+    }
+
+    private static void setDiarySimpleInfo(int day, List<Diary> diaries, ReplyStatus replyStatus,
+                                           List<DiarySimpleInfo> diaryData) {
+
+        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(diaries.size(), replyStatus);
+        diaryData.set(day - 1, diarySimpleInfo);
     }
 
     public DiaryResponse getDiary(int year, int month, int day) {
@@ -97,7 +123,7 @@ public class DiaryService {
 //        Authentication authentication = context.getAuthentication();
 //        Long userId = Long.valueOf(authentication.getName());
 //        return userId;
-        return 1L;
+        return 2L;
 
     }
 }
