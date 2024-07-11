@@ -51,7 +51,8 @@ public class JwtProviderImpl implements JwtProvider {
     public String issueRefreshToken(Long userId) {
         String refreshToken = generateToken(JwtConstants.REFRESH_TOKEN, userId,
                 JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME);
-        refreshTokenRepository.saveRefreshToken(userId, refreshToken, JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME);
+        refreshTokenRepository.saveRefreshToken(userId, refreshToken,
+                JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME);
         return refreshToken;
     }
 
@@ -81,17 +82,18 @@ public class JwtProviderImpl implements JwtProvider {
         validateToken(refreshToken);
         final Long id = getUserIdFromJwtSubject(refreshToken);
         final String key = REFRESH_TOKEN_PREFIX + id;
-
         if (!refreshTokenRepository.hasRefreshToken(key)) {
             throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
         }
+        if (!equalsRefreshToken(refreshToken, refreshTokenRepository.getRefreshToken(key))) {
+            throw new UnauthorizedException(MISMATCH_REFRESH_TOKEN);
+        }
+
     }
 
     @Override
-    public void equalsRefreshToken(String refreshToken, String savedRefreshToken) {
-        if (!refreshToken.equals(savedRefreshToken)) {
-            throw new UnauthorizedException(MISMATCH_REFRESH_TOKEN);
-        }
+    public boolean equalsRefreshToken(String refreshToken, String savedRefreshToken) {
+        return refreshToken.equals(savedRefreshToken);
     }
 
     public JwtValidationType validateToken(String token) {
