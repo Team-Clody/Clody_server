@@ -1,8 +1,8 @@
 package com.donkeys_today.server.presentation.api;
 
-import com.donkeys_today.server.presentation.Diary.dto.DiaryCalenderResponse;
-import com.donkeys_today.server.presentation.Diary.dto.DiaryListResponse;
-import com.donkeys_today.server.presentation.Diary.dto.DiaryResponse;
+import com.donkeys_today.server.presentation.Diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.Diary.dto.response.DiaryListResponse;
+import com.donkeys_today.server.presentation.Diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

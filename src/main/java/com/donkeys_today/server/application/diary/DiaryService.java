@@ -12,6 +12,7 @@ import com.donkeys_today.server.presentation.Diary.dto.response.DiaryListRespons
 import com.donkeys_today.server.presentation.Diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.Diary.dto.response.DiarySimpleInfo;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,9 +20,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,11 +30,15 @@ public class DiaryService {
     private final ReplyRepository replyRepository;
 
     public DiaryListResponse getDiaryList(int year, int month) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        Long userId = Long.valueOf(authentication.getName());
-        List<Diary> diaries = diaryRepository.findContentsByUserIdAndYearAndMonth(userId, year, month);
-        List<Reply> replies = replyRepository.findRepliesByUserIdAndYearAndMonth(userId, year, month);
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        Authentication authentication = context.getAuthentication();
+//        Long userId = Long.valueOf(authentication.getName());
+        Long userId = 2L;
+        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime end = start.plusMonths(1);
+        List<Diary> diaries = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+        List<Reply> replies = replyRepository.findByUserIdAndCreatedDateBetween(userId, start.toLocalDate(),
+                end.toLocalDate());
 
         Map<LocalDate, Reply> repliesByDate = replies.stream()
                 .collect(Collectors.toMap(Reply::getCreatedDate, reply -> reply));
@@ -72,11 +74,15 @@ public class DiaryService {
     }
 
     public DiaryCalenderResponse getDiaryCalender(int year, int month) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        Long userId = Long.valueOf(authentication.getName());
-        List<Diary> diaries = diaryRepository.findContentsByUserIdAndYearAndMonth(userId, year, month);
-        List<Reply> replies = replyRepository.findRepliesByUserIdAndYearAndMonth(userId, year, month);
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        Authentication authentication = context.getAuthentication();
+//        Long userId = Long.valueOf(authentication.getName());
+        Long userId = 2L;
+        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime end = start.plusMonths(1);
+        List<Diary> diaries = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end);
+        List<Reply> replies = replyRepository.findByUserIdAndCreatedDateBetween(userId, start.toLocalDate(),
+                end.toLocalDate());
 
         Map<LocalDate, Reply> repliesByDate = replies.stream()
                 .collect(Collectors.toMap(Reply::getCreatedDate, reply -> reply));
@@ -111,12 +117,16 @@ public class DiaryService {
 
     public DiaryResponse getDiary(int year, int month, int day) {
 
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        Long userId = Long.valueOf(authentication.getName());
-        List<DiaryContent> diaries = diaryRepository.findContentsByUserIdAndYearAndMonthAndDay(
-                        userId, year, month, day).stream().map(diary -> new DiaryContent(diary.getContent()))
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        Authentication authentication = context.getAuthentication();
+//        Long userId = Long.valueOf(authentication.getName());
+        Long userId = 2L;
+        LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
+        LocalDateTime end = start.plusDays(1);
+        List<DiaryContent> diaries = diaryRepository.findByUserIdAndCreatedAtBetween(userId, start, end).stream()
+                .map(diary -> new DiaryContent(diary.getContent()))
                 .collect(Collectors.toList());
+
         return DiaryResponse.of(diaries);
     }
 }

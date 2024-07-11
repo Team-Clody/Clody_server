@@ -1,9 +1,9 @@
 package com.donkeys_today.server.presentation.Diary;
 
 import com.donkeys_today.server.application.diary.DiaryService;
-import com.donkeys_today.server.presentation.Diary.dto.DiaryCalenderResponse;
-import com.donkeys_today.server.presentation.Diary.dto.DiaryListResponse;
-import com.donkeys_today.server.presentation.Diary.dto.DiaryResponse;
+import com.donkeys_today.server.presentation.Diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.Diary.dto.response.DiaryListResponse;
+import com.donkeys_today.server.presentation.Diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.api.DiaryController;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
@@ -46,5 +46,5 @@ public class DiaryControllerImpl implements DiaryController {
         final DiaryResponse response = diaryService.getDiary(year, month, day);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
-    
+
 }
