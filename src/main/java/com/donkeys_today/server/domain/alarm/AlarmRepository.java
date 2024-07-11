@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface AlarmRepository {
 
-  List<Alarm> findByTime(LocalTime time);
+  List<Alarm> findAllByTime(LocalTime time);
 
   Alarm save(Alarm alarm);
 

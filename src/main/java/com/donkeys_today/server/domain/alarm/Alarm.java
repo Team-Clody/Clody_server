@@ -54,6 +54,7 @@ public class Alarm {
             .user(user)
             .isDiaryAlarm(false)
             .isReplyAlarm(false)
+            .time(LocalTime.of(21, 0))
             .build();
     }
 

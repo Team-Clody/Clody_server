@@ -75,17 +75,35 @@ public class AlarmService {
   private final AlarmJpaRepository alarmJpaRepository;
   private final UserService userService;
 
+  private static String extractFcmToken(String key) {
+    if (key != null && key.startsWith(RedisConstants.DIARY_ALARM_PREFIX)) {
+      return key.substring(RedisConstants.DIARY_ALARM_PREFIX.length());
+    } else {
+      throw new IllegalArgumentException("Invalid key format: " + key);
+    }
+  }
+
+  public static LocalTime parseLocalTime(String timeString) {
+    if (timeString == null || timeString.isEmpty()) {
+      return null;
+    }
+    try {
+      return LocalTime.parse(timeString, TIME_FORMATTER);
+    } catch (DateTimeParseException e) {
+      throw new BusinessException(ErrorType.INVALID_TIME_FORMAT);
+    }
+  }
+
   @Transactional
   public AlarmResponse updateAlarm(AlarmRequest request) {
 
-    Alarm alarm = findAlarmbyUser(
+    Alarm alarm = findAlarmByUser(
         userService.findUserById(JwtUtil.getLoginMemberId()));
-
-    if (request.fcmToken() != null) {
-      updateFcmToken(alarm, request.fcmToken());
-    }
     if (request.isDiaryAlarm() != null) {
       updateDiaryAlarmWithTime(alarm, request.isDiaryAlarm());
+    }
+    if (request.fcmToken() != null) {
+      updateFcmToken(alarm, request.fcmToken());
     }
     if (request.isReplyAlarm() != null) {
       updateReplyAlarm(alarm, request.isReplyAlarm());
@@ -109,7 +127,9 @@ public class AlarmService {
   }
 
   public Alarm updateFcmToken(Alarm alarm, String fcmToken) {
-    alarm.updateFcmToken(fcmToken);
+    if (fcmToken != null) {
+      alarm.updateFcmToken(fcmToken);
+    }
     return alarm;
   }
 
@@ -124,32 +144,13 @@ public class AlarmService {
     return alarm;
   }
 
-  public Alarm findAlarmbyUser(User user) {
+  public Alarm findAlarmByUser(User user) {
     return alarmJpaRepository.findByUser(user).orElseThrow(
         () -> new NotFoundException(ErrorType.USER_NOT_FOUND)
     );
   }
 
-  private static String extractFcmToken(String key) {
-    if (key != null && key.startsWith(RedisConstants.DIARY_ALARM_PREFIX)) {
-      return key.substring(RedisConstants.DIARY_ALARM_PREFIX.length());
-    } else {
-      throw new IllegalArgumentException("Invalid key format: " + key);
-    }
-  }
-
-  public static LocalTime parseLocalTime(String timeString) {
-    if (timeString == null || timeString.isEmpty()) {
-      return null;
-    }
-    try {
-      return LocalTime.parse(timeString, TIME_FORMATTER);
-    } catch (DateTimeParseException e) {
-      throw new BusinessException(ErrorType.INVALID_TIME_FORMAT);
-    }
-  }
-
   public List<Alarm> findAlarmsByCurrentTime(LocalTime currentTime) {
-    return alarmJpaRepository.findByTime(currentTime);
+    return alarmJpaRepository.findAllByTime(currentTime);
   }
 }
