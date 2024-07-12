@@ -1,9 +1,16 @@
 package com.donkeys_today.server.domain.alarm;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.donkeys_today.server.domain.user.User;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface AlarmRepository extends JpaRepository<Alarm, Long> {
+public interface AlarmRepository {
+
+  List<Alarm> findAllByTime(LocalTime time);
+
+  Alarm save(Alarm alarm);
+
+  Optional<Alarm> findByUser(User user);
 
 }

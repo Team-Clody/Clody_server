@@ -2,7 +2,7 @@ package com.donkeys_today.server.application.user.sterategy;
 
 import com.donkeys_today.server.domain.user.Platform;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.auth.dto.request.UserSignInRequest;
 import com.donkeys_today.server.presentation.auth.dto.request.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
@@ -58,7 +58,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
 
     private User findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
-                () -> new NotFoundException(ErrorType.NOTFOUND_USER_ERROR)
+                () -> new NotFoundException(ErrorType.USER_NOT_FOUND)
         );
     }
 
