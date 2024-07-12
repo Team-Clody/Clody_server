@@ -2,11 +2,11 @@ package com.donkeys_today.server.application.user;
 
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.domain.user.UserRepository;
+import com.donkeys_today.server.presentation.auth.dto.request.UserSignInRequest;
+import com.donkeys_today.server.presentation.auth.dto.request.UserSignUpRequest;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
-import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
-import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
-import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
-import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
+import com.donkeys_today.server.presentation.auth.dto.response.UserSignInResponse;
+import com.donkeys_today.server.presentation.auth.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
