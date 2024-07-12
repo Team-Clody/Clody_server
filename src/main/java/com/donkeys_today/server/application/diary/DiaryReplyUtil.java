@@ -1,9 +1,9 @@
 package com.donkeys_today.server.application.diary;
 
 import com.donkeys_today.server.domain.diary.Diary;
-import com.donkeys_today.server.domain.diary.DiaryRepository;
 import com.donkeys_today.server.domain.reply.Reply;
-import com.donkeys_today.server.domain.reply.ReplyRepository;
+import com.donkeys_today.server.infrastructure.diary.DiaryRepository;
+import com.donkeys_today.server.infrastructure.reply.ReplyRepository;
 import com.donkeys_today.server.presentation.Diary.dto.response.DiaryContent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
