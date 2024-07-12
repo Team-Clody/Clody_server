@@ -35,14 +35,18 @@ public class User {
 
     private String nickName;
 
-  private boolean is_deleted;
+    private boolean is_deleted;
 
-  @Builder
-  public User(String platformID, Platform platform, String email, String nickName, boolean is_deleted) {
-    this.platformID = platformID;
-    this.platform = platform;
-    this.email = email;
-    this.nickName = nickName;
-    this.is_deleted = is_deleted;
-  }
+    @Builder
+    public User(String platformID, Platform platform, String email, String nickName, boolean is_deleted) {
+        this.platformID = platformID;
+        this.platform = platform;
+        this.email = email;
+        this.nickName = nickName;
+        this.is_deleted = is_deleted;
+    }
+
+    public void updateUserNickname(String nickName) {
+        this.nickName = nickName;
+    }
 }
