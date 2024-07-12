@@ -1,5 +1,6 @@
 package com.donkeys_today.server.infrastructure.reply;
 
+import com.donkeys_today.server.domain.reply.Reply;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
