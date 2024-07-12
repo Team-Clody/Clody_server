@@ -35,7 +35,7 @@ public interface DiaryController {
     );
 
     @Operation(summary = "일단위 일기 조회 ", description = "QueryString 을 이용해 일단위 일기 조회를 합니다..")
-    @GetMapping("/dairy")
+    @GetMapping("/diary")
     ResponseEntity<ApiResponse<DiaryResponse>> getDiary(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
