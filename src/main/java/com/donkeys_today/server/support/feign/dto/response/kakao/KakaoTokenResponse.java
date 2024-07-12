@@ -1,4 +1,4 @@
-package com.donkeys_today.server.support.feign.dto.response;
+package com.donkeys_today.server.support.feign.dto.response.kakao;
 
 public record KakaoTokenResponse(
         String access_token,
