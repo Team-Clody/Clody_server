@@ -7,6 +7,9 @@ import com.donkeys_today.server.presentation.auth.dto.request.UserSignUpRequest;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
 import com.donkeys_today.server.presentation.auth.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.auth.dto.response.UserSignUpResponse;
+import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
+import com.donkeys_today.server.support.exception.NotFoundException;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
@@ -53,4 +56,13 @@ public class UserService {
         return jwtProvider.getTokenReissueResponse(refreshToken);
 
     }
+
+    public UserInfoResponse getUserInfo() {
+
+        Long userId = 2L; // 유저 아이디 넣어주기
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException(ErrorType.NOTFOUND_USER_ERROR));
+        return UserInfoResponse.of(user.getEmail(), user.getNickName(), user.getPlatform().getName());
+    }
+
 }
