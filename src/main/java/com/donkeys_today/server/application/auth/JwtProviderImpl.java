@@ -9,6 +9,7 @@ import static com.donkeys_today.server.support.dto.type.ErrorType.UNSUPPORTED_TO
 import static com.donkeys_today.server.support.dto.type.ErrorType.WRONG_SIGNATURE_TOKEN;
 import static com.donkeys_today.server.support.jwt.JwtConstants.REFRESH_TOKEN_PREFIX;
 
+import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtConstants;
 import com.donkeys_today.server.support.jwt.JwtProvider;
@@ -51,7 +52,8 @@ public class JwtProviderImpl implements JwtProvider {
     public String issueRefreshToken(Long userId) {
         String refreshToken = generateToken(JwtConstants.REFRESH_TOKEN, userId,
                 JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME);
-        refreshTokenRepository.saveRefreshToken(userId, refreshToken, JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME);
+        refreshTokenRepository.saveRefreshToken(userId, refreshToken,
+                JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME);
         return refreshToken;
     }
 
@@ -81,17 +83,18 @@ public class JwtProviderImpl implements JwtProvider {
         validateToken(refreshToken);
         final Long id = getUserIdFromJwtSubject(refreshToken);
         final String key = REFRESH_TOKEN_PREFIX + id;
-
         if (!refreshTokenRepository.hasRefreshToken(key)) {
             throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
         }
+        if (!equalsRefreshToken(refreshToken, refreshTokenRepository.getRefreshToken(key))) {
+            throw new UnauthorizedException(MISMATCH_REFRESH_TOKEN);
+        }
+
     }
 
     @Override
-    public void equalsRefreshToken(String refreshToken, String savedRefreshToken) {
-        if (!refreshToken.equals(savedRefreshToken)) {
-            throw new UnauthorizedException(MISMATCH_REFRESH_TOKEN);
-        }
+    public boolean equalsRefreshToken(String refreshToken, String savedRefreshToken) {
+        return refreshToken.equals(savedRefreshToken);
     }
 
     public JwtValidationType validateToken(String token) {
@@ -129,5 +132,13 @@ public class JwtProviderImpl implements JwtProvider {
     private JwtParser getJwtParser() {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey).build();
+    }
+
+    public TokenReissueResponse getTokenReissueResponse(String refreshToken) {
+
+        validateRefreshToken(refreshToken);
+        Long userId = getUserIdFromJwtSubject(refreshToken);
+        return TokenReissueResponse.of(issueAccessToken(userId),
+                issueRefreshToken(userId));
     }
 }
