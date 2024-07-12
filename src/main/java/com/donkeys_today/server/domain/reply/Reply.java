@@ -32,7 +32,7 @@ public class Reply extends BaseEntity {
     private Boolean is_read;
 
     @Column(name = "createdDate")
-    private LocalDateTime createdDate;
+    private LocalDateTime diaryCreatedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
