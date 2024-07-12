@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,14 +22,31 @@ import lombok.NoArgsConstructor;
 @Table(name = "diaries")
 public class Diary extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    @Column(name = "content")
-    private String content;
+  @Column(name = "content")
+  private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  private boolean isDeleted;
+
+  @Builder
+  public Diary(User user, String content, boolean isDeleted) {
+    this.user = user;
+    this.content = content;
+    this.isDeleted = isDeleted;
+  }
+
+  public static Diary createDiary(User user, String content) {
+    return Diary.builder()
+        .user(user)
+        .content(content)
+        .isDeleted(false)
+        .build();
+  }
 }
