@@ -13,7 +13,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -49,8 +51,8 @@ public interface UserController {
 
     @Operation(summary = "토큰 재발급 ", description = "Refresh토큰으로 access토큰을 재발급 합니다.")
     @GetMapping("/auth/reissue")
-    ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
-            @RequestHeader(Constants.REFRESHTOKEN) @Parameter(name = "refreshToken", description = "리프레쉬토큰", required = true) final String refreshToken
+    ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(HttpServletRequest request,
+                                                              @CookieValue(name = Constants.REFRESHTOKEN) @Parameter(name = "refreshToken", description = "리프레쉬토큰", required = true) final String refreshTokenWithBearer
     );
 
 }

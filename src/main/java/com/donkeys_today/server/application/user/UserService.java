@@ -49,8 +49,8 @@ public class UserService {
         return UserSignInResponse.of(foundUser.getId(), token.accessToken(), token.refreshToken());
     }
 
-    public TokenReissueResponse reissueAccessToken(String refreshTokenWithBearer) {
-        return jwtProvider.getTokenReissueResponse(refreshTokenWithBearer);
+    public TokenReissueResponse reissueAccessToken(String refreshToken) {
+        return jwtProvider.getTokenReissueResponse(refreshToken);
 
     }
 }

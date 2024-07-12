@@ -9,10 +9,7 @@ import static com.donkeys_today.server.support.dto.type.ErrorType.UNSUPPORTED_TO
 import static com.donkeys_today.server.support.dto.type.ErrorType.WRONG_SIGNATURE_TOKEN;
 import static com.donkeys_today.server.support.jwt.JwtConstants.REFRESH_TOKEN_PREFIX;
 
-import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
-import com.donkeys_today.server.support.dto.type.ErrorType;
-import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtConstants;
 import com.donkeys_today.server.support.jwt.JwtProvider;
@@ -31,7 +28,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class JwtProviderImpl implements JwtProvider {
@@ -137,16 +133,12 @@ public class JwtProviderImpl implements JwtProvider {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey).build();
     }
-    
-    public TokenReissueResponse getTokenReissueResponse(String refreshTokenWithBearer) {
 
-        if (StringUtils.hasText(refreshTokenWithBearer) && refreshTokenWithBearer.startsWith(Constants.BEARER)) {
-            String refreshToken = refreshTokenWithBearer.substring(Constants.BEARER.length());
-            validateRefreshToken(refreshToken);
-            Long userId = getUserIdFromJwtSubject(refreshToken);
-            return TokenReissueResponse.of(issueAccessToken(userId),
-                    issueRefreshToken(userId));
-        }
-        throw new BusinessException(ErrorType.INVALID_REFRESH_TOKEN);
+    public TokenReissueResponse getTokenReissueResponse(String refreshToken) {
+
+        validateRefreshToken(refreshToken);
+        Long userId = getUserIdFromJwtSubject(refreshToken);
+        return TokenReissueResponse.of(issueAccessToken(userId),
+                issueRefreshToken(userId));
     }
 }
