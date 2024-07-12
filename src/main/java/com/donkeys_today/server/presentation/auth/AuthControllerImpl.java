@@ -10,7 +10,6 @@ import com.donkeys_today.server.presentation.auth.dto.response.UserSignInRespons
 import com.donkeys_today.server.presentation.auth.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +50,8 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @GetMapping("/auth/reissue")
-    public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(HttpServletRequest request,
-                                                                     @CookieValue(name = Constants.REFRESHTOKEN) final String refreshToken) {
+    public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
+            @CookieValue(name = Constants.REFRESHTOKEN) final String refreshToken) {
         TokenReissueResponse response = userService.reissueAccessToken(refreshToken);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
