@@ -26,8 +26,8 @@ public class DiaryService {
 
     public DiaryListResponse getDiaryList(int year, int month) {
 
-        Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year, month);
-        Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(getUserId(), year, month);
+        Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(userId, year, month);
+        Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(userId, year, month);
 
         AtomicInteger totalMonthlyCount = new AtomicInteger();
         List<DiaryFullInfo> diaryData = new ArrayList<>();
@@ -53,8 +53,8 @@ public class DiaryService {
 
     public DiaryCalenderResponse getDiaryCalender(int year, int month) {
 
-        Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year, month);
-        Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(getUserId(), year, month);
+        Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(userId, year, month);
+        Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(userId, year, month);
 
         int daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
         AtomicInteger totalMonthlyCount = new AtomicInteger();
@@ -114,16 +114,7 @@ public class DiaryService {
 
     public DiaryResponse getDiary(int year, int month, int day) {
 
-        List<DiaryContent> diaries = diaryReplyUtil.getDiaryByDate(getUserId(), year, month, day);
+        List<DiaryContent> diaries = diaryReplyUtil.getDiaryByDate(userId, year, month, day);
         return DiaryResponse.of(diaries);
-    }
-
-    private Long getUserId() {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        Long userId = Long.valueOf(authentication.getName());
-//        return userId;
-        return 2L;
-
     }
 }
