@@ -30,6 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
 
+    for(String uri : WhiteListConstants.FILTER_WHITE_LIST){
+      if(request.getRequestURI().startsWith(uri)){
+        filterChain.doFilter(request, response);
+        return;
+      }
+    }
+
     final String accessToken = getAccessToken(request);
     jwtProvider.validateAccessToken(accessToken);
     doAuthentication(request, jwtProvider.getUserIdFromJwtSubject(accessToken));
@@ -56,11 +63,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     WebAuthenticationDetailsSource webAuthenticationDetailsSource = new WebAuthenticationDetailsSource();
     WebAuthenticationDetails webAuthenticationDetails = webAuthenticationDetailsSource.buildDetails(request);
     authentication.setDetails(webAuthenticationDetails);
-  }
-
-  @Override
-  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException{
-    String requestUri = request.getRequestURI();
-    return WhiteListConstants.FILTER_WHITE_LIST.stream().anyMatch(requestUri::startsWith);
   }
 }

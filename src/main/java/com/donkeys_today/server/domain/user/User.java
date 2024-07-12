@@ -33,26 +33,14 @@ public class User {
 
     private String nickName;
 
-    private boolean alarmAgreement;
+  private boolean is_deleted;
 
-    private boolean replyAgreement;
-
-    private boolean is_deleted;
-
-    @Builder
-    public User(String platformID, Platform platform, String email, String nickName,
-                boolean alarmAgreement, boolean replyAgreement, boolean is_deleted) {
-        this.platformID = platformID;
-        this.platform = platform;
-        this.email = email;
-        this.nickName = nickName;
-        this.alarmAgreement = alarmAgreement;
-        this.replyAgreement = replyAgreement;
-        this.is_deleted = is_deleted;
-    }
-
-    public void updateUserAlarmAgreement(boolean alarmAgreement) {
-        this.alarmAgreement = alarmAgreement;
-    }
-
+  @Builder
+  public User(String platformID, Platform platform, String email, String nickName, boolean is_deleted) {
+    this.platformID = platformID;
+    this.platform = platform;
+    this.email = email;
+    this.nickName = nickName;
+    this.is_deleted = is_deleted;
+  }
 }
