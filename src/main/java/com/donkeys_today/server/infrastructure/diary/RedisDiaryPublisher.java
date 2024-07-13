@@ -1,6 +1,6 @@
 package com.donkeys_today.server.infrastructure.diary;
 
-import com.donkeys_today.server.application.diary.DiaryPublisher;
+import com.donkeys_today.server.domain.diary.DiaryPublisher;
 import com.donkeys_today.server.application.diary.dto.DiaryMessage;
 import com.donkeys_today.server.domain.diary.Diary;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,12 +38,13 @@ public class RedisDiaryPublisher implements DiaryPublisher {
     redisTemplate.opsForValue().set(expiryKey,"", 10, TimeUnit.SECONDS);
   }
 
-  private String serializaeMessageToString(DiaryMessage message)  {
-    try {
-      return mapper.writeValueAsString(message);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
+  @Override
+  public void publishInitialDiaryMessage(DiaryMessage message) {
+    String key = "diaryMessage:"+message.userId();
+    String expiryKey = "diaryMessage_expiry:"+message.userId();
+    String serializedMessage = serializaeMessageToString(message);
+    redisTemplate.opsForValue().set(key,serializedMessage);
+    redisTemplate.opsForValue().set(expiryKey,"", 10, TimeUnit.SECONDS);
   }
 
   @Override
@@ -63,4 +64,11 @@ public class RedisDiaryPublisher implements DiaryPublisher {
     return UUID.randomUUID().toString();
   }
 
+  private String serializaeMessageToString(DiaryMessage message)  {
+    try {
+      return mapper.writeValueAsString(message);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
