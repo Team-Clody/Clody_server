@@ -1,5 +1,6 @@
 package com.donkeys_today.server.support.auditing;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;

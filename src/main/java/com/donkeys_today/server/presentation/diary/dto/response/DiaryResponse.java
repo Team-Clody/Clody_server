@@ -1,15 +1,12 @@
 package com.donkeys_today.server.presentation.diary.dto.response;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public record DiaryResponse(
-    String createdAt
+        List<DiaryContent> diaries
 ) {
-
-  public static DiaryResponse createLocalDateTimeToString(LocalDateTime createdAt) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    return new DiaryResponse(createdAt.format(formatter));
-  }
-
+    public static DiaryResponse of(List<DiaryContent> diaries) {
+        return new DiaryResponse(diaries);
+    }
 }
+

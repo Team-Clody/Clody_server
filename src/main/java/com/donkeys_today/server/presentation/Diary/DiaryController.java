@@ -1,4 +1,4 @@
-package com.donkeys_today.server.presentation.diary.dto;
+package com.donkeys_today.server.presentation.diary;
 
 import com.donkeys_today.server.application.diary.DiaryService;
 import com.donkeys_today.server.common.constants.Constants;

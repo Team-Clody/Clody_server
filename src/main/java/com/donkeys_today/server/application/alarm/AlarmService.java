@@ -98,7 +98,7 @@ public class AlarmService {
   public AlarmResponse updateAlarm(AlarmRequest request) {
 
     Alarm alarm = findAlarmByUser(
-        userService.findUserById(JwtUtil.getLoginMemberId()));
+        userService.getUserById(JwtUtil.getLoginMemberId()));
     if (request.isDiaryAlarm() != null) {
       updateDiaryAlarmWithTime(alarm, request.isDiaryAlarm());
     }
@@ -155,7 +155,7 @@ public class AlarmService {
   }
 
   public AlarmResponse getUserAlarm() {
-    User user = userService.findUserById(JwtUtil.getLoginMemberId());
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
     Alarm alarm = findAlarmByUser(user);
     return AlarmResponse.of(alarm.getFcmToken(), alarm.getTime().toString(), alarm.isDiaryAlarm(),
         alarm.isReplyAlarm());

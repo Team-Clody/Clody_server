@@ -1,9 +1,9 @@
-package com.donkeys_today.server.presentation.Diary;
+package com.donkeys_today.server.presentation.diary;
 
 import com.donkeys_today.server.application.diary.DiaryService;
-import com.donkeys_today.server.presentation.Diary.dto.response.DiaryCalenderResponse;
-import com.donkeys_today.server.presentation.Diary.dto.response.DiaryListResponse;
-import com.donkeys_today.server.presentation.Diary.dto.response.DiaryResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.api.DiaryController;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
