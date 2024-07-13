@@ -68,6 +68,10 @@ dependencies {
 
     //notification
     implementation 'com.google.firebase:firebase-admin:9.3.0'
+
+    //profanityFilter
+    implementation 'io.github.vaneproject:badwordfiltering:1.0.0'
+
 }
 
 tasks.named('test') {
