@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-  boolean existsByUser(User user);
+    boolean existsByUser(User user);
 
-  List<Diary> findDiariesByUserAndCreatedAtBetween(User user, LocalDateTime start, LocalDateTime end);
+    List<Diary> findDiariesByUserAndCreatedAtBetween(User user, LocalDateTime start, LocalDateTime end);
 
 }
