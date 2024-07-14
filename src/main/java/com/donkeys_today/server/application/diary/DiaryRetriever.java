@@ -14,13 +14,21 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DiaryRetriever {
 
-  private final DiaryRepository diaryRepository;
+    private final DiaryRepository diaryRepository;
 
-  public List<Diary> getDiariesByUserAndDateBetween(User user, LocalDateTime currentTime){
-    LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
-    LocalDateTime end = currentTime;
-    return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start,end);
-  }
+    public List<Diary> getDiariesByUserAndDateBetween(User user, LocalDateTime currentTime) {
+        LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+        LocalDateTime end = currentTime;
+        return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
+    }
+
+    public List<Diary> getDiaryByYearAndMonthAndDay(User user, int year, int month, int day) {
+
+        LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
+        LocalDateTime end = start.plusDays(1);
+
+        return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
+    }
 
 
 }
