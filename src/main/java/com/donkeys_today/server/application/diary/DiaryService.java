@@ -18,6 +18,8 @@ import com.donkeys_today.server.presentation.Diary.dto.response.DiaryTimeRespons
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
+import com.donkeys_today.server.support.exception.BusinessException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -183,7 +185,9 @@ public class DiaryService {
     public DiaryTimeResponse getDiaryTime(int year, int month, int day) {
         User user = userService.getUserById(JwtUtil.getLoginMemberId());
         List<Diary> diary = diaryRetriever.getDiaryByYearAndMonthAndDay(user, year, month, day);
-
-        return DiaryTimeResponse.of(diary.get(0).getCreatedAt().toLocalDate());
+        if (diary.isEmpty()) {
+            throw new BusinessException(ErrorType.DIARY_MESSAGE_NOT_FOUND);
+        }
+        return DiaryTimeResponse.of(diary.getFirst().getCreatedAt().toLocalDate());
     }
 }
