@@ -1,4 +1,4 @@
-package com.donkeys_today.server.presentation.Diary.dto.response;
+package com.donkeys_today.server.presentation.diary.dto.response;
 
 
 import com.donkeys_today.server.domain.diary.ReplyStatus;

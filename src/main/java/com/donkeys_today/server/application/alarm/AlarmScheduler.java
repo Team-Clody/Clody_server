@@ -21,23 +21,24 @@ public class AlarmScheduler {
 
   @Scheduled(cron = "0 */1 * * * *")//매 1분마다 실행
   @Async
-  public void checkAndSendAlarms(){
+  public void checkAndSendAlarms() {
 
     LocalTime currentTime = LocalTime.now().withSecond(0).withNano(0);
     List<Alarm> alarmList = alarmService.findAlarmsByCurrentTime(currentTime);
 
     log.info("Executing scheduled task at {}", currentTime);
-    log.info("alarmList Size : {}" , alarmList.size());
+    log.info("alarmList Size : {}", alarmList.size());
 
-    for(Alarm userAlarm : alarmList){
-      if(validateAlarm(userAlarm)){
+    for (Alarm userAlarm : alarmList) {
+      if (validateAlarm(userAlarm)) {
         fcmService.sendDiaryAlarm(userAlarm.getFcmToken(), MessageContent.DIARY_WRITE_REQUEST);
       }
     }
   }
 
   private boolean validateAlarm(Alarm userAlarm) {
-    return userAlarm.isDiaryAlarm() && userAlarm.getFcmToken()!=null && !userAlarm.getFcmToken().isEmpty();
+    return userAlarm.isDiaryAlarm() && userAlarm.getFcmToken() != null && !userAlarm.getFcmToken()
+        .isEmpty();
   }
 
 }

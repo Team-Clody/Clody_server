@@ -39,6 +39,11 @@ public enum ErrorType {
    */
   FAIL_DIARY_ALARM_REGISTER(HttpStatus.INTERNAL_SERVER_ERROR.value(), "알람 설정에 실패했습니다."),
   INVALID_TIME_FORMAT(HttpStatus.BAD_REQUEST.value(), "올바르지 않은 시간 형식입니다."),
+
+  /*
+  ** 일기 관련 오류,
+   */
+  DIARY_MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "일기 데이터가 존재하지 않습니다.")
   ;
   private final int status;
   private final String message;

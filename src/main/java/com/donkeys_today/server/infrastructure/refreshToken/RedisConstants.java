@@ -1,4 +1,4 @@
-package com.donkeys_today.server.infrastructure.refreshToken.redis;
+package com.donkeys_today.server.infrastructure.refreshToken;
 
 public class RedisConstants {
 

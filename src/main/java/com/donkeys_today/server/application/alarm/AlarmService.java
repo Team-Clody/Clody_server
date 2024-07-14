@@ -5,7 +5,7 @@ import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.domain.alarm.Alarm;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.infrastructure.alarm.AlarmJpaRepository;
-import com.donkeys_today.server.infrastructure.refreshToken.redis.RedisConstants;
+import com.donkeys_today.server.infrastructure.refreshToken.RedisConstants;
 import com.donkeys_today.server.presentation.alarm.dto.request.AlarmRequest;
 import com.donkeys_today.server.presentation.alarm.dto.response.AlarmResponse;
 import com.donkeys_today.server.support.dto.type.ErrorType;
@@ -98,7 +98,7 @@ public class AlarmService {
   public AlarmResponse updateAlarm(AlarmRequest request) {
 
     Alarm alarm = findAlarmByUser(
-        userService.findUserById(JwtUtil.getLoginMemberId()));
+        userService.getUserById(JwtUtil.getLoginMemberId()));
     if (request.isDiaryAlarm() != null) {
       updateDiaryAlarmWithTime(alarm, request.isDiaryAlarm());
     }
@@ -155,7 +155,7 @@ public class AlarmService {
   }
 
   public AlarmResponse getUserAlarm() {
-    User user = userService.findUserById(JwtUtil.getLoginMemberId());
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
     Alarm alarm = findAlarmByUser(user);
     return AlarmResponse.of(alarm.getFcmToken(), alarm.getTime().toString(), alarm.isDiaryAlarm(),
         alarm.isReplyAlarm());

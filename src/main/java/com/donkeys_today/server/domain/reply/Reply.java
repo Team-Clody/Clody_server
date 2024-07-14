@@ -31,8 +31,8 @@ public class Reply extends BaseEntity {
     @Column(name = "is_read")
     private Boolean is_read;
 
-    @Column(name = "createdDate")
-    private LocalDate createdDate;
+    @Column(name = "diary_created_date")
+    private LocalDate diaryCreatedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
