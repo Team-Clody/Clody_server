@@ -188,6 +188,11 @@ public class DiaryService {
         if (diary.isEmpty()) {
             throw new BusinessException(ErrorType.DIARY_MESSAGE_NOT_FOUND);
         }
-        return DiaryTimeResponse.of(diary.getFirst().getCreatedAt().toLocalDate());
+        LocalDateTime createdAt = diary.getFirst().getCreatedAt();
+        LocalDate date = createdAt.toLocalDate();
+        String hh = String.valueOf(createdAt.getHour());
+        String mm = String.valueOf(createdAt.getMinute());
+        String ss = String.valueOf(createdAt.getSecond());
+        return DiaryTimeResponse.of(date, hh, mm, ss);
     }
 }
