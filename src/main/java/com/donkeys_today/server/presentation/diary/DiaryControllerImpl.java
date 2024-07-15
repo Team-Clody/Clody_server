@@ -64,9 +64,9 @@ public class DiaryControllerImpl implements DiaryController {
     @Override
     @GetMapping("/dairy/time")
     public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(@RequestParam final int year, @RequestParam final int month,
-                                                                                        @RequestParam final int day) {
+                                                                                        @RequestParam final int date) {
 
-        final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month, day);
+        final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month, date);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
 
     }

@@ -38,8 +38,6 @@ import org.springframework.stereotype.Service;
 public class DiaryService {
 
   private final UserService userService;
-  private final DiaryRepository diaryRepository;
-  private final UserRepository userRepository;
   private final DiaryPublisher diaryPublisher;
   private final DiaryPolicy diaryPolicy;
   private final DiaryRetriever diaryRetriever;
@@ -184,13 +182,13 @@ public class DiaryService {
     diaryCreator.saveAllDiary(user, contents);
   }
 
-  public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int day) {
+  public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int date) {
 
-    User user = userRepository.findById(JwtUtil.getLoginMemberId()).get();
-    LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime start = LocalDateTime.of(year, month, date, 0, 0);
     LocalDateTime end = start.plusDays(1);
     List<Diary> findDiaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
-    Diary diary = findDiaries.get(0);
+    Diary diary = findDiaries.getFirst();
     LocalDateTime createdTime = diary.getCreatedAt();
     int HH = createdTime.getHour();
     int MM = createdTime.getMinute();
