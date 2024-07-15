@@ -4,8 +4,10 @@ import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.UserController;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
+import com.donkeys_today.server.presentation.user.dto.requset.PatchUserNameRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
+import com.donkeys_today.server.presentation.user.dto.response.PatchUserNameResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -64,6 +67,16 @@ public class UserControllerImpl implements UserController {
     @GetMapping("/user/info")
     public ResponseEntity<ApiResponse<UserInfoResponse>> getUserInfo() {
         UserInfoResponse response = userService.getUserInfo();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+    }
+
+    @Override
+    @PatchMapping("/user/nickname")
+    public ResponseEntity<ApiResponse<PatchUserNameResponse>> patchUserName(
+            @RequestBody final PatchUserNameRequest patchUserNameRequest) {
+
+        PatchUserNameResponse response = userService.patchUserName(patchUserNameRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
