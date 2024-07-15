@@ -29,10 +29,9 @@ jobs:
 
       - name: firebase-admin-sdk.json 생성
         run: |
-          mkdir -p ./secret
-          touch ./secret/firebase-admin-sdk.json
-          echo "${{ secrets.FIREBASE_SDK }}" > .secret/firebase-admin-sdk.json
-          cat .secret/firebase-admin-sdk.json
+          mkdir -p secret
+          echo "${{ secrets.FIREBASE_SDK }}" > secret/firebase-admin-sdk.json
+          cat secret/firebase-admin-sdk.json
         working-directory: ${{ env.working-directory }}
 
       # Gradle 캐싱
