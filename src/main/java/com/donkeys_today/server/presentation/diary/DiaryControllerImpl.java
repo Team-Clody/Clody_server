@@ -8,8 +8,10 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderRes
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
+import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,7 @@ public class DiaryControllerImpl implements DiaryController {
 
     @GetMapping("/diary")
     @Override
-    public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int day) {
+    public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(@RequestParam final int year, @RequestParam final int month, @RequestParam final int day) {
 
         final DiaryResponse response = diaryService.getDiary(year, month, day);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
@@ -57,6 +59,16 @@ public class DiaryControllerImpl implements DiaryController {
     public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(@RequestHeader(Constants.AUTHORIZATION) String accessToken, @RequestBody DiaryRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
+    }
+
+    @Override
+    @GetMapping("/dairy/time")
+    public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(@RequestParam final int year, @RequestParam final int month,
+                                                                                        @RequestParam final int day) {
+
+        final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month, day);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+
     }
 
 }

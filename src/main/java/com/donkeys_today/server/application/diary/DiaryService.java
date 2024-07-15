@@ -9,6 +9,7 @@ import com.donkeys_today.server.domain.diary.ReplyStatus;
 import com.donkeys_today.server.domain.reply.Reply;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.infrastructure.diary.DiaryRepository;
+import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryContent;
@@ -17,6 +18,7 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryFullInfo;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiarySimpleInfo;
+import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,7 @@ public class DiaryService {
 
   private final UserService userService;
   private final DiaryRepository diaryRepository;
+  private final UserRepository userRepository;
   private final DiaryPublisher diaryPublisher;
   private final DiaryPolicy diaryPolicy;
   private final DiaryRetriever diaryRetriever;
@@ -178,5 +182,19 @@ public class DiaryService {
   public void createStaticReply(User user) {
     List<String> contents = List.of("욕설 노노", "욕설 노노", "파이팅", "행복하자", "건강한 삶");
     diaryCreator.saveAllDiary(user, contents);
+  }
+
+  public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int day) {
+
+    User user = userRepository.findById(JwtUtil.getLoginMemberId()).get();
+    LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
+    LocalDateTime end = start.plusDays(1);
+    List<Diary> findDiaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
+    Diary diary = findDiaries.get(0);
+    LocalDateTime createdTime = diary.getCreatedAt();
+    int HH = createdTime.getHour();
+    int MM = createdTime.getMinute();
+    int SS = createdTime.getSecond();
+    return DiaryCreatedTimeGetResponse.of(HH, MM, SS);
   }
 }
