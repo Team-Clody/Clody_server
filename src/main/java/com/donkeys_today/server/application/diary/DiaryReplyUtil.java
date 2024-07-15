@@ -27,7 +27,7 @@ public class DiaryReplyUtil {
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);
 
-        List<Reply> replies = replyRepository.findByUserIdAndCreatedAtBetween(userId, start.toLocalDate(),
+        List<Reply> replies = replyRepository.findByUserIdAndDiaryCreatedDateBetween(userId, start.toLocalDate(),
                 end.toLocalDate());
 
         Map<LocalDate, Reply> repliesByDate = replies.stream()
