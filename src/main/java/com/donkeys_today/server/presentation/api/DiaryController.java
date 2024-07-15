@@ -58,6 +58,6 @@ public interface DiaryController {
     ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
-            @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int date
+            @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int day
     );
 }

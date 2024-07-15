@@ -37,4 +37,8 @@ public class Reply extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void readReply() {
+        this.is_read = true;
+    }
 }

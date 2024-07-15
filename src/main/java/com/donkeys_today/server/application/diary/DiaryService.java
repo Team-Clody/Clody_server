@@ -38,6 +38,11 @@ import org.springframework.stereotype.Service;
 public class DiaryService {
 
   private final UserService userService;
+<<<<<<< HEAD
+=======
+  private final DiaryRepository diaryRepository;
+  private final UserRepository userRepository;
+>>>>>>> 0353d3069b257c295e68cc3b116c577a0825a48f
   private final DiaryPublisher diaryPublisher;
   private final DiaryPolicy diaryPolicy;
   private final DiaryRetriever diaryRetriever;
