@@ -1,6 +1,5 @@
 package com.donkeys_today.server.support.config;
 
-import com.donkeys_today.server.application.reply.listener.RedisReplyMessageListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.PatternTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -43,22 +39,6 @@ public class RedisConfig {
     threadPoolTaskExecutor.setCorePoolSize(2);
     threadPoolTaskExecutor.setMaxPoolSize(4);
     return threadPoolTaskExecutor;
-  }
-
-  @Bean
-  public RedisMessageListenerContainer redisMessageListenerContainer(
-      RedisConnectionFactory redisConnectionFactory,
-      MessageListenerAdapter listenerAdapter) {
-    RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-    container.setConnectionFactory(redisConnectionFactory);
-    container.addMessageListener(listenerAdapter, new PatternTopic(EXPIRED_EVENT_PATTERN));
-    container.setTaskExecutor(redisMessageTaskExecutor());
-    return container;
-  }
-
-  @Bean
-  public MessageListenerAdapter listenerAdapter(RedisReplyMessageListener listener) {
-    return new MessageListenerAdapter(listener);
   }
 
   @Bean
