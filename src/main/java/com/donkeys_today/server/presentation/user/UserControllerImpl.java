@@ -4,11 +4,11 @@ import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.UserController;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
-import com.donkeys_today.server.presentation.user.dto.requset.PatchUserNameRequest;
+import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
-import com.donkeys_today.server.presentation.user.dto.response.PatchUserNameResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
+import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
@@ -73,10 +73,10 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PatchMapping("/user/nickname")
-    public ResponseEntity<ApiResponse<PatchUserNameResponse>> patchUserName(
-            @RequestBody final PatchUserNameRequest patchUserNameRequest) {
+    public ResponseEntity<ApiResponse<UserNamePatchResponse>> patchUserName(
+            @RequestBody final UserNamePatchRequest patchUserNameRequest) {
 
-        PatchUserNameResponse response = userService.patchUserName(patchUserNameRequest);
+        UserNamePatchResponse response = userService.patchUserName(patchUserNameRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }

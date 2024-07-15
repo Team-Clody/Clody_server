@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserUpdater {
 
   private final UserRepository userRepository;
-  private final UserRetriever userRetriever;
 
 //  public void updateFcmToken(Long userId, String fcmToken) {
 //    User user = userRepository.findById(userId)
@@ -23,7 +22,7 @@ public class UserUpdater {
   @Transactional
   public User updateUserName(String newName) {
 
-    User user = userRetriever.findUserById(JwtUtil.getLoginMemberId());
+    User user = userRepository.findById(JwtUtil.getLoginMemberId()).get();
     user.updateUserName(newName);
 
     return user;
