@@ -6,6 +6,7 @@ import com.donkeys_today.server.presentation.api.UserController;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
+import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
@@ -55,6 +56,14 @@ public class UserControllerImpl implements UserController {
     @GetMapping("/auth/reissue")
     public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(String refreshTokenWithBearer) {
         TokenReissueResponse response = userService.reissueAccessToken(refreshTokenWithBearer);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+    }
+
+    @Override
+    @GetMapping("/user/info")
+    public ResponseEntity<ApiResponse<UserInfoResponse>> getUserInfo() {
+        UserInfoResponse response = userService.getUserInfo();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
