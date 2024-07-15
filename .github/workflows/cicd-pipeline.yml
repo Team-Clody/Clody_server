@@ -29,7 +29,7 @@ jobs:
 
       - name: firebase-adminsdk.json 생성
         run: |
-          echo "${{ secrets.FIREBASE_SDK }}" > ./src/main/resources/firebase-adminsdk.json
+          printf "%s" "${{ secrets.FIREBASE_SDK }}" > ./src/main/resources/firebase-adminsdk.json
           cat ./src/main/resources/firebase-adminsdk.json
         working-directory: ${{ env.working-directory }}
 
