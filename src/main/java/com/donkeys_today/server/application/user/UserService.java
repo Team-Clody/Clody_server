@@ -24,13 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-  private final UserRepository userRepository;
   private final UserRetriever userRetriever;
   private final UserAuthenticator userAuthenticator;
   private final UserUpdater userUpdater;
   private final UserRemover userRemover;
+  private final UserCreator userCreator;
 
-  private final RefreshTokenRepository refreshTokenRepository;
   private final JwtProvider jwtProvider;
   private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -38,7 +37,7 @@ public class UserService {
   public UserSignUpResponse signUp(final String authorizationCode,
       final UserSignUpRequest request) {
     User newUser = userAuthenticator.signUp(authorizationCode, request);
-    User savedUser = userRepository.save(newUser);
+    User savedUser = userCreator.saveUser(newUser);
     Token token = userAuthenticator.issueToken(savedUser.getId());
     applicationEventPublisher.publishEvent(new UserSignUpEvent(this, savedUser));
     return UserSignUpResponse.of(savedUser.getId(), token.accessToken(), token.refreshToken());
