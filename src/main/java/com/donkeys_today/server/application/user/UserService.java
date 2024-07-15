@@ -1,11 +1,13 @@
 package com.donkeys_today.server.application.user;
 
+import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.user.event.UserSignUpEvent;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
+import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.jwt.JwtProvider;
@@ -55,4 +57,11 @@ public class UserService {
     public User getUserById(Long userId) {
         return userRetriever.findUserById(userId);
     }
+
+    public UserInfoResponse getUserInfo() {
+
+      User user = userRetriever.findUserById(JwtUtil.getLoginMemberId());
+      return UserInfoResponse.of(user.getEmail(), user.getNickName(), user.getPlatform().getName());
+    }
+
 }
