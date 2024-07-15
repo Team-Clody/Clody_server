@@ -1,12 +1,9 @@
 package com.donkeys_today.server.presentation.diary;
 
 import com.donkeys_today.server.application.diary.DiaryService;
-
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
-
+import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.DiaryController;
+import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
@@ -16,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +50,12 @@ public class DiaryControllerImpl implements DiaryController {
 
         final DiaryResponse response = diaryService.getDiary(year, month, day);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+    }
+
+    @PostMapping("/diary")
+    public ResponseEntity<ApiResponse<?>> createDiary(@RequestHeader(Constants.AUTHORIZATION) String accessToken, @RequestBody DiaryRequest request) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
     }
 
 }
