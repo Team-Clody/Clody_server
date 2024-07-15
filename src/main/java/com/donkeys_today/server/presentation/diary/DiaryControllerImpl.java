@@ -5,6 +5,7 @@ import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.DiaryController;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
@@ -53,7 +54,7 @@ public class DiaryControllerImpl implements DiaryController {
     }
 
     @PostMapping("/diary")
-    public ResponseEntity<ApiResponse<?>> createDiary(@RequestHeader(Constants.AUTHORIZATION) String accessToken, @RequestBody DiaryRequest request) {
+    public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(@RequestHeader(Constants.AUTHORIZATION) String accessToken, @RequestBody DiaryRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
     }
