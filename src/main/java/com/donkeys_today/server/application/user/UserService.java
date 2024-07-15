@@ -5,9 +5,11 @@ import com.donkeys_today.server.application.user.event.UserSignUpEvent;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
+import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
+import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.jwt.JwtProvider;
@@ -64,4 +66,9 @@ public class UserService {
       return UserInfoResponse.of(user.getEmail(), user.getNickName(), user.getPlatform().getName());
     }
 
+  public UserNamePatchResponse patchUserName(UserNamePatchRequest userNamePatchRequest) {
+
+    User user = userUpdater.updateUserName(userNamePatchRequest.name());
+    return UserNamePatchResponse.of(user.getNickName());
+  }
 }

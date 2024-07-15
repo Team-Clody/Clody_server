@@ -2,9 +2,11 @@ package com.donkeys_today.server.presentation.api;
 
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
+import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
+import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,5 +62,12 @@ public interface UserController {
   @GetMapping("/user/info")
   ResponseEntity<ApiResponse<UserInfoResponse>> getUserInfo();
 
+  @Operation(summary = "유저 닉네임  변경", description = "유저 닉네임을 변경합니다.")
+  @PatchMapping("/user/nickname")
+  ResponseEntity<ApiResponse<UserNamePatchResponse>> patchUserName(@RequestBody(
+          description = "바꿀 닉네임",
+          required = true,
+          content = @Content(schema = @Schema(implementation = UserNamePatchRequest.class))
+  ) final UserNamePatchRequest patchUserNameRequest);
 
 }
