@@ -57,6 +57,5 @@ public class UserControllerImpl implements UserController {
         TokenReissueResponse response = userService.reissueAccessToken(refreshTokenWithBearer);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-
     }
 }

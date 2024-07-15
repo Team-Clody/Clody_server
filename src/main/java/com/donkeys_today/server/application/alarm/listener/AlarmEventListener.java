@@ -2,7 +2,7 @@ package com.donkeys_today.server.application.alarm.listener;
 
 import com.donkeys_today.server.application.user.event.UserSignUpEvent;
 import com.donkeys_today.server.domain.alarm.Alarm;
-import com.donkeys_today.server.domain.alarm.AlarmRepository;
+import com.donkeys_today.server.infrastructure.alarm.AlarmRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

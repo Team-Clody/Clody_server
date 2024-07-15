@@ -6,11 +6,8 @@ import java.util.List;
 
 public record DiaryFullInfo(
         int diaryCount,
-
         ReplyStatus replyStatus,
-
         LocalDate date,
-
         List<DiaryContent> diary
 ) {
     public static DiaryFullInfo of(int diaryCount, ReplyStatus replyStatus, LocalDate date, List<DiaryContent> diary) {

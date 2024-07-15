@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    List<Reply> findByUserIdAndCreatedAtBetween(Long userId, LocalDate start, LocalDate end);
+    List<Reply> findByUserIdAndDiaryCreatedDateBetween(Long userId, LocalDate start, LocalDate end);
+
 }

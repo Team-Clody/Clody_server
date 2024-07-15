@@ -62,5 +62,4 @@ public class UserAuthenticator {
     private Platform getPlatformFromRequestString(String platform) {
         return Platform.fromString(platform);
     }
-
 }
