@@ -4,7 +4,7 @@ import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.domain.alarm.Alarm;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.infrastructure.alarm.AlarmJpaRepository;
+import com.donkeys_today.server.infrastructure.alarm.AlarmRepository;
 import com.donkeys_today.server.infrastructure.refreshToken.RedisConstants;
 import com.donkeys_today.server.presentation.alarm.dto.request.AlarmRequest;
 import com.donkeys_today.server.presentation.alarm.dto.response.AlarmResponse;
@@ -72,7 +72,7 @@ public class AlarmService {
   private final LocalTime DEFAULT_ALARM_TIME = LocalTime.of(21, 0);
 
   private final RedisTemplate<String, String> redisTemplate;
-  private final AlarmJpaRepository alarmJpaRepository;
+  private final AlarmRepository alarmRepository;
   private final UserService userService;
 
   private static String extractFcmToken(String key) {
@@ -145,13 +145,13 @@ public class AlarmService {
   }
 
   public Alarm findAlarmByUser(User user) {
-    return alarmJpaRepository.findByUser(user).orElseThrow(
+    return alarmRepository.findByUser(user).orElseThrow(
         () -> new NotFoundException(ErrorType.USER_NOT_FOUND)
     );
   }
 
   public List<Alarm> findAlarmsByCurrentTime(LocalTime currentTime) {
-    return alarmJpaRepository.findAllByTime(currentTime);
+    return alarmRepository.findAllByTime(currentTime);
   }
 
   public AlarmResponse getUserAlarm() {
