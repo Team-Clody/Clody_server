@@ -27,11 +27,13 @@ jobs:
           cat ./application.yml
         working-directory: ${{ env.working-directory }}
 
-      - name: firebase-adminsdk.json 생성
-        run: |
-          printf "%s" "${{ secrets.FIREBASE_SDK }}" > ./src/main/resources/firebase-adminsdk.json
-          cat ./src/main/resources/firebase-adminsdk.json
-        working-directory: ${{ env.working-directory }}
+      - name: create-firebase-adminsdk.json
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "firebase-adminsdk.json"
+          json: ${{ secrets.FIREBASE_SDK }}
+          dir: 'src/main/resources/'
 
       # Gradle 캐싱
       - name: Gradle 캐싱
