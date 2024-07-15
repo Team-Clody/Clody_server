@@ -31,8 +31,8 @@ jobs:
         run: |
           mkdir -p .secret && cd $_
           touch ./firebase-admin-sdk.json
-          echo "${{ secrets.FIREBASE_SDK }}" > ./firebase-admin-sdk.json
-          cat ./firebase-admin-sdk.json
+          echo "${{ secrets.FIREBASE_SDK }}" > .secret/firebase-admin-sdk.json
+          cat .secret/firebase-admin-sdk.json
         working-directory: ${{ env.working-directory }}
 
       # Gradle 캐싱
