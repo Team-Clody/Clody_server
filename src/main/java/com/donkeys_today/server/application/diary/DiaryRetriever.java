@@ -16,11 +16,14 @@ public class DiaryRetriever {
 
   private final DiaryRepository diaryRepository;
 
-  public List<Diary> getDiariesByUserAndDateBetween(User user, LocalDateTime currentTime){
+  public List<Diary> getTodayDiariesByUser(User user, LocalDateTime currentTime){
     LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
     LocalDateTime end = currentTime;
-    return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start,end);
+    return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
   }
 
+  public List<Diary> getDiariesByUserAndDateBetween(User user, LocalDateTime start, LocalDateTime end) {
 
+    return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
+  }
 }
