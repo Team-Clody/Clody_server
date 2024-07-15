@@ -35,8 +35,8 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
     public User signUp(UserSignUpRequest request, String authToken) {
 
         Platform platform = getPlatformFromRequestString(request.platform());
-        KakaoTokenResponse token = getKakaoToken(authToken);
-        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(token.access_token());
+//        KakaoTokenResponse token = getKakaoToken(authToken);
+        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(authToken);
         KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
         validateDuplicateUser(userInfo);
         return User.builder()
@@ -50,8 +50,8 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
     @Override
     public User signIn(UserSignInRequest userSignInRequest, String authToken) {
         Platform platform = getPlatformFromRequestString(userSignInRequest.platform());
-        KakaoTokenResponse token = getKakaoToken(authToken);
-        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(token.access_token());
+//        KakaoTokenResponse token = getKakaoToken(authToken);
+        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(authToken);
         KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
         return findByPlatformAndPlatformId(platform, userInfo.id());
     }
