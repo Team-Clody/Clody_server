@@ -2,7 +2,7 @@ package com.donkeys_today.server.presentation.api;
 
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalendarResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
@@ -26,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 public interface DiaryController {
 
     @Operation(summary = "리스트뷰 일기 조회 ", description = "QueryString 을 이용해 일기(리스트뷰)조회를 합니다.")
-    @GetMapping("/calender/list")
+    @GetMapping("/calendar/list")
     ResponseEntity<ApiResponse<DiaryListResponse>> getDiaryList(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month
     );
 
     @Operation(summary = "캘린더뷰 일기 조회 ", description = "QueryString 을 이용해 일기(캘린더뷰)조회를 합니다.")
-    @GetMapping("/calender")
-    ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(
+    @GetMapping("/calendar")
+    ResponseEntity<ApiResponse<DiaryCalendarResponse>> getDiaryCalendar(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month
     );

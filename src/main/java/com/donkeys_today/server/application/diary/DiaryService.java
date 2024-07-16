@@ -9,7 +9,7 @@ import com.donkeys_today.server.domain.diary.ReplyStatus;
 import com.donkeys_today.server.domain.reply.Reply;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalendarResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryContent;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryFullInfo;
@@ -101,7 +101,7 @@ public class DiaryService {
     return DiaryListResponse.of(totalMonthlyCount.get(), diaryData);
   }
 
-  public DiaryCalenderResponse getDiaryCalender(int year, int month) {
+  public DiaryCalendarResponse getDiaryCalendar(int year, int month) {
 
     Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year,
         month);
@@ -132,7 +132,7 @@ public class DiaryService {
       int day = date.getDayOfMonth();
       setDiarySimpleInfo(day, diaries, replyStatus, diaryData);
     });
-    return DiaryCalenderResponse.of(totalMonthlyCount.get(), diaryData);
+    return DiaryCalendarResponse.of(totalMonthlyCount.get(), diaryData);
   }
 
   public DiaryResponse getDiary(int year, int month, int day) {
@@ -181,14 +181,16 @@ public class DiaryService {
   }
 
   @Transactional
-  public void deleteDiary(int year, int month, int date){
+  public void deleteDiary(int year, int month, int date) {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
-    LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date), LocalDateTime.now().toLocalTime());
+    LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date),
+        LocalDateTime.now().toLocalTime());
     log.info("currentTime : {}", currentTime);
-    List<Diary> diaryList= diaryRetriever.getNotDeletedDiariesByUserAndDateBetween(user, currentTime);
+    List<Diary> diaryList = diaryRetriever.getNotDeletedDiariesByUserAndDateBetween(user,
+        currentTime);
     diaryRemover.removeDiarySoft(diaryList);
 
-    if(diaryPublisher.containsKey(user.getId())){
+    if (diaryPublisher.containsKey(user.getId())) {
       diaryPublisher.removeDiary(user.getId());
     }
   }

@@ -1,11 +1,10 @@
 package com.donkeys_today.server.presentation.diary;
 
-import com.donkeys_today.server.application.diary.DiaryRemover;
 import com.donkeys_today.server.application.diary.DiaryService;
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.DiaryController;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalendarResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
@@ -28,9 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiaryControllerImpl implements DiaryController {
 
   private final DiaryService diaryService;
-  private final DiaryRemover diaryRemover;
 
-  @GetMapping("/calender/list")
+  @GetMapping("/calendar/list")
   @Override
   public ResponseEntity<ApiResponse<DiaryListResponse>> getDiaryList(@RequestParam final int year,
       @RequestParam final int month) {
@@ -39,13 +37,13 @@ public class DiaryControllerImpl implements DiaryController {
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
 
-  @GetMapping("/calender")
+  @GetMapping("/calendar")
   @Override
-  public ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(
+  public ResponseEntity<ApiResponse<DiaryCalendarResponse>> getDiaryCalendar(
       @RequestParam final int year,
       @RequestParam final int month) {
 
-    final DiaryCalenderResponse response = diaryService.getDiaryCalender(year, month);
+    final DiaryCalendarResponse response = diaryService.getDiaryCalendar(year, month);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
