@@ -10,4 +10,8 @@ public interface DiaryPublisher {
   void publishInitialDiaryMessage(DiaryMessage message);
 
   DiaryMessage convertDiariesToMessage(List<Diary> diaryList);
+
+  void removeDiary(Long diaryId);
+
+  boolean containsKey(Long diaryId);
 }
