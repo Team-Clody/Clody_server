@@ -30,4 +30,9 @@ public class ReplyRetriever {
 
     return replyRepository.findByUserIdAndDiaryCreatedDateBetween(user.getId(), start, end);
   }
+
+  public boolean isReplyExist(Long userId, int year, int month, int date) {
+    LocalDate localDate = LocalDate.of(year, month, date);
+    return replyRepository.existsByUserIdAndDiaryCreatedDate(userId, localDate);
+  }
 }

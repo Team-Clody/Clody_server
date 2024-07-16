@@ -41,6 +41,8 @@ public class DiaryService {
   private final DiaryRetriever diaryRetriever;
   private final ReplyService replyService;
   private final DiaryCreator diaryCreator;
+  private final DiaryRemover diaryRemover;
+
   public DiaryListGetResponse getDiaryList(int year, int month) {
     Map<LocalDate, List<Diary>> diariesByDate = getDiariesMap(year, month);
     Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
