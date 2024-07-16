@@ -41,7 +41,7 @@ public class DiaryReplyUtil {
         LocalDateTime end = start.plusMonths(1);
 
         User user = userService.getUserById(userId);
-        List<Diary> diaries = diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
+        List<Diary> diaries = diaryRepository.findByUserAndIsDeletedFalseAndCreatedAtBetween(user, start, end);
 
         Map<LocalDate, List<Diary>> diariesByDate = diaries.stream()
                 .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
@@ -52,7 +52,7 @@ public class DiaryReplyUtil {
         LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
         LocalDateTime end = start.plusDays(1);
         User user = userService.getUserById(userId);
-        List<DiaryContent> diaries = diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end).stream()
+        List<DiaryContent> diaries = diaryRepository.findByUserAndIsDeletedFalseAndCreatedAtBetween(user, start, end).stream()
                 .map(diary -> new DiaryContent(diary.getContent()))
                 .collect(Collectors.toList());
         return diaries;
