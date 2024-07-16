@@ -25,9 +25,9 @@ public class ReplyControllerImpl implements ReplyController {
   @GetMapping("/reply")
   public ResponseEntity<ApiResponse<ReplyResponse>> getReply(
       @RequestHeader(Constants.AUTHORIZATION) final String accessToken,
-      @RequestParam final String year,
-      @RequestParam final String month,
-      @RequestParam final String date) {
+      @RequestParam final int year,
+      @RequestParam final int month,
+      @RequestParam final int date) {
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
         SuccessType.READ_SUCCESS, replyService.readReply(year, month, date)));
   }

@@ -49,9 +49,9 @@ public class DiaryControllerImpl implements DiaryController {
 
   @GetMapping("/diary")
   @Override
-  public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int day) {
+  public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int date) {
 
-    final DiaryResponse response = diaryService.getDiary(year, month, day);
+    final DiaryResponse response = diaryService.getDiary(year, month, date);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
@@ -64,13 +64,16 @@ public class DiaryControllerImpl implements DiaryController {
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
   }
 
-    @Override
-    @GetMapping("/dairy/time")
-    public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(@RequestParam final int year, @RequestParam final int month,
-                                                                                        @RequestParam final int day) {
-        final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month, day);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+  @Override
+  @GetMapping("/dairy/time")
+  public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(
+      @RequestParam final int year, @RequestParam final int month,
+      @RequestParam final int date) {
+    final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month,
+        date);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
   @Override
   @DeleteMapping("/diary")

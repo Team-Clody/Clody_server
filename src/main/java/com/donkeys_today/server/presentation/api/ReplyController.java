@@ -22,7 +22,7 @@ public interface ReplyController {
   @Operation(summary = "답변 조회 ", description = "액세스 토큰과 년/월/일을 통해 답변을 조회합니다.")
   ResponseEntity<ApiResponse<ReplyResponse>> getReply(
       @RequestHeader(Constants.AUTHORIZATION) final String accessToken,
-      @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final String year,
-      @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final String month,
-      @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final String date);
+      @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
+      @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
+      @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int date);
 }
