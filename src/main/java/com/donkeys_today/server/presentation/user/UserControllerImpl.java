@@ -57,7 +57,9 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping("/auth/reissue")
-    public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(String refreshTokenWithBearer) {
+    public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
+            @RequestHeader(Constants.AUTHORIZATION) final String refreshTokenWithBearer) {
+
         TokenReissueResponse response = userService.reissueAccessToken(refreshTokenWithBearer);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
