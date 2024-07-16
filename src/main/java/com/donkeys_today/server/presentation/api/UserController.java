@@ -5,6 +5,7 @@ import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueRespo
 import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
+import com.donkeys_today.server.presentation.user.dto.response.UserDeleteResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,5 +71,9 @@ public interface UserController {
           required = true,
           content = @Content(schema = @Schema(implementation = UserNamePatchRequest.class))
   ) final UserNamePatchRequest patchUserNameRequest);
+
+  @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다.")
+  @DeleteMapping("/user/revoke")
+  ResponseEntity<ApiResponse<UserDeleteResponse>> deleteUser();
 
 }
