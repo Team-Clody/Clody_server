@@ -15,7 +15,7 @@ public class ReplyService {
   private final ReplyRemover replyRemover;
 
   @Transactional
-  public ReplyResponse readReply(String year, String month, String date) {
+  public ReplyResponse readReply(int year, int month, int date) {
     Reply reply = replyRetriever.findReplyByDate(year, month, date);
     reply.readReply();
     return ReplyResponse.of(reply.getContent());

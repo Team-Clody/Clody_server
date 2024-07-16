@@ -15,9 +15,8 @@ public class ReplyRetriever {
 
   private final ReplyRepository replyRepository;
 
-  public Reply findReplyByDate(String year, String month, String date) {
-    LocalDate localDate = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month),
-        Integer.parseInt(date));
+  public Reply findReplyByDate(int year, int month, int date) {
+    LocalDate localDate = LocalDate.of(year, month, date);
     Long userId = JwtUtil.getLoginMemberId();
     return replyRepository.findByUserIdAndDiaryCreatedDate(userId, localDate).orElseThrow(
         () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
