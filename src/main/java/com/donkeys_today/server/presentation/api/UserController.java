@@ -55,7 +55,7 @@ public interface UserController {
   @Operation(summary = "토큰 재발급 ", description = "Refresh토큰으로 access토큰을 재발급 합니다.")
   @GetMapping("/auth/reissue")
   ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
-      @CookieValue(name = Constants.REFRESHTOKEN) @Parameter(name = "refreshToken", description = "리프레쉬토큰", required = true) final String refreshTokenWithBearer
+          @RequestHeader(name = Constants.AUTHORIZATION) @Parameter(name = "refreshToken", description = "리프레쉬토큰", required = true) final String refreshTokenWithBearer
   );
 
   @Operation(summary = "유저 정보 조회 ", description = "유저 프로필 정보를 조회합니다.")

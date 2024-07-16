@@ -2,6 +2,7 @@ package com.donkeys_today.server.application.user;
 
 import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.user.event.UserSignUpEvent;
+import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
@@ -12,6 +13,8 @@ import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignUpResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
+import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -51,8 +55,13 @@ public class UserService {
     return UserSignInResponse.of(foundUser.getId(), token.accessToken(), token.refreshToken());
   }
 
-    public TokenReissueResponse reissueAccessToken(String refreshToken) {
+    public TokenReissueResponse reissueAccessToken(String refreshTokenWithBearer) {
+      if(StringUtils.hasText(refreshTokenWithBearer) && refreshTokenWithBearer.startsWith(Constants.BEARER)) {
+        String refreshToken = refreshTokenWithBearer.substring(Constants.BEARER.length());
         return jwtProvider.getTokenReissueResponse(refreshToken);
+      }
+      throw new UnauthorizedException(ErrorType.UNAUTHORIZED);
+
     }
 
     public User getUserById(Long userId) {
