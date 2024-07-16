@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "알림 설정")
+@Tag(name = "알림 관련", description = "알림 설정과 관련된 기능을 수행하는 API 입니다.")
 @RequestMapping("/api/v1")
 @RestController
 public interface AlarmController {

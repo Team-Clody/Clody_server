@@ -1,5 +1,6 @@
 package com.donkeys_today.server.presentation.diary;
 
+import com.donkeys_today.server.application.diary.DiaryRemover;
 import com.donkeys_today.server.application.diary.DiaryService;
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.DiaryController;
@@ -26,37 +27,53 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class DiaryControllerImpl implements DiaryController {
 
-    private final DiaryService diaryService;
+  private final DiaryService diaryService;
+  private final DiaryRemover diaryRemover;
 
-    @GetMapping("/calender/list")
-    @Override
-    public ResponseEntity<ApiResponse<DiaryListResponse>> getDiaryList(@RequestParam final int year,
-                                                                       @RequestParam final int month) {
-        final DiaryListResponse response = diaryService.getDiaryList(year, month);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+  @GetMapping("/calender/list")
+  @Override
+  public ResponseEntity<ApiResponse<DiaryListResponse>> getDiaryList(@RequestParam final int year,
+      @RequestParam final int month) {
+    final DiaryListResponse response = diaryService.getDiaryList(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
-    @GetMapping("/calender")
-    @Override
-    public ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(@RequestParam final int year,
-                                                                               @RequestParam final int month) {
+  @GetMapping("/calender")
+  @Override
+  public ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(
+      @RequestParam final int year,
+      @RequestParam final int month) {
 
-        final DiaryCalenderResponse response = diaryService.getDiaryCalender(year, month);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+    final DiaryCalenderResponse response = diaryService.getDiaryCalender(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
-    @GetMapping("/diary")
-    @Override
-    public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int day) {
+  @GetMapping("/diary")
+  @Override
+  public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int day) {
 
-        final DiaryResponse response = diaryService.getDiary(year, month, day);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+    final DiaryResponse response = diaryService.getDiary(year, month, day);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
-    @PostMapping("/diary")
-    public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(@RequestHeader(Constants.AUTHORIZATION) String accessToken, @RequestBody DiaryRequest request) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
-    }
+  @PostMapping("/diary")
+  public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
+      @RequestHeader(Constants.AUTHORIZATION) String accessToken,
+      @RequestBody DiaryRequest request) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
+  }
 
+  @Override
+  public ResponseEntity<ApiResponse<?>> deleteDiary(String accessToken,
+      int year,
+      int month,
+      int date) {
+    diaryService.deleteDiary(year, month, date);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.DELETED_SUCCESS));
+  }
 }
