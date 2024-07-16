@@ -30,5 +30,4 @@ public class ReplyRetriever {
 
     return replyRepository.findByUserIdAndDiaryCreatedDateBetween(user.getId(), start, end);
   }
-
 }

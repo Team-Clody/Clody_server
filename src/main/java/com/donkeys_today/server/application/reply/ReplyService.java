@@ -15,6 +15,7 @@ public class ReplyService {
 
   private final ReplyRetriever replyRetriever;
   private final ReplyUpdater replyUpdater;
+  private final ReplyRemover replyRemover;
 
   @Transactional
   public ReplyResponse readReply(String year, String month, String date) {
@@ -22,7 +23,6 @@ public class ReplyService {
     reply.readReply();
     return ReplyResponse.of(reply.getContent());
   }
-
 
   public List<Reply> getRepliesByUserAndDateBetween(User user, LocalDate start, LocalDate end) {
 

@@ -35,7 +35,7 @@ public class RedisDiaryPublisher implements DiaryPublisher {
     String expiryKey = "diaryMessage_expiry:"+message.userId();
     String serializedMessage = serializaeMessageToString(message);
     redisTemplate.opsForValue().set(key,serializedMessage);
-    redisTemplate.opsForValue().set(expiryKey,"", 10, TimeUnit.SECONDS);
+    redisTemplate.opsForValue().set(expiryKey,"", 1, TimeUnit.MINUTES);
   }
 
   @Override
@@ -44,7 +44,7 @@ public class RedisDiaryPublisher implements DiaryPublisher {
     String expiryKey = "diaryMessage_expiry:"+message.userId();
     String serializedMessage = serializaeMessageToString(message);
     redisTemplate.opsForValue().set(key,serializedMessage);
-    redisTemplate.opsForValue().set(expiryKey,"", 10, TimeUnit.SECONDS);
+    redisTemplate.opsForValue().set(expiryKey,"", 1, TimeUnit.MINUTES);
   }
 
   @Override
@@ -58,6 +58,25 @@ public class RedisDiaryPublisher implements DiaryPublisher {
         .collect(Collectors.joining(", "));
     log.info("message : {}", message);
     return DiaryMessage.of(userId, message, savedDate);
+  }
+
+  @Override
+  public boolean containsKey(Long userID){
+    String key = "diaryMessage:"+userID;
+    return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+  }
+
+  @Override
+  public void removeDiary(Long userId){
+    String key = "diaryMessage:"+userId;
+    String expiryKey = "diaryMessage_expiry:"+userId;
+    redisTemplate.delete(key);
+    redisTemplate.delete(expiryKey);
+  }
+
+  private boolean containsDiaryMessage(Long userId){
+    String key = "diaryMessage:"+userId;
+    return Boolean.TRUE.equals(redisTemplate.hasKey(key));
   }
 
   private String generateKey() {

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,6 @@ public class DiaryService {
   private final DiaryRetriever diaryRetriever;
   private final ReplyService replyService;
   private final DiaryCreator diaryCreator;
-
   public DiaryListGetResponse getDiaryList(int year, int month) {
     Map<LocalDate, List<Diary>> diariesByDate = getDiariesMap(year, month);
     Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
@@ -182,6 +182,25 @@ public class DiaryService {
   public void createStaticReply(User user) {
     List<String> contents = List.of("욕설 노노", "욕설 노노", "파이팅", "행복하자", "건강한 삶");
     diaryCreator.saveAllDiary(user, contents);
+  }
+
+  @Transactional
+  public void deleteDiary(int year, int month, int date) {
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date),
+        LocalDateTime.now().toLocalTime());
+    log.info("currentTime : {}", currentTime);
+    List<Diary> diaryList = diaryRetriever.getTodayDiariesByUser(user,
+        currentTime);
+    diaryRemover.removeDiarySoft(diaryList);
+
+    if (diaryPublisher.containsKey(user.getId())) {
+      diaryPublisher.removeDiary(user.getId());
+    }
+
+    if (replyService.isReplyExist(user.getId(), year, month, date)) {
+      replyService.removeReply(user.getId(), year, month, date);
+    }
   }
 
   public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int date) {

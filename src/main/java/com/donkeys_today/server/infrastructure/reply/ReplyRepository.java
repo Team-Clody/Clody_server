@@ -13,4 +13,9 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     List<Reply> findByUserIdAndDiaryCreatedDateBetween(Long userId, LocalDate start, LocalDate end);
 
     Optional<Reply> findByUserIdAndDiaryCreatedDate(Long userId, LocalDate date);
+
+    void deleteByUserIdAndDiaryCreatedDate(Long userId, LocalDate date);
+
+    boolean existsByUserIdAndDiaryCreatedDate(Long userId, LocalDate date);
+
 }
