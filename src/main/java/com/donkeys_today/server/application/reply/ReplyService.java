@@ -28,4 +28,12 @@ public class ReplyService {
 
     return replyRetriever.getRepliesByUserAndDateBetween(user, start, end);
   }
+
+  public boolean isReplyExist(Long userId, int year, int month, int date) {
+    return replyRetriever.isReplyExist(userId, year, month, date);
+  }
+
+  public void removeReply(Long userId, int year, int month, int date) {
+    replyRemover.removeReplyUserIdAndDate(userId, year, month, date);
+  }
 }
