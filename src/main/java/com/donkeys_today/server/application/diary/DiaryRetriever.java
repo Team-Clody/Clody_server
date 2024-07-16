@@ -18,11 +18,11 @@ public class DiaryRetriever {
 
   private final DiaryRepository diaryRepository;
 
-  public List<Diary> getNotDeletedDiariesByUserAndDateBetween(User user,
+  public List<Diary> getDiariesByUserAndDateBetween(User user,
       LocalDateTime currentTime) {
     LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
     LocalDateTime end = currentTime;
     log.info("start time : {}, end time : {}", start,end);
-    return diaryRepository.findByUserAndIsDeletedFalseAndCreatedAtBetween(user, start, end);
+    return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
   }
 }

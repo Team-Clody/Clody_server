@@ -2,6 +2,7 @@ package com.donkeys_today.server.application.diary;
 
 import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.diary.dto.DiaryMessage;
+import com.donkeys_today.server.application.reply.ReplyService;
 import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.domain.diary.Diary;
 import com.donkeys_today.server.domain.diary.DiaryPublisher;
@@ -34,13 +35,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DiaryService {
 
-  private final UserService userService;
-  private final DiaryPublisher diaryPublisher;
-  private final DiaryPolicy diaryPolicy;
-  private final DiaryRetriever diaryRetriever;
+
   private final DiaryCreator diaryCreator;
+  private final DiaryRetriever diaryRetriever;
   private final DiaryReplyUtil diaryReplyUtil;
   private final DiaryRemover diaryRemover;
+  private final DiaryPolicy diaryPolicy;
+  private final DiaryPublisher diaryPublisher;
+
+  private final UserService userService;
+  private final ReplyService replyService;
 
   private static DiaryFullInfo getDiaryFullInfo(LocalDate date, List<Diary> dairies,
       ReplyStatus replyStatus) {
@@ -186,12 +190,17 @@ public class DiaryService {
     LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date),
         LocalDateTime.now().toLocalTime());
     log.info("currentTime : {}", currentTime);
-    List<Diary> diaryList = diaryRetriever.getNotDeletedDiariesByUserAndDateBetween(user,
-        currentTime);
+    List<Diary> diaryList = diaryRetriever.getDiariesByUserAndDateBetween(user,
+        currentTime); // # 상관 없이 그냥 다 가져와서 True로 바꿔버리면 된다.
     diaryRemover.removeDiarySoft(diaryList);
+
 
     if (diaryPublisher.containsKey(user.getId())) {
       diaryPublisher.removeDiary(user.getId());
+    }
+
+    if(replyService.isReplyExist(user.getId(), year, month, date)) {
+      replyService.removeReply(user.getId(), year, month, date);
     }
   }
 }

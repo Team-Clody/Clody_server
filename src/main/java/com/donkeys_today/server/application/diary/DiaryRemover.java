@@ -13,10 +13,7 @@ public class DiaryRemover {
   private final DiaryRepository diaryRepository;
 
   public void removeDiarySoft(List<Diary> diaryList) {
-    for (Diary diary : diaryList) {
-      diary.deleteDiary();
-    }
+    diaryList.forEach(Diary::deleteDiary);
     diaryRepository.saveAll(diaryList);
   }
-
 }

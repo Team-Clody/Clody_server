@@ -36,12 +36,12 @@ public class DiaryPolicy {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     LocalDate localDate = LocalDate.parse(time, formatter);
     LocalDateTime localDateTime = localDate.atStartOfDay();
-    List<Diary> foundDiary = diaryRetriever.getNotDeletedDiariesByUserAndDateBetween(user, localDateTime);
+    List<Diary> foundDiary = diaryRetriever.getDiariesByUserAndDateBetween(user, localDateTime);
     return foundDiary.stream().anyMatch(Diary::isDeleted);
   }
 
   public void updateDeletedDiary(User user, DiaryRequest request) {
-    List<Diary> foundDiary = diaryRetriever.getNotDeletedDiariesByUserAndDateBetween(user,
+    List<Diary> foundDiary = diaryRetriever.getDiariesByUserAndDateBetween(user,
         LocalDateTime.now());
     diaryRepository.deleteAll(foundDiary);
     List<Diary> newDiaries = request.content().stream()
