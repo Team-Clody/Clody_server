@@ -17,7 +17,7 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryFullInfo;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiarySimpleInfo;
-import jakarta.transaction.Transactional;
+import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -190,17 +191,30 @@ public class DiaryService {
     LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date),
         LocalDateTime.now().toLocalTime());
     log.info("currentTime : {}", currentTime);
-    List<Diary> diaryList = diaryRetriever.getDiariesByUserAndDateBetween(user,
-        currentTime); // # 상관 없이 그냥 다 가져와서 True로 바꿔버리면 된다.
+    List<Diary> diaryList = diaryRetriever.getTodayDiariesByUser(user,
+        currentTime);
     diaryRemover.removeDiarySoft(diaryList);
-
 
     if (diaryPublisher.containsKey(user.getId())) {
       diaryPublisher.removeDiary(user.getId());
     }
 
-    if(replyService.isReplyExist(user.getId(), year, month, date)) {
+    if (replyService.isReplyExist(user.getId(), year, month, date)) {
       replyService.removeReply(user.getId(), year, month, date);
     }
+  }
+
+  public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int date) {
+
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime start = LocalDateTime.of(year, month, date, 0, 0);
+    LocalDateTime end = start.plusDays(1);
+    List<Diary> findDiaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
+    Diary diary = findDiaries.getFirst();
+    LocalDateTime createdTime = diary.getCreatedAt();
+    int HH = createdTime.getHour();
+    int MM = createdTime.getMinute();
+    int SS = createdTime.getSecond();
+    return DiaryCreatedTimeGetResponse.of(HH, MM, SS);
   }
 }

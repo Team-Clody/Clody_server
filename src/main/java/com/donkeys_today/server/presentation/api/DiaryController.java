@@ -6,6 +6,7 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalendarRes
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
+import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,6 +53,13 @@ public interface DiaryController {
     ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
         @RequestHeader(Constants.AUTHORIZATION) String accessToken,
         @RequestBody @Parameter(name = "연도", description = "작성할 연도", required = true) final DiaryRequest request
+    );
+    @Operation(summary = "일기 작성 시간 조회 ", description = "QueryString 을 이용해 일기 작성 시간을 조회합니다.")
+    @GetMapping("/dairy/time")
+    ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(
+            @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
+            @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
+            @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int day
     );
 
     @Operation(summary = "일기 삭제 ", description = "년/월/일을 이용하여 일기와 답변까지 삭제합니다. 만약 답변이 요청 중인 상태라면, 답변을 요청하지 않습니다.")

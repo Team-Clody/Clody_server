@@ -8,6 +8,7 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalendarRes
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
+import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,16 @@ public class DiaryControllerImpl implements DiaryController {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
   }
+
+    @Override
+    @GetMapping("/dairy/time")
+    public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(@RequestParam final int year, @RequestParam final int month,
+                                                                                        @RequestParam final int day) {
+
+        final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month, day);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+
+    }
 
   @Override
   @DeleteMapping("/diary")
