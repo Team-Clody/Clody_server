@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 public interface DiaryController {
 
     @Operation(summary = "리스트뷰 일기 조회 ", description = "QueryString 을 이용해 일기(리스트뷰)조회를 합니다.")
-    @GetMapping("/calender/list")
+    @GetMapping("/calendar/list")
     ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month
     );
 
     @Operation(summary = "캘린더뷰 일기 조회 ", description = "QueryString 을 이용해 일기(캘린더뷰)조회를 합니다.")
-    @GetMapping("/calender")
+    @GetMapping("/calendar")
     ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(
             @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
             @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month
