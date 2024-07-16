@@ -8,7 +8,6 @@ import com.donkeys_today.server.domain.diary.DiaryPublisher;
 import com.donkeys_today.server.domain.diary.ReplyStatus;
 import com.donkeys_today.server.domain.reply.Reply;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.infrastructure.diary.DiaryRepository;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryContent;
@@ -17,6 +16,7 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryFullInfo;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiarySimpleInfo;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,12 +35,12 @@ import org.springframework.stereotype.Service;
 public class DiaryService {
 
   private final UserService userService;
-  private final DiaryRepository diaryRepository;
   private final DiaryPublisher diaryPublisher;
   private final DiaryPolicy diaryPolicy;
   private final DiaryRetriever diaryRetriever;
   private final DiaryCreator diaryCreator;
   private final DiaryReplyUtil diaryReplyUtil;
+  private final DiaryRemover diaryRemover;
 
   private static DiaryFullInfo getDiaryFullInfo(LocalDate date, List<Diary> dairies,
       ReplyStatus replyStatus) {
@@ -178,5 +178,18 @@ public class DiaryService {
   public void createStaticReply(User user) {
     List<String> contents = List.of("욕설 노노", "욕설 노노", "파이팅", "행복하자", "건강한 삶");
     diaryCreator.saveAllDiary(user, contents);
+  }
+
+  @Transactional
+  public void deleteDiary(int year, int month, int date){
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date), LocalDateTime.now().toLocalTime());
+    log.info("currentTime : {}", currentTime);
+    List<Diary> diaryList= diaryRetriever.getNotDeletedDiariesByUserAndDateBetween(user, currentTime);
+    diaryRemover.removeDiarySoft(diaryList);
+
+    if(diaryPublisher.containsKey(user.getId())){
+      diaryPublisher.removeDiary(user.getId());
+    }
   }
 }
