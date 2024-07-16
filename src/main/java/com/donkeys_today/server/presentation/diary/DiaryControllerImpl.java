@@ -13,6 +13,7 @@ import com.donkeys_today.server.support.dto.type.SuccessType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,7 +67,8 @@ public class DiaryControllerImpl implements DiaryController {
   }
 
   @Override
-  public ResponseEntity<ApiResponse<?>> deleteDiary(String accessToken,
+  @DeleteMapping("/diary")
+  public ResponseEntity<ApiResponse<?>> deleteDiary(
       int year,
       int month,
       int date) {
