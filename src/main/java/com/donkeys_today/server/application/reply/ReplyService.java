@@ -1,8 +1,11 @@
 package com.donkeys_today.server.application.reply;
 
 import com.donkeys_today.server.domain.reply.Reply;
+import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.presentation.reply.dto.response.ReplyResponse;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +24,8 @@ public class ReplyService {
     return ReplyResponse.of(reply.getContent());
   }
 
-  public boolean isReplyExist(Long userId, int year, int month, int date) {
-    return replyRetriever.isReplyExist(userId, year, month, date);
-  }
+  public List<Reply> getRepliesByUserAndDateBetween(User user, LocalDate start, LocalDate end) {
 
-  public void removeReply(Long userId, int year, int month, int date) {
-    replyRemover.removeReplyUserIdAndDate(userId, year, month, date);
+    return replyRetriever.getRepliesByUserAndDateBetween(user, start, end);
   }
 }
