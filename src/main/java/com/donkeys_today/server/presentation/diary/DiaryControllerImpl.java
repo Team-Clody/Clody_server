@@ -30,22 +30,26 @@ public class DiaryControllerImpl implements DiaryController {
 
   private final DiaryService diaryService;
 
-    @GetMapping("/calender/list")
-    @Override
-    public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(@RequestParam final int year,
-                                                                          @RequestParam final int month) {
-        final DiaryListGetResponse response = diaryService.getDiaryList(year, month);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+  @GetMapping("/calendar/list")
+  @Override
+  public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
+      @RequestParam final int year,
+      @RequestParam final int month) {
+    final DiaryListGetResponse response = diaryService.getDiaryList(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
-    @GetMapping("/calender")
-    @Override
-    public ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(@RequestParam final int year,
-                                                                                  @RequestParam final int month) {
+  @GetMapping("/calendar")
+  @Override
+  public ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(
+      @RequestParam final int year,
+      @RequestParam final int month) {
 
-        final DiaryCalenderGetResponse response = diaryService.getDiaryCalender(year, month);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-    }
+    final DiaryCalenderGetResponse response = diaryService.getDiaryCalender(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
   @GetMapping("/diary")
   @Override
@@ -56,6 +60,7 @@ public class DiaryControllerImpl implements DiaryController {
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
 
+  @Override
   @PostMapping("/diary")
   public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
       @RequestHeader(Constants.AUTHORIZATION) String accessToken,
@@ -65,7 +70,7 @@ public class DiaryControllerImpl implements DiaryController {
   }
 
   @Override
-  @GetMapping("/dairy/time")
+  @GetMapping("/diary/time")
   public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(
       @RequestParam final int year, @RequestParam final int month,
       @RequestParam final int date) {
