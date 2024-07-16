@@ -4,14 +4,13 @@ import com.donkeys_today.server.application.diary.DiaryService;
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.api.DiaryController;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderGetResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryListGetResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,18 +31,18 @@ public class DiaryControllerImpl implements DiaryController {
 
     @GetMapping("/calender/list")
     @Override
-    public ResponseEntity<ApiResponse<DiaryListResponse>> getDiaryList(@RequestParam final int year,
-                                                                       @RequestParam final int month) {
-        final DiaryListResponse response = diaryService.getDiaryList(year, month);
+    public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(@RequestParam final int year,
+                                                                          @RequestParam final int month) {
+        final DiaryListGetResponse response = diaryService.getDiaryList(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
 
     @GetMapping("/calender")
     @Override
-    public ResponseEntity<ApiResponse<DiaryCalenderResponse>> getDiaryCalender(@RequestParam final int year,
-                                                                               @RequestParam final int month) {
+    public ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(@RequestParam final int year,
+                                                                                  @RequestParam final int month) {
 
-        final DiaryCalenderResponse response = diaryService.getDiaryCalender(year, month);
+        final DiaryCalenderGetResponse response = diaryService.getDiaryCalender(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
 

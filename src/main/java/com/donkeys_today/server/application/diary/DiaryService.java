@@ -2,20 +2,19 @@ package com.donkeys_today.server.application.diary;
 
 import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.diary.dto.DiaryMessage;
+import com.donkeys_today.server.application.reply.ReplyService;
 import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.domain.diary.Diary;
 import com.donkeys_today.server.domain.diary.DiaryPublisher;
 import com.donkeys_today.server.domain.diary.ReplyStatus;
 import com.donkeys_today.server.domain.reply.Reply;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.infrastructure.diary.DiaryRepository;
-import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderGetResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryContent;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryFullInfo;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryListResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryListGetResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiarySimpleInfo;
 import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
@@ -25,11 +24,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,110 +38,115 @@ public class DiaryService {
   private final DiaryPublisher diaryPublisher;
   private final DiaryPolicy diaryPolicy;
   private final DiaryRetriever diaryRetriever;
+  private final ReplyService replyService;
   private final DiaryCreator diaryCreator;
-  private final DiaryReplyUtil diaryReplyUtil;
 
-  private static DiaryFullInfo getDiaryFullInfo(LocalDate date, List<Diary> dairies,
-      ReplyStatus replyStatus) {
-    return DiaryFullInfo.of(dairies.size(), replyStatus, date,
-        dairies.stream().map(diary -> new DiaryContent(diary.getContent()))
-            .toList());
+  public DiaryListGetResponse getDiaryList(int year, int month) {
+    Map<LocalDate, List<Diary>> diariesByDate = getDiariesMap(year, month);
+    Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
+
+    List<DiaryFullInfo> diaryFullInfos = new ArrayList<>();
+    int totalMonthlyCount = 0;
+
+    for (LocalDate date : diariesByDate.keySet()) {
+      List<Diary> foundDiaries = diariesByDate.get(date);
+      int diaryCount = foundDiaries.size();
+      ReplyStatus replyStatus = null;
+      if (isReplyExist(date, repliesByDate) && isReplyRead(date, repliesByDate)) {
+        totalMonthlyCount += 1;
+        replyStatus = ReplyStatus.READY_READ;
+      } else if (isReplyExist(date, repliesByDate)) {
+        replyStatus = ReplyStatus.READY_NOT_READ;
+      } else {
+        replyStatus = ReplyStatus.UNREADY;
+      }
+      List<DiaryContent> diaryContents = getDiaryContentList(foundDiaries);
+      DiaryFullInfo diaryFullInfo = DiaryFullInfo.of(diaryCount, replyStatus, date, diaryContents);
+      diaryFullInfos.add(diaryFullInfo);
+    }
+
+    diaryFullInfos.sort(Comparator.comparing(DiaryFullInfo::date));
+    return DiaryListGetResponse.of(totalMonthlyCount, diaryFullInfos);
   }
 
-  private static void plusCount(AtomicInteger totalMonthlyCount) {
-    totalMonthlyCount.addAndGet(1);
+  public DiaryCalenderGetResponse getDiaryCalender(int year, int month) {
+
+    Map<LocalDate, List<Diary>> diariesByDate = getDiariesMap(year, month);
+    Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
+
+    List<DiarySimpleInfo> diarySimpleInfos = getDiarySimpleInfoList(year, month);
+    int totalMonthlyCount = 0;
+
+    for (LocalDate date : diariesByDate.keySet()) {
+      List<Diary> foundDiaries = diariesByDate.get(date);
+      int diaryCount = foundDiaries.size();
+      ReplyStatus replyStatus = null;
+      if (isReplyExist(date, repliesByDate) && isReplyRead(date, repliesByDate)) {
+        totalMonthlyCount += 1;
+        replyStatus = ReplyStatus.READY_READ;
+      } else if (isReplyExist(date, repliesByDate)) {
+        replyStatus = ReplyStatus.READY_NOT_READ;
+      } else {
+        replyStatus = ReplyStatus.UNREADY;
+      }
+
+      DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(diaryCount, replyStatus);
+      diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
+    }
+    return DiaryCalenderGetResponse.of(totalMonthlyCount, diarySimpleInfos);
   }
 
-  private static Boolean isRead(Reply reply) {
-    return reply.getIs_read();
+  private Map<LocalDate, List<Diary>> getDiariesMap(int year, int month) {
+    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
+    return diaries.stream()
+            .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
   }
 
-  private static Reply getReply(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
-    return repliesByDate.get(date);
+  private Map<LocalDate, Reply> getRepliesMap(int year, int month) {
+    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    List<Reply> replies = replyService.getRepliesByUserAndDateBetween(user, start.toLocalDate(), end.toLocalDate());
+    return replies.stream()
+            .collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
   }
 
-  private static boolean isReplyReady(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
+  private boolean isReplyExist(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
     return repliesByDate.containsKey(date);
   }
 
-  private static void setDiarySimpleInfo(int day, List<Diary> diaries, ReplyStatus replyStatus,
-      List<DiarySimpleInfo> diaryData) {
-
-    DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(diaries.size(), replyStatus);
-    diaryData.set(day - 1, diarySimpleInfo);
+  private Boolean isReplyRead(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
+    return repliesByDate.get(date).getIs_read();
   }
 
-  public DiaryListResponse getDiaryList(int year, int month) {
-
-    Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year,
-        month);
-    Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(getUserId(), year,
-        month);
-
-    AtomicInteger totalMonthlyCount = new AtomicInteger();
-    List<DiaryFullInfo> diaryData = new ArrayList<>();
-    diariesByDate.forEach((date, dairies) -> {
-      ReplyStatus replyStatus;
-      if (isReplyReady(date, repliesByDate)) {
-        Reply reply = getReply(date, repliesByDate);
-        if (isRead(reply)) {
-          plusCount(totalMonthlyCount);
-          replyStatus = ReplyStatus.READY_READ;
-        } else { // 준비됐으나 안읽음
-          replyStatus = ReplyStatus.READY_NOT_READ;
-        }
-      } else {
-        replyStatus = ReplyStatus.UNREADY;
-      }
-      diaryData.add(getDiaryFullInfo(date, dairies, replyStatus));
-
-    });
-    diaryData.sort(Comparator.comparing(DiaryFullInfo::date));
-    return DiaryListResponse.of(totalMonthlyCount.get(), diaryData);
+  private List<DiaryContent> getDiaryContentList(List<Diary> foundDiaries) {
+    return foundDiaries.stream()
+            .map(diary -> new DiaryContent(diary.getContent()))
+            .toList();
   }
 
-  public DiaryCalenderResponse getDiaryCalender(int year, int month) {
-
-    Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year,
-        month);
-    Map<LocalDate, Reply> repliesByDate = diaryReplyUtil.getRepliesByMonth(getUserId(), year,
-        month);
-
-    int daysInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
-    AtomicInteger totalMonthlyCount = new AtomicInteger();
-    List<DiarySimpleInfo> diaryData = new ArrayList<>();
+  private List<DiarySimpleInfo> getDiarySimpleInfoList(int year, int month) {
+    List<DiarySimpleInfo> diarySimpleInfos = new ArrayList<>();
+    int daysInMonth = getDaysInMonth(year, month);
     for (int i = 0; i < daysInMonth; i++) {
-      diaryData.add(DiarySimpleInfo.of(0, ReplyStatus.UNREADY)); // 빈 요소 추가
+      diarySimpleInfos.add(DiarySimpleInfo.of(0, ReplyStatus.UNREADY)); // 빈 요소 추가
     }
+    return diarySimpleInfos;
+  }
 
-    diariesByDate.forEach((date, diaries) -> {
-      ReplyStatus replyStatus;
-      if (isReplyReady(date, repliesByDate)) {
-        Reply reply = getReply(date, repliesByDate);
-        if (isRead(reply)) {
-          plusCount(totalMonthlyCount);
-          replyStatus = ReplyStatus.READY_READ;
-        } else { // 준비됐으나 안읽음
-          replyStatus = ReplyStatus.READY_NOT_READ;
-        }
-      } else {
-        replyStatus = ReplyStatus.UNREADY;
-      }
-
-      int day = date.getDayOfMonth();
-      setDiarySimpleInfo(day, diaries, replyStatus, diaryData);
-    });
-    return DiaryCalenderResponse.of(totalMonthlyCount.get(), diaryData);
+  private int getDaysInMonth(int year, int month) {
+    return LocalDate.of(year, month, 1).lengthOfMonth();
   }
 
   public DiaryResponse getDiary(int year, int month, int day) {
-
-    List<DiaryContent> diaries = diaryReplyUtil.getDiaryByDate(getUserId(), year, month, day);
-    return DiaryResponse.of(diaries);
-  }
-
-  public Long getUserId() {
-    return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+    LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
+    LocalDateTime end = start.plusDays(1);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
+    return DiaryResponse.of(getDiaryContentList(diaries));
   }
 
   public DiaryCreatedResponse createDiary(DiaryRequest request) {
@@ -188,11 +190,7 @@ public class DiaryService {
     LocalDateTime start = LocalDateTime.of(year, month, date, 0, 0);
     LocalDateTime end = start.plusDays(1);
     List<Diary> findDiaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
-    Diary diary = findDiaries.getFirst();
-    LocalDateTime createdTime = diary.getCreatedAt();
-    int HH = createdTime.getHour();
-    int MM = createdTime.getMinute();
-    int SS = createdTime.getSecond();
-    return DiaryCreatedTimeGetResponse.of(HH, MM, SS);
+    LocalDateTime createdTime = findDiaries.getFirst().getCreatedAt();
+    return DiaryCreatedTimeGetResponse.of(createdTime.getHour(), createdTime.getMinute(), createdTime.getSecond());
   }
 }

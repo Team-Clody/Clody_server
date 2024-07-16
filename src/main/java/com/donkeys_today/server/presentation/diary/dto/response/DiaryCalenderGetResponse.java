@@ -1,0 +1,13 @@
+package com.donkeys_today.server.presentation.diary.dto.response;
+
+import java.util.List;
+
+public record DiaryCalenderGetResponse(
+        int totalMonthlyCount,
+        List<DiarySimpleInfo> diaries
+) {
+    public static DiaryCalenderGetResponse of(int totalMonthlyCount, List<DiarySimpleInfo> diaryInfo) {
+        return new DiaryCalenderGetResponse(totalMonthlyCount, diaryInfo);
+    }
+}
+
