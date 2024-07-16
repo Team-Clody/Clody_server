@@ -12,7 +12,7 @@ public class JwtConstants {
     public static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
     public static final String KAKAO_AUTHORIZATION_PARAM = "authorization_code";
     public static final String ROLE = "role";
-    public static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L * 60 * 60; // 60시간
+    public static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L; // 1분
     public static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 60 * 24 * 7 * 2; // 2주일
 
 }
