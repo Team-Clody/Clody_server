@@ -23,4 +23,9 @@ public class ReplyRetriever {
         () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
     );
   }
+
+  public boolean isReplyExist(Long userId, int year, int month, int date) {
+    LocalDate localDate = LocalDate.of(year, month, date);
+    return replyRepository.existsByUserIdAndDiaryCreatedDate(userId, localDate);
+  }
 }

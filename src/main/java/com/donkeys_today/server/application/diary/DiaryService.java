@@ -2,16 +2,15 @@ package com.donkeys_today.server.application.diary;
 
 import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.diary.dto.DiaryMessage;
+import com.donkeys_today.server.application.reply.ReplyService;
 import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.domain.diary.Diary;
 import com.donkeys_today.server.domain.diary.DiaryPublisher;
 import com.donkeys_today.server.domain.diary.ReplyStatus;
 import com.donkeys_today.server.domain.reply.Reply;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.infrastructure.diary.DiaryRepository;
-import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.diary.dto.request.DiaryRequest;
-import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalenderResponse;
+import com.donkeys_today.server.presentation.diary.dto.response.DiaryCalendarResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryContent;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryCreatedResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryFullInfo;
@@ -28,21 +27,25 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DiaryService {
 
-  private final UserService userService;
-  private final DiaryPublisher diaryPublisher;
-  private final DiaryPolicy diaryPolicy;
-  private final DiaryRetriever diaryRetriever;
+
   private final DiaryCreator diaryCreator;
+  private final DiaryRetriever diaryRetriever;
   private final DiaryReplyUtil diaryReplyUtil;
+  private final DiaryRemover diaryRemover;
+  private final DiaryPolicy diaryPolicy;
+  private final DiaryPublisher diaryPublisher;
+
+  private final UserService userService;
+  private final ReplyService replyService;
 
   private static DiaryFullInfo getDiaryFullInfo(LocalDate date, List<Diary> dairies,
       ReplyStatus replyStatus) {
@@ -103,7 +106,7 @@ public class DiaryService {
     return DiaryListResponse.of(totalMonthlyCount.get(), diaryData);
   }
 
-  public DiaryCalenderResponse getDiaryCalender(int year, int month) {
+  public DiaryCalendarResponse getDiaryCalendar(int year, int month) {
 
     Map<LocalDate, List<Diary>> diariesByDate = diaryReplyUtil.getDiariesByMonth(getUserId(), year,
         month);
@@ -134,7 +137,7 @@ public class DiaryService {
       int day = date.getDayOfMonth();
       setDiarySimpleInfo(day, diaries, replyStatus, diaryData);
     });
-    return DiaryCalenderResponse.of(totalMonthlyCount.get(), diaryData);
+    return DiaryCalendarResponse.of(totalMonthlyCount.get(), diaryData);
   }
 
   public DiaryResponse getDiary(int year, int month, int day) {
@@ -180,6 +183,25 @@ public class DiaryService {
   public void createStaticReply(User user) {
     List<String> contents = List.of("욕설 노노", "욕설 노노", "파이팅", "행복하자", "건강한 삶");
     diaryCreator.saveAllDiary(user, contents);
+  }
+
+  @Transactional
+  public void deleteDiary(int year, int month, int date) {
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date),
+        LocalDateTime.now().toLocalTime());
+    log.info("currentTime : {}", currentTime);
+    List<Diary> diaryList = diaryRetriever.getTodayDiariesByUser(user,
+        currentTime);
+    diaryRemover.removeDiarySoft(diaryList);
+
+    if (diaryPublisher.containsKey(user.getId())) {
+      diaryPublisher.removeDiary(user.getId());
+    }
+
+    if (replyService.isReplyExist(user.getId(), year, month, date)) {
+      replyService.removeReply(user.getId(), year, month, date);
+    }
   }
 
   public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int date) {
