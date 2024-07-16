@@ -49,4 +49,8 @@ public class Diary extends BaseEntity {
         .isDeleted(false)
         .build();
   }
+
+  public void deleteDiary(){
+    this.isDeleted = true;
+  }
 }
