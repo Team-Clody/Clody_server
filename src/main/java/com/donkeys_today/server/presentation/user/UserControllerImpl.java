@@ -7,6 +7,7 @@ import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueRespo
 import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
+import com.donkeys_today.server.presentation.user.dto.response.UserDeleteResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
@@ -14,10 +15,12 @@ import com.donkeys_today.server.presentation.user.dto.response.UserSignUpRespons
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
 import com.donkeys_today.server.support.jwt.JwtProvider;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,4 +85,13 @@ public class UserControllerImpl implements UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
     }
+
+    @Override
+    @DeleteMapping("/user/revoke")
+    public ResponseEntity<ApiResponse<UserDeleteResponse>> deleteUser() {
+        UserDeleteResponse userDeleteResponse = userService.deleteUser();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(SuccessType.OK_SUCCESS, userDeleteResponse));
+    }
+
 }

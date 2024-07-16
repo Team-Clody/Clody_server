@@ -9,6 +9,7 @@ import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueRespo
 import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
+import com.donkeys_today.server.presentation.user.dto.response.UserDeleteResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserInfoResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserNamePatchResponse;
 import com.donkeys_today.server.presentation.user.dto.response.UserSignInResponse;
@@ -78,5 +79,11 @@ public class UserService {
 
     User user = userUpdater.updateUserName(userNamePatchRequest.name());
     return UserNamePatchResponse.of(user.getNickName());
+  }
+
+
+  public UserDeleteResponse deleteUser() {
+    User user = userRemover.deleteUserById(JwtUtil.getLoginMemberId());
+    return UserDeleteResponse.of(user.getEmail(), user.getNickName());
   }
 }

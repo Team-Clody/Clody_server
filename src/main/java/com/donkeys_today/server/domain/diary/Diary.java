@@ -15,6 +15,8 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -30,6 +32,7 @@ public class Diary extends BaseEntity {
   private String content;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action= OnDeleteAction.CASCADE)
   @JoinColumn(name = "user_id")
   private User user;
 
