@@ -6,7 +6,7 @@ import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 
 public interface SocialRegisterSterategy {
 
-    User signUp(UserSignUpRequest userSignUpRequest, String authToken);
+  User signUp(UserSignUpRequest userSignUpRequest, String authToken);
 
-    User signIn(UserSignInRequest userSignInRequest, String authToken);
+  User signIn(UserSignInRequest userSignInRequest, String authToken);
 }
