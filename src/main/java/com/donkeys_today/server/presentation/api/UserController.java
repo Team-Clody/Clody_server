@@ -35,7 +35,7 @@ public interface UserController {
   @Operation(summary = "유저 회원가입 ", description = "Authorization code 와 UserSignUpRequest 로 회원가입을 진행합니다.")
   @PostMapping("/auth/signup")
   ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(
-      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "Authorization", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String auth_code,
+      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "Authorization", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String accessTokenWithBearer,
       @RequestBody(
           description = "회원가입을 위하여 부가적으로 받는 정보 객체",
           required = true,
@@ -46,7 +46,7 @@ public interface UserController {
   @Operation(summary = "유저 로그인 ", description = "Authorization code로 로그인을 진행합니다.")
   @PostMapping("/auth/signin")
   ResponseEntity<ApiResponse<UserSignInResponse>> signIn(
-      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "Authorization", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String auth_code,
+      @RequestHeader(Constants.AUTHORIZATION) @Parameter(name = "Authorization", description = "클라이언트가 인증 서버로부터 받은 인증 코드", required = true) final String accessTokenWithBearer,
       @RequestBody(
           description = "로그인을 위하여 부가적으로 받는 정보 객체",
           required = true,
@@ -75,5 +75,4 @@ public interface UserController {
   @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다.")
   @DeleteMapping("/user/revoke")
   ResponseEntity<ApiResponse<UserDeleteResponse>> deleteUser();
-
 }

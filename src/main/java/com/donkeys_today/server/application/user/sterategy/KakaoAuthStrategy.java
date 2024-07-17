@@ -6,8 +6,6 @@ import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
-import com.donkeys_today.server.support.exception.BusinessException;
-import com.donkeys_today.server.support.exception.NotFoundException;
 import com.donkeys_today.server.support.exception.auth.SignInException;
 import com.donkeys_today.server.support.exception.auth.SignUpException;
 import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoTokenResponse;
@@ -34,12 +32,18 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
     private String redirect_uri;
 
     @Override
-    public User signUp(UserSignUpRequest request, String authToken) {
+    public User signUp(UserSignUpRequest request, String accessTokenWithBearer) {
 
         Platform platform = getPlatformFromRequestString(request.platform());
-//        KakaoTokenResponse token = getKakaoToken(authToken);
-        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(authToken);
-        KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
+
+        //로컬 테스트시 아래의3줄 주석 해제
+//        KakaoTokenResponse token = getKakaoToken(accessTokenWithBearer);
+//        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(token.access_token());
+//        KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
+
+        //로컬 테스트 아래의1줄 주석 하셈
+        KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithBearer);
+
         validateDuplicateUser(userInfo);
         return User.builder()
                 .platformID(userInfo.id())
@@ -50,11 +54,18 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
     }
 
     @Override
-    public User signIn(UserSignInRequest userSignInRequest, String authToken) {
+    public User signIn(UserSignInRequest userSignInRequest, String accessTokenWithBearer) {
+
         Platform platform = getPlatformFromRequestString(userSignInRequest.platform());
-//        KakaoTokenResponse token = getKakaoToken(authToken);
-        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(authToken);
-        KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
+
+        //로컬 테스트시 아래의3줄 주석 해제
+//        KakaoTokenResponse token = getKakaoToken(accessTokenWithBearer);
+//        String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(token.access_token());
+//        KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
+
+        //로컬 테스트시 아래의 1줄 주석 하셈
+        KakaoUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithBearer);
+
         return findByPlatformAndPlatformId(platform, userInfo.id());
     }
 
