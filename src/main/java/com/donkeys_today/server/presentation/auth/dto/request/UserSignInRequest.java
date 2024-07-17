@@ -1,4 +1,4 @@
-package com.donkeys_today.server.presentation.user.dto.requset;
+package com.donkeys_today.server.presentation.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

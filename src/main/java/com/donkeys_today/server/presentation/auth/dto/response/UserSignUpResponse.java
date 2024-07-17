@@ -1,4 +1,4 @@
-package com.donkeys_today.server.presentation.user.dto.response;
+package com.donkeys_today.server.presentation.auth.dto.response;
 
 public record UserSignUpResponse(
     Long userId,
