@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -43,5 +44,17 @@ public class Reply extends BaseEntity {
 
     public void readReply() {
         this.is_read = true;
+    }
+
+    @Builder
+    public Reply(String content, Boolean is_read, LocalDate diaryCreatedDate, User user) {
+        this.content = content;
+        this.is_read = is_read;
+        this.diaryCreatedDate = diaryCreatedDate;
+        this.user = user;
+    }
+
+    public static Reply createStaticReply(User user, String content, LocalDate createdDate) {
+        return new Reply(content, false, createdDate, user);
     }
 }

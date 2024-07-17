@@ -16,6 +16,7 @@ public class ReplyService {
   private final ReplyRetriever replyRetriever;
   private final ReplyUpdater replyUpdater;
   private final ReplyRemover replyRemover;
+  private final ReplyCreator replyCreator;
 
   @Transactional
   public ReplyResponse readReply(int year, int month, int date) {
@@ -35,5 +36,10 @@ public class ReplyService {
 
   public void removeReply(Long userId, int year, int month, int date) {
     replyRemover.removeReplyUserIdAndDate(userId, year, month, date);
+  }
+
+  public void createStaticReply(User user, String createdDate) {
+    LocalDate parsedCreatedDate = LocalDate.parse(createdDate);
+    replyCreator.createStaticReply(user, parsedCreatedDate);
   }
 }
