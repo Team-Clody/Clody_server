@@ -21,8 +21,7 @@ public class ReplyService {
   public ReplyResponse readReply(int year, int month, int date) {
     Reply reply = replyRetriever.findReplyByDate(year, month, date);
     reply.readReply();
-    String nickname = reply.getUser().getNickName();
-    return ReplyResponse.of(nickname, reply.getContent());
+    return serializeReply(reply);
   }
 
   public List<Reply> getRepliesByUserAndDateBetween(User user, LocalDate start, LocalDate end) {
@@ -41,5 +40,13 @@ public class ReplyService {
   public void createStaticReply(User user, String createdDate) {
     LocalDate parsedCreatedDate = LocalDate.parse(createdDate);
     replyCreator.createStaticReply(user, parsedCreatedDate);
+  }
+
+  private ReplyResponse serializeReply(Reply reply) {
+    String nickName = reply.getUser().getNickName();
+    String content = reply.getContent();
+    int month = reply.getDiaryCreatedDate().getMonthValue();
+    int date = reply.getDiaryCreatedDate().getDayOfMonth();
+    return ReplyResponse.of(nickName, content, month, date);
   }
 }
