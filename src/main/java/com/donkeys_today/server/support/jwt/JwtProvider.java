@@ -1,6 +1,9 @@
 package com.donkeys_today.server.support.jwt;
 
+import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
+import com.donkeys_today.server.support.exception.UnauthorizedException;
 
 public interface JwtProvider {
 
@@ -19,4 +22,6 @@ public interface JwtProvider {
     boolean equalsRefreshToken(String refreshToken, String savedRefreshToken);
 
     TokenReissueResponse getTokenReissueResponse(String refreshTokenWithBearer);
+
+    void validateTokenStartsWithBearer(String tokenWithBearer);
 }

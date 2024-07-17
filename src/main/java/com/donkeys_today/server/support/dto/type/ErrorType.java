@@ -19,7 +19,7 @@ public enum ErrorType {
   INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED.value(), "올바르지 않은 액세스 토큰입니다."),
   INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "올바르지 않은 리프레시 토큰입니다."),
   MISMATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "리프레시 토큰이 일치하지 않습니다."),
-  INVALID_TOKEN(HttpStatus.UNAUTHORIZED.value(), "올바르지 않은 토큰입니다."),
+  INVALID_TOKEN(HttpStatus.UNAUTHORIZED.value(), "올바르지 않은 토큰 형식입니다."),
   INVALID_ID_TOKEN(HttpStatus.UNAUTHORIZED.value(), "올바르지 않은 ID토큰입니다."),
   UNKNOWN_TOKEN(HttpStatus.UNAUTHORIZED.value(), "인증 토큰이 존재하지 않습니다."),
   UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "지원하지 않는 토큰 방식입니다."),
@@ -29,6 +29,7 @@ public enum ErrorType {
   DUPLICATED_USER_ERROR(HttpStatus.BAD_REQUEST.value(), "이미 가입된 유저입니다."),
   NOTFOUND_USER_ERROR(HttpStatus.NOT_FOUND.value(), "존재하지 않는 유저 입니다."),
   UNABLE_TO_CREATE_APPLE_PUBLIC_KEY(HttpStatus.UNAUTHORIZED.value(), "애플 로그인 중 퍼블릭 키 생성에 문제가 발생했습니다."),
+  NOT_STARTS_WITH_BEARER(HttpStatus.UNAUTHORIZED.value(), "Authorization 의 토큰이 Bearer 로 시작하지 않습니다."),
   /**
    * 회원 관련 오류
    */

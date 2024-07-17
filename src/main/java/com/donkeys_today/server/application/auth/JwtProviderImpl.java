@@ -9,7 +9,9 @@ import static com.donkeys_today.server.support.dto.type.ErrorType.UNSUPPORTED_TO
 import static com.donkeys_today.server.support.dto.type.ErrorType.WRONG_SIGNATURE_TOKEN;
 import static com.donkeys_today.server.support.jwt.JwtConstants.REFRESH_TOKEN_PREFIX;
 
+import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtConstants;
 import com.donkeys_today.server.support.jwt.JwtProvider;
@@ -24,6 +26,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,15 +109,15 @@ public class JwtProviderImpl implements JwtProvider {
                 return JwtValidationType.VALID_REFRESH;
             }
             throw new UnauthorizedException(INVALID_TOKEN);
-        } catch (MalformedJwtException e) {
+        } catch (MalformedJwtException e) { // 올바르지 않은 토큰 형식
             throw new UnauthorizedException(INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(EXPIRED_TOKEN);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) { // token 이 null 일 경우
             throw new UnauthorizedException(UNKNOWN_TOKEN);
         } catch (UnsupportedJwtException e) {
             throw new UnauthorizedException(UNSUPPORTED_TOKEN);
-        } catch (SignatureException e) {
+        } catch (SignatureException e) { // 서명을 확인하지 못하는 경우
             throw new UnauthorizedException(WRONG_SIGNATURE_TOKEN);
         }
     }
@@ -140,5 +143,11 @@ public class JwtProviderImpl implements JwtProvider {
         Long userId = getUserIdFromJwtSubject(refreshToken);
         return TokenReissueResponse.of(issueAccessToken(userId),
                 issueRefreshToken(userId));
+    }
+
+    public void validateTokenStartsWithBearer(String tokenWithBearer) {
+        if (!tokenWithBearer.startsWith(Constants.BEARER)) {
+            throw new UnauthorizedException(ErrorType.NOT_STARTS_WITH_BEARER);
+        }
     }
 }

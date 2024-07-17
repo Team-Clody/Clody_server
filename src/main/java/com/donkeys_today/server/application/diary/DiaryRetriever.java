@@ -25,8 +25,8 @@ public class DiaryRetriever {
     return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
   }
 
-  public List<Diary> getDiariesByUserAndDateBetween(User user, LocalDateTime start,
-      LocalDateTime end) {
+
+  public List<Diary> getDiariesByUserAndDateBetween(User user, LocalDateTime start, LocalDateTime end) {
     return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
   }
 

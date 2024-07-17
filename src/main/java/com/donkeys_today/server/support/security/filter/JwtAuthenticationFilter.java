@@ -3,8 +3,6 @@ package com.donkeys_today.server.support.security.filter;
 import static com.donkeys_today.server.support.security.auth.UserAuthentication.createUserAuthentication;
 
 import com.donkeys_today.server.common.constants.Constants;
-import com.donkeys_today.server.support.dto.type.ErrorType;
-import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtProvider;
 import com.donkeys_today.server.support.security.auth.UserAuthentication;
 import com.donkeys_today.server.support.security.config.WhiteListConstants;
@@ -18,7 +16,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
@@ -30,25 +27,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
 
-    for(String uri : WhiteListConstants.FILTER_WHITE_LIST){
-      if(request.getRequestURI().startsWith(uri)){
-        filterChain.doFilter(request, response);
-        return;
-      }
+    if (request.getHeader(Constants.AUTHORIZATION) == null) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    final String accessToken = getAccessToken(request);
+    validateAuthorizationHeader(request);
+    String accessToken = getAccessToken(request);
     jwtProvider.validateAccessToken(accessToken);
     doAuthentication(request, jwtProvider.getUserIdFromJwtSubject(accessToken));
     filterChain.doFilter(request, response);
   }
 
+  private void validateAuthorizationHeader(HttpServletRequest request) {
+    String TokenWithBearerOrNot = request.getHeader(Constants.AUTHORIZATION);
+    jwtProvider.validateTokenStartsWithBearer(TokenWithBearerOrNot);
+  }
+
   private String getAccessToken(HttpServletRequest request) {
     String accessToken = request.getHeader(Constants.AUTHORIZATION);
-    if(StringUtils.hasText(accessToken) && accessToken.startsWith(Constants.BEARER)) {
-      return accessToken.substring(Constants.BEARER.length());
-    }
-    throw new UnauthorizedException(ErrorType.UNAUTHORIZED);
+    return accessToken.substring(Constants.BEARER.length());
+
   }
 
   private void doAuthentication(HttpServletRequest request, Long userId) {
@@ -63,5 +62,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     WebAuthenticationDetailsSource webAuthenticationDetailsSource = new WebAuthenticationDetailsSource();
     WebAuthenticationDetails webAuthenticationDetails = webAuthenticationDetailsSource.buildDetails(request);
     authentication.setDetails(webAuthenticationDetails);
+  }
+
+  // signup login 은 그냥 지나가야함.
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+  String path = request.getRequestURI();
+  for (String whitePath : WhiteListConstants.FILTER_WHITE_LIST) {
+    if (path.equals(whitePath)) {
+      return true;
+    }
+  }
+  return false;
   }
 }
