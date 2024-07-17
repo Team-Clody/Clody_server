@@ -157,14 +157,14 @@ public class DiaryService {
     //당일 일기를 삭제한 유저일 경우(당일 생성한 일기가 존재하고, is_deleted == true)면, 답변 생성하지 않음, (기존 일기만 업데이트)
     if (diaryPolicy.hasDeletedDiary(user, request.date())) {
       diaryPolicy.updateDeletedDiary(user, request);
-      return DiaryCreatedResponse.createLocalDateTimeToString(LocalDateTime.now());
+      return DiaryCreatedResponse.createDiaryWithoutReply(LocalDateTime.now());
     }
 
     // 욕설을 포함한 일기를 작성한 경우, 정적 답변을 생성함 (기존 일기만 업데이트)
     if (diaryPolicy.containsProfanity(request.content())) {
       diaryCreator.saveAllDiary(user, request.content());
-      createStaticReply(user);
-      return DiaryCreatedResponse.createLocalDateTimeToString(LocalDateTime.now());
+      createStaticReply(user, request.date());
+      return DiaryCreatedResponse.createDiaryWithStaticReply(LocalDateTime.now());
     }
 
     log.info("diary ; {}", request.content());
@@ -174,16 +174,16 @@ public class DiaryService {
     // 첫 요청일 경우, 즉시 답변 생성 (DB 전체 조회)
     if (diaryPolicy.checkUserInitialDiary(user)) {
       diaryPublisher.publishInitialDiaryMessage(message);
-      return DiaryCreatedResponse.createLocalDateTimeToString(LocalDateTime.now());
+      return DiaryCreatedResponse.createDiaryWithDynamicReply(LocalDateTime.now());
     }
 
     diaryPublisher.publishDiaryMessage(message);
-    return DiaryCreatedResponse.createLocalDateTimeToString(diaryList.getFirst().getCreatedAt());
+    return DiaryCreatedResponse.createDiaryWithDynamicReply(diaryList.getFirst().getCreatedAt());
   }
 
-  public void createStaticReply(User user) {
-    List<String> contents = List.of("욕설 노노", "욕설 노노", "파이팅", "행복하자", "건강한 삶");
-    diaryCreator.saveAllDiary(user, contents);
+  public void createStaticReply(User user, String date) {
+    replyService.createStaticReply(user,date);
+    // 정적 답변 생성시 어떻게 되는지 ?
   }
 
   @Transactional
