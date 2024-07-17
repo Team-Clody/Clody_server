@@ -106,7 +106,7 @@
 
 ## ERD ✨
 
-![Clody ERD](https://github.com/Team-Clody/Clody_server/assets/43662405/c3388692-2079-4ac2-8d0b-e7ca17d565f8)
+![Clody_ERD](https://github.com/user-attachments/assets/e7c8fedd-a1a0-40ed-b2e5-038116ac8710)
 
 <br>
 
