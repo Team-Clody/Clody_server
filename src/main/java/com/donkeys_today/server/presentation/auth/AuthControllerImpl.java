@@ -10,6 +10,7 @@ import com.donkeys_today.server.presentation.auth.dto.response.UserSignInRespons
 import com.donkeys_today.server.presentation.auth.dto.response.UserSignUpResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
+import com.donkeys_today.server.support.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,13 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthControllerImpl implements AuthController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/auth/signup")
     public ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(
             @RequestHeader(Constants.AUTHORIZATION) final String accessTokenWithBearer,
             @RequestBody final UserSignUpRequest userSignUpRequest) {
 
-//        jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
+        jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
         final UserSignUpResponse response = userService.signUp(accessTokenWithBearer, userSignUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
@@ -46,7 +48,7 @@ public class AuthControllerImpl implements AuthController {
     public ResponseEntity<ApiResponse<UserSignInResponse>> signIn(
             @RequestHeader(Constants.AUTHORIZATION) String accessTokenWithBearer,
             @RequestBody final UserSignInRequest userSignInRequest) {
-//        jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
+        jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
         final UserSignInResponse response = userService.signIn(accessTokenWithBearer, userSignInRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
@@ -57,7 +59,7 @@ public class AuthControllerImpl implements AuthController {
     public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
             @RequestHeader(Constants.AUTHORIZATION) final String refreshTokenWithBearer) {
 
-//        jwtProvider.validateTokenStartsWithBearer(refreshTokenWithBearer);
+        jwtProvider.validateTokenStartsWithBearer(refreshTokenWithBearer);
         TokenReissueResponse response = userService.reissueAccessToken(refreshTokenWithBearer);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
