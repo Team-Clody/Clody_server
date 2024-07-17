@@ -1,6 +1,7 @@
 package com.donkeys_today.server.support.exception;
 
 import com.donkeys_today.server.support.dto.ApiResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.auth.SignInException;
 import com.donkeys_today.server.support.exception.auth.SignUpException;
 import com.donkeys_today.server.support.exception.reply.ReplyException;
@@ -25,5 +26,10 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(ReplyException.class)
     protected ResponseEntity<ApiResponse<?>> BusinessException(ReplyException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getErrorType()));
+    }
+
+    @ExceptionHandler(InvalidDateFormatException.class)
+    protected ResponseEntity<ApiResponse<?>> BusinessException(InvalidDateFormatException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_DATE_FORMAT,e.getErrorType()));
     }
 }
