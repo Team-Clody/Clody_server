@@ -39,29 +39,26 @@ public class UserService {
   private final ApplicationEventPublisher applicationEventPublisher;
 
   @Transactional
-  public UserSignUpResponse signUp(final String authorizationCode,
+  public UserSignUpResponse signUp(final String accessTokenWithBearer,
       final UserSignUpRequest request) {
-    User newUser = userAuthenticator.signUp(authorizationCode, request);
+    User newUser = userAuthenticator.signUp(accessTokenWithBearer, request);
     User savedUser = userCreator.saveUser(newUser);
     Token token = userAuthenticator.issueToken(savedUser.getId());
     applicationEventPublisher.publishEvent(new UserSignUpEvent(this, savedUser));
     return UserSignUpResponse.of(savedUser.getId(), token.accessToken(), token.refreshToken());
   }
 
-  public UserSignInResponse signIn(final String authorizationCode,
+  public UserSignInResponse signIn(final String accessTokenWithBearer,
       final UserSignInRequest request) {
 
-    User foundUser = userAuthenticator.signIn(authorizationCode, request);
+    User foundUser = userAuthenticator.signIn(accessTokenWithBearer, request);
     Token token = userAuthenticator.issueToken(foundUser.getId());
     return UserSignInResponse.of(foundUser.getId(), token.accessToken(), token.refreshToken());
   }
 
     public TokenReissueResponse reissueAccessToken(String refreshTokenWithBearer) {
-      if(StringUtils.hasText(refreshTokenWithBearer) && refreshTokenWithBearer.startsWith(Constants.BEARER)) {
         String refreshToken = refreshTokenWithBearer.substring(Constants.BEARER.length());
         return jwtProvider.getTokenReissueResponse(refreshToken);
-      }
-      throw new UnauthorizedException(ErrorType.UNAUTHORIZED);
 
     }
 
