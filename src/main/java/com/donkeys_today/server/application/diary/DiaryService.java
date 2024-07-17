@@ -143,6 +143,7 @@ public class DiaryService {
 
   public void createStaticReply(User user, String date) {
     replyService.createStaticReply(user, date);
+
     // 정적 답변 생성시 어떻게 되는지 ?
   }
 
