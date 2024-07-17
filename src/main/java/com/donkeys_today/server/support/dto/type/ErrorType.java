@@ -26,7 +26,7 @@ public enum ErrorType {
   WRONG_SIGNATURE_TOKEN(HttpStatus.UNAUTHORIZED.value(), "Signature가 잘못된 Token입니다."),
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 오류"),
   INVALID_PLATFORM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR.value(), "지원하지 않는 로그인 플랫폼입니다."),
-  DUPLICATED_USER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미 가입된 유저입니다."),
+  DUPLICATED_USER_ERROR(HttpStatus.FORBIDDEN.value(), "이미 가입된 유저입니다."),
   NOTFOUND_USER_ERROR(HttpStatus.NOT_FOUND.value(), "존재하지 않는 유저 입니다."),
   UNABLE_TO_CREATE_APPLE_PUBLIC_KEY(HttpStatus.UNAUTHORIZED.value(), "애플 로그인 중 퍼블릭 키 생성에 문제가 발생했습니다."),
   /**
