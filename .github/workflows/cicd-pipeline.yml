@@ -35,6 +35,14 @@ jobs:
           cat ./reply.yml
         working-directory: ${{ env.working-directory }}
 
+      - name: logback-dev.xml 생성
+        run: |
+          mkdir -p ./src/main/resources/logback && cd $_
+          touch logback-dev.xml
+          echo "${{ secrets.LOG_DEV }}" > ./logback-dev.yml
+          cat ./logback-dev.xml
+        working-directory: ${{ env.working-directory }}
+
       - name: create-firebase-adminsdk.json
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
