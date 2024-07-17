@@ -27,6 +27,14 @@ jobs:
           cat ./application.yml
         working-directory: ${{ env.working-directory }}
 
+      - name: reply.yml 생성
+        run: |
+          mkdir -p ./src/main/resources && cd $_
+          touch ./reply.yml
+          echo "${{ secrets.APP_REPLY }}" > ./reply.yml
+          cat ./reply.yml
+        working-directory: ${{ env.working-directory }}
+
       - name: create-firebase-adminsdk.json
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
