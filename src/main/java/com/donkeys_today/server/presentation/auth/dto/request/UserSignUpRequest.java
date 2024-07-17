@@ -1,7 +1,6 @@
-package com.donkeys_today.server.presentation.user.dto.requset;
+package com.donkeys_today.server.presentation.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalTime;
 
 public record UserSignUpRequest(
     @Schema(description = "로그인 플랫폼", example = "apple/kakao")
