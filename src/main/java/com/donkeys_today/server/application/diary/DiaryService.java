@@ -20,6 +20,8 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiarySimpleInfo;
 import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,9 +39,10 @@ public class DiaryService {
 
   private final UserService userService;
   private final DiaryPublisher diaryPublisher;
-  private final DiaryPolicy diaryPolicy;
-  private final DiaryRetriever diaryRetriever;
+
   private final ReplyService replyService;
+  private final DiaryRetriever diaryRetriever;
+  private final DiaryPolicy diaryPolicy;
   private final DiaryCreator diaryCreator;
   private final DiaryRemover diaryRemover;
 
@@ -98,50 +101,6 @@ public class DiaryService {
     return DiaryCalenderGetResponse.of(totalMonthlyCount, diarySimpleInfos);
   }
 
-  private Map<LocalDate, List<Diary>> getDiariesMap(int year, int month) {
-    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-    LocalDateTime end = start.plusMonths(1);
-    User user = userService.getUserById(JwtUtil.getLoginMemberId());
-    List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
-    return diaries.stream()
-            .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
-  }
-
-  private Map<LocalDate, Reply> getRepliesMap(int year, int month) {
-    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-    LocalDateTime end = start.plusMonths(1);
-    User user = userService.getUserById(JwtUtil.getLoginMemberId());
-    List<Reply> replies = replyService.getRepliesByUserAndDateBetween(user, start.toLocalDate(), end.toLocalDate());
-    return replies.stream()
-            .collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
-  }
-
-  private boolean isReplyExist(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
-    return repliesByDate.containsKey(date);
-  }
-
-  private Boolean isReplyRead(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
-    return repliesByDate.get(date).getIs_read();
-  }
-
-  private List<DiaryContent> getDiaryContentList(List<Diary> foundDiaries) {
-    return foundDiaries.stream()
-            .map(diary -> new DiaryContent(diary.getContent()))
-            .toList();
-  }
-
-  private List<DiarySimpleInfo> getDiarySimpleInfoList(int year, int month) {
-    List<DiarySimpleInfo> diarySimpleInfos = new ArrayList<>();
-    int daysInMonth = getDaysInMonth(year, month);
-    for (int i = 0; i < daysInMonth; i++) {
-      diarySimpleInfos.add(DiarySimpleInfo.of(0, ReplyStatus.UNREADY)); // 빈 요소 추가
-    }
-    return diarySimpleInfos;
-  }
-
-  private int getDaysInMonth(int year, int month) {
-    return LocalDate.of(year, month, 1).lengthOfMonth();
-  }
 
   public DiaryResponse getDiary(int year, int month, int day) {
     LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
@@ -153,6 +112,7 @@ public class DiaryService {
 
   public DiaryCreatedResponse createDiary(DiaryRequest request) {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime createdAt = combineTime(request.date());
 
     //당일 일기를 삭제한 유저일 경우(당일 생성한 일기가 존재하고, is_deleted == true)면, 답변 생성하지 않음, (기존 일기만 업데이트)
     if (diaryPolicy.hasDeletedDiary(user, request.date())) {
@@ -162,13 +122,13 @@ public class DiaryService {
 
     // 욕설을 포함한 일기를 작성한 경우, 정적 답변을 생성함 (기존 일기만 업데이트)
     if (diaryPolicy.containsProfanity(request.content())) {
-      diaryCreator.saveAllDiary(user, request.content());
+      diaryCreator.saveAllDiary(user, request.content(), createdAt);
       createStaticReply(user, request.date());
       return DiaryCreatedResponse.createDiaryWithStaticReply(LocalDateTime.now());
     }
 
     log.info("diary ; {}", request.content());
-    List<Diary> diaryList = diaryCreator.saveAllDiary(user, request.content());
+    List<Diary> diaryList = diaryCreator.saveAllDiary(user, request.content(), createdAt);
     DiaryMessage message = diaryPublisher.convertDiariesToMessage(diaryList);
 
     // 첫 요청일 경우, 즉시 답변 생성 (DB 전체 조회)
@@ -178,11 +138,11 @@ public class DiaryService {
     }
 
     diaryPublisher.publishDiaryMessage(message);
-    return DiaryCreatedResponse.createDiaryWithDynamicReply(diaryList.getFirst().getCreatedAt());
+    return DiaryCreatedResponse.createDiaryWithDynamicReply(LocalDateTime.now());
   }
 
   public void createStaticReply(User user, String date) {
-    replyService.createStaticReply(user,date);
+    replyService.createStaticReply(user, date);
     // 정적 답변 생성시 어떻게 되는지 ?
   }
 
@@ -212,6 +172,61 @@ public class DiaryService {
     LocalDateTime end = start.plusDays(1);
     List<Diary> findDiaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
     LocalDateTime createdTime = findDiaries.getFirst().getCreatedAt();
-    return DiaryCreatedTimeGetResponse.of(createdTime.getHour(), createdTime.getMinute(), createdTime.getSecond());
+    return DiaryCreatedTimeGetResponse.of(createdTime.getHour(), createdTime.getMinute(),
+        createdTime.getSecond());
   }
+
+  private Map<LocalDate, List<Diary>> getDiariesMap(int year, int month) {
+    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
+    return diaries.stream()
+        .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
+  }
+
+  private Map<LocalDate, Reply> getRepliesMap(int year, int month) {
+    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    List<Reply> replies = replyService.getRepliesByUserAndDateBetween(user, start.toLocalDate(),
+        end.toLocalDate());
+    return replies.stream()
+        .collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
+  }
+
+  private boolean isReplyExist(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
+    return repliesByDate.containsKey(date);
+  }
+
+  private Boolean isReplyRead(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
+    return repliesByDate.get(date).getIs_read();
+  }
+
+  private List<DiaryContent> getDiaryContentList(List<Diary> foundDiaries) {
+    return foundDiaries.stream()
+        .map(diary -> new DiaryContent(diary.getContent()))
+        .toList();
+  }
+
+  private List<DiarySimpleInfo> getDiarySimpleInfoList(int year, int month) {
+    List<DiarySimpleInfo> diarySimpleInfos = new ArrayList<>();
+    int daysInMonth = getDaysInMonth(year, month);
+    for (int i = 0; i < daysInMonth; i++) {
+      diarySimpleInfos.add(DiarySimpleInfo.of(0, ReplyStatus.UNREADY)); // 빈 요소 추가
+    }
+    return diarySimpleInfos;
+  }
+
+  private int getDaysInMonth(int year, int month) {
+    return LocalDate.of(year, month, 1).lengthOfMonth();
+  }
+
+  private LocalDateTime combineTime(String date) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate requestedDate = LocalDate.parse(date, formatter);
+    LocalTime currentTime = LocalTime.now();
+    return LocalDateTime.of(requestedDate, currentTime);
+  }
+
 }
