@@ -4,7 +4,6 @@ import com.donkeys_today.server.application.auth.JwtUtil;
 import com.donkeys_today.server.application.user.event.UserSignUpEvent;
 import com.donkeys_today.server.common.constants.Constants;
 import com.donkeys_today.server.domain.user.User;
-import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.auth.dto.response.TokenReissueResponse;
 import com.donkeys_today.server.presentation.user.dto.requset.UserNamePatchRequest;
 import com.donkeys_today.server.presentation.user.dto.requset.UserSignInRequest;
@@ -17,7 +16,6 @@ import com.donkeys_today.server.presentation.user.dto.response.UserSignUpRespons
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
 import com.donkeys_today.server.support.jwt.JwtProvider;
-import com.donkeys_today.server.support.jwt.RefreshTokenRepository;
 import com.donkeys_today.server.support.jwt.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

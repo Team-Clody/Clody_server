@@ -49,6 +49,7 @@ public enum ErrorType {
    * 답장 관련 오류,
    */
   REPLY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "답장이 존재하지 않습니다."),
+  DUPLICATE_REPLY(HttpStatus.BAD_REQUEST.value(), "중복된 답장이 존재합니다."),
   ;
   private final int status;
   private final String message;
