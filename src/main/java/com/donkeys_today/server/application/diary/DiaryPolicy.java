@@ -41,12 +41,10 @@ public class DiaryPolicy {
   }
 
   public void updateDeletedDiary(User user, DiaryRequest request) {
-    List<Diary> foundDiary = diaryRetriever.getTodayDiariesByUser(user,
-        LocalDateTime.now());
-    diaryRepository.deleteAll(foundDiary);
+
     List<Diary> newDiaries = request.content().stream()
         .map(content -> Diary.builder()
-            .isDeleted(true)
+            .isDeleted(false)
             .content(content)
             .user(user)
             .updatedAt(LocalDateTime.now())
