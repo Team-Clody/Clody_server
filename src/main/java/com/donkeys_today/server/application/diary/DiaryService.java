@@ -101,7 +101,6 @@ public class DiaryService {
     return DiaryCalenderGetResponse.of(totalMonthlyCount, diarySimpleInfos);
   }
 
-
   public DiaryResponse getDiary(int year, int month, int day) {
     LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0);
     LocalDateTime end = start.plusDays(1);
@@ -151,11 +150,13 @@ public class DiaryService {
   @Transactional
   public void deleteDiary(int year, int month, int date) {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
-    LocalDateTime currentTime = LocalDateTime.of(LocalDate.of(year, month, date),
-        LocalDateTime.now().toLocalTime());
-    log.info("currentTime : {}", currentTime);
-    List<Diary> diaryList = diaryRetriever.getTodayDiariesByUser(user,
-        currentTime);
+    LocalDate parsedDate = LocalDate.of(year, month, date);
+    LocalDateTime startOfDay = parsedDate.atStartOfDay();
+    LocalDateTime endOfDay = parsedDate.atTime(LocalTime.MAX);
+
+    log.info("currentTime : {}, startOfDay : {}, endOfDat : {}", parsedDate, startOfDay,endOfDay);
+    List<Diary> diaryList = diaryRetriever.getDiariesByUserAndDateBetween(user,
+        startOfDay,endOfDay);
     diaryRemover.removeDiarySoft(diaryList);
 
     if (diaryPublisher.containsKey(user.getId())) {
