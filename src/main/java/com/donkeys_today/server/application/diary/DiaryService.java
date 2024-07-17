@@ -107,7 +107,8 @@ public class DiaryService {
     LocalDateTime end = start.plusDays(1);
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
     List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
-    return DiaryResponse.of(getDiaryContentList(diaries));
+    List<Diary> notDeletedDiaries = diaryRetriever.findDiariesNotDeleted(diaries);
+    return DiaryResponse.of(getDiaryContentList(notDeletedDiaries));
   }
 
   public DiaryCreatedResponse createDiary(DiaryRequest request) {
