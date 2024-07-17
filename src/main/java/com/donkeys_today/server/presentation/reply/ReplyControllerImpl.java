@@ -6,6 +6,7 @@ import com.donkeys_today.server.presentation.api.ReplyController;
 import com.donkeys_today.server.presentation.reply.dto.response.ReplyResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
+import com.donkeys_today.server.support.util.DateTimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class ReplyControllerImpl implements ReplyController {
       @RequestParam final int year,
       @RequestParam final int month,
       @RequestParam final int date) {
+    DateTimeValidator.validateLocalDateTime(year, month, date);
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
         SuccessType.READ_SUCCESS, replyService.readReply(year, month, date)));
   }

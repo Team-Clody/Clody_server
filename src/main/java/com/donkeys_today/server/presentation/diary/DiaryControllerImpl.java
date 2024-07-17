@@ -11,6 +11,7 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
 import com.donkeys_today.server.support.dto.ApiResponse;
 import com.donkeys_today.server.support.dto.type.SuccessType;
+import com.donkeys_today.server.support.util.DateTimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class DiaryControllerImpl implements DiaryController {
   public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
       @RequestParam final int year,
       @RequestParam final int month) {
+    DateTimeValidator.validateLocalDate(year, month);
     final DiaryListGetResponse response = diaryService.getDiaryList(year, month);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
@@ -45,7 +47,7 @@ public class DiaryControllerImpl implements DiaryController {
   public ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(
       @RequestParam final int year,
       @RequestParam final int month) {
-
+    DateTimeValidator.validateLocalDate(year, month);
     final DiaryCalenderGetResponse response = diaryService.getDiaryCalender(year, month);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
@@ -54,7 +56,7 @@ public class DiaryControllerImpl implements DiaryController {
   @GetMapping("/diary")
   @Override
   public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(int year, int month, int date) {
-
+    DateTimeValidator.validateLocalDateTime(year, month, date);
     final DiaryResponse response = diaryService.getDiary(year, month, date);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
@@ -74,8 +76,8 @@ public class DiaryControllerImpl implements DiaryController {
   public ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(
       @RequestParam final int year, @RequestParam final int month,
       @RequestParam final int date) {
-    final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month,
-        date);
+    DateTimeValidator.validateLocalDateTime(year, month, date);
+    final DiaryCreatedTimeGetResponse response = diaryService.getDiaryCreatedTime(year, month, date);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
@@ -83,9 +85,8 @@ public class DiaryControllerImpl implements DiaryController {
   @Override
   @DeleteMapping("/diary")
   public ResponseEntity<ApiResponse<?>> deleteDiary(
-      int year,
-      int month,
-      int date) {
+      int year, int month, int date) {
+    DateTimeValidator.validateLocalDateTime(year, month, date);
     diaryService.deleteDiary(year, month, date);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.DELETED_SUCCESS));

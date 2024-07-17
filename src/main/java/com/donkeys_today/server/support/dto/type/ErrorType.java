@@ -9,6 +9,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorType {
 
   /**
+   *  시간 관련 오류
+   */
+  INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST.value(), "올바르지 않은 날짜 형식입니다."),
+
+  /**
    * 인증 / 인가 관련 오류
    */
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "사용자의 로그인 검증을 실패했습니다."),
