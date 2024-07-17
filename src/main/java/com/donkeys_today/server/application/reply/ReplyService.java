@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class ReplyService {
 
   private final ReplyRetriever replyRetriever;
-  private final ReplyUpdater replyUpdater;
   private final ReplyRemover replyRemover;
   private final ReplyCreator replyCreator;
 
@@ -22,7 +21,8 @@ public class ReplyService {
   public ReplyResponse readReply(int year, int month, int date) {
     Reply reply = replyRetriever.findReplyByDate(year, month, date);
     reply.readReply();
-    return ReplyResponse.of(reply.getContent());
+    String nickname = reply.getUser().getNickName();
+    return ReplyResponse.of(nickname, reply.getContent());
   }
 
   public List<Reply> getRepliesByUserAndDateBetween(User user, LocalDate start, LocalDate end) {

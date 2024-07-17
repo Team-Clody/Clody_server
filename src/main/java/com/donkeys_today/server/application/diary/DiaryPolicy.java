@@ -27,14 +27,14 @@ public class DiaryPolicy {
   public boolean containsProfanity(List<String> content) {
     if (profanityFilter.containsProfanity(content)) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
 
-  public boolean hasDeletedDiary(User user, String time) {
+  public boolean hasDeletedDiary(User user, String date) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    LocalDate localDate = LocalDate.parse(time, formatter);
+    LocalDate localDate = LocalDate.parse(date, formatter);
     LocalDateTime localDateTime = localDate.atStartOfDay();
     List<Diary> foundDiary = diaryRetriever.getTodayDiariesByUser(user, localDateTime);
     return foundDiary.stream().anyMatch(Diary::isDeleted);
@@ -46,11 +46,12 @@ public class DiaryPolicy {
     diaryRepository.deleteAll(foundDiary);
     List<Diary> newDiaries = request.content().stream()
         .map(content -> Diary.builder()
-            .isDeleted(false)
+            .isDeleted(true)
             .content(content)
             .user(user)
-            .build()
-        ).collect(Collectors.toUnmodifiableList());
+            .updatedAt(LocalDateTime.now())
+            .build())
+        .collect(Collectors.toUnmodifiableList());
     diaryRepository.saveAll(newDiaries);
   }
 }
