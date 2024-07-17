@@ -60,7 +60,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
 
     private User findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
-                () -> new NotFoundException(ErrorType.USER_NOT_FOUND)
+                () -> new SignInException(ErrorType.USER_NOT_FOUND)
         );
     }
 
@@ -80,7 +80,6 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
 
     private void validateDuplicateUser(KakaoUserInfoResponse userInfo) {
         if (userRepository.existsByPlatformAndPlatformID(Platform.KAKAO, userInfo.id())) {
-            throw new BusinessException(ErrorType.DUPLICATED_USER_ERROR);
             throw new SignUpException(ErrorType.DUPLICATED_USER_ERROR);
         }
     }
