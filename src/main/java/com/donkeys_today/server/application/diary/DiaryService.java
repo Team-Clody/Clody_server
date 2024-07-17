@@ -184,7 +184,11 @@ public class DiaryService {
     LocalDateTime end = start.plusMonths(1);
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
     List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
-    return diaries.stream()
+    List<Diary> filteredDiaries = diaries.stream()
+            .filter(diary -> !diary.isDeleted())
+            .toList();
+
+    return filteredDiaries.stream()
         .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
   }
 
