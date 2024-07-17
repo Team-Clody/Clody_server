@@ -8,6 +8,8 @@ import com.donkeys_today.server.presentation.user.dto.requset.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
 import com.donkeys_today.server.support.exception.BusinessException;
 import com.donkeys_today.server.support.exception.NotFoundException;
+import com.donkeys_today.server.support.exception.auth.SignInException;
+import com.donkeys_today.server.support.exception.auth.SignUpException;
 import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoTokenResponse;
 import com.donkeys_today.server.support.feign.dto.response.kakao.KakaoUserInfoResponse;
 import com.donkeys_today.server.support.feign.kakao.KakaoAuthClient;
@@ -58,7 +60,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
 
     private User findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
-                () -> new NotFoundException(ErrorType.USER_NOT_FOUND)
+                () -> new SignInException(ErrorType.USER_NOT_FOUND)
         );
     }
 
@@ -78,7 +80,7 @@ public class KakaoAuthStrategy implements SocialRegisterSterategy {
 
     private void validateDuplicateUser(KakaoUserInfoResponse userInfo) {
         if (userRepository.existsByPlatformAndPlatformID(Platform.KAKAO, userInfo.id())) {
-            throw new BusinessException(ErrorType.DUPLICATED_USER_ERROR);
+            throw new SignUpException(ErrorType.DUPLICATED_USER_ERROR);
         }
     }
 
