@@ -87,8 +87,7 @@ public class DiaryControllerImpl implements DiaryController {
   public ResponseEntity<ApiResponse<?>> deleteDiary(
       int year, int month, int date) {
     DateTimeValidator.validateLocalDateTime(year, month, date);
-    diaryService.deleteDiary(year, month, date);
     return ResponseEntity.status(HttpStatus.OK)
-        .body(ApiResponse.success(SuccessType.DELETED_SUCCESS));
+        .body(ApiResponse.success(SuccessType.DELETED_SUCCESS,diaryService.deleteDiary(year, month, date)));
   }
 }
