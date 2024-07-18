@@ -148,7 +148,7 @@ public class DiaryService {
   }
 
   @Transactional
-  public void deleteDiary(int year, int month, int date) {
+  public DiaryResponse deleteDiary(int year, int month, int date) {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
     LocalDate parsedDate = LocalDate.of(year, month, date);
     LocalDateTime startOfDay = parsedDate.atStartOfDay();
@@ -166,6 +166,8 @@ public class DiaryService {
     if (replyService.isReplyExist(user.getId(), year, month, date)) {
       replyService.removeReply(user.getId(), year, month, date);
     }
+
+    return DiaryResponse.of(List.of());
   }
 
   public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int date) {
