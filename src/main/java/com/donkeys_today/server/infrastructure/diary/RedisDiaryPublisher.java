@@ -35,7 +35,7 @@ public class RedisDiaryPublisher implements DiaryPublisher {
     String expiryKey = "diaryMessage_expiry:"+message.userId();
     String serializedMessage = serializaeMessageToString(message);
     redisTemplate.opsForValue().set(key,serializedMessage);
-    redisTemplate.opsForValue().set(expiryKey,"", 30, TimeUnit.SECONDS);
+    redisTemplate.opsForValue().set(expiryKey,"", 25, TimeUnit.SECONDS);
   }
 
   @Override
@@ -44,7 +44,7 @@ public class RedisDiaryPublisher implements DiaryPublisher {
     String expiryKey = "diaryMessage_expiry:"+message.userId();
     String serializedMessage = serializaeMessageToString(message);
     redisTemplate.opsForValue().set(key,serializedMessage);
-    redisTemplate.opsForValue().set(expiryKey,"", 30,TimeUnit.SECONDS);
+    redisTemplate.opsForValue().set(expiryKey,"", 25,TimeUnit.SECONDS);
   }
 
   @Override
