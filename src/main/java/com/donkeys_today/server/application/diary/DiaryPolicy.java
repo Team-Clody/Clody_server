@@ -1,5 +1,7 @@
 package com.donkeys_today.server.application.diary;
 
+import com.donkeys_today.server.application.auth.JwtUtil;
+import com.donkeys_today.server.application.user.UserService;
 import com.donkeys_today.server.domain.diary.Diary;
 import com.donkeys_today.server.domain.user.User;
 import com.donkeys_today.server.infrastructure.diary.DiaryRepository;
@@ -19,6 +21,7 @@ public class DiaryPolicy {
   private final ProfanityFilter profanityFilter;
   private final DiaryRepository diaryRepository;
   private final DiaryRetriever diaryRetriever;
+  private final UserService userService;
 
   public boolean checkUserInitialDiary(User user) {
     return diaryRepository.existsByUser(user);
@@ -51,5 +54,10 @@ public class DiaryPolicy {
             .build())
         .collect(Collectors.toUnmodifiableList());
     diaryRepository.saveAll(newDiaries);
+  }
+
+  public boolean hasDiary() {
+    return !diaryRetriever.getTodayDiariesByUser(userService.getUserById(JwtUtil.getLoginMemberId()),
+            LocalDateTime.now()).isEmpty();
   }
 }

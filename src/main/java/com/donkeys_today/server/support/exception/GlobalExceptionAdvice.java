@@ -32,4 +32,10 @@ public class GlobalExceptionAdvice {
     protected ResponseEntity<ApiResponse<?>> BusinessException(InvalidDateFormatException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_DATE_FORMAT,e.getErrorType()));
     }
+
+    @ExceptionHandler(DiaryExistException.class)
+    protected ResponseEntity<ApiResponse<?>> DiaryExistException(DiaryExistException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.DIARY_ALREADY_EXIST,e.getErrorType()));
+    }
+
 }
