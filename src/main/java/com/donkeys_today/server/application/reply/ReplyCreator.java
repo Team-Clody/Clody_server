@@ -17,6 +17,9 @@ public class ReplyCreator {
 
   public Reply createStaticReply(User user , LocalDate createdDate ) {
     Reply reply = Reply.createStaticReply(user, replyProperty.getComment(), createdDate);
+  public Reply createStaticReply(User user, LocalDate createdDate) {
+    log.info(replyProperty.getContent());
+    Reply reply = Reply.createStaticReply(user, replyProperty.getContent(), createdDate);
     return replyRepository.save(reply);
   }
 
