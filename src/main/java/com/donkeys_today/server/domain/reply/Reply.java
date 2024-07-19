@@ -47,6 +47,14 @@ public class Reply extends BaseEntity {
         this.is_read = true;
     }
 
+    public boolean isNotRead(){
+        return !this.is_read;
+    }
+
+    public boolean isRead(){
+        return this.is_read;
+    }
+
     @Builder
     public Reply(String content, Boolean is_read, LocalDate diaryCreatedDate, User user) {
         this.content = content;
