@@ -49,16 +49,13 @@ public class DiaryService {
   public DiaryListGetResponse getDiaryList(int year, int month) {
     Map<LocalDate, List<Diary>> diariesByDate = getDiariesMap(year, month);
     Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
-
     List<DiaryFullInfo> diaryFullInfos = new ArrayList<>();
-    int totalMonthlyCount = 0;
 
     for (LocalDate date : diariesByDate.keySet()) {
       List<Diary> foundDiaries = diariesByDate.get(date);
       int diaryCount = foundDiaries.size();
       ReplyStatus replyStatus = null;
       if (isReplyExist(date, repliesByDate) && isReplyRead(date, repliesByDate)) {
-        totalMonthlyCount += 1;
         replyStatus = ReplyStatus.READY_READ;
       } else if (isReplyExist(date, repliesByDate)) {
         replyStatus = ReplyStatus.READY_NOT_READ;
@@ -71,7 +68,7 @@ public class DiaryService {
     }
 
     diaryFullInfos.sort(Comparator.comparing(DiaryFullInfo::date));
-    return DiaryListGetResponse.of(totalMonthlyCount, diaryFullInfos);
+    return DiaryListGetResponse.of(getCloverCount(year), diaryFullInfos);
   }
 
   public DiaryCalenderGetResponse getDiaryCalender(int year, int month) {
@@ -80,14 +77,12 @@ public class DiaryService {
     Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
 
     List<DiarySimpleInfo> diarySimpleInfos = getDiarySimpleInfoList(year, month);
-    int totalMonthlyCount = 0;
 
     for (LocalDate date : diariesByDate.keySet()) {
       List<Diary> foundDiaries = diariesByDate.get(date);
       int diaryCount = foundDiaries.size();
       ReplyStatus replyStatus = null;
       if (isReplyExist(date, repliesByDate) && isReplyRead(date, repliesByDate)) {
-        totalMonthlyCount += 1;
         replyStatus = ReplyStatus.READY_READ;
       } else if (isReplyExist(date, repliesByDate)) {
         replyStatus = ReplyStatus.READY_NOT_READ;
@@ -98,7 +93,7 @@ public class DiaryService {
       DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(diaryCount, replyStatus);
       diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
     }
-    return DiaryCalenderGetResponse.of(totalMonthlyCount, diarySimpleInfos);
+    return DiaryCalenderGetResponse.of(getCloverCount(year), diarySimpleInfos);
   }
 
   public DiaryResponse getDiary(int year, int month, int day) {
@@ -207,6 +202,17 @@ public class DiaryService {
     return replies.stream()
         .collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
   }
+
+  private int getCloverCount(int year) {
+    LocalDateTime start = LocalDateTime.of(year, 1, 1, 0, 0);
+    LocalDateTime end = start.plusYears(1);
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+
+      return replyService.getRepliesByUserAndDateBetween(user, start.toLocalDate(),
+                    end.toLocalDate()).stream().filter(Reply::isRead)  // is_read가 true 인 것만 필터링
+            .toList().size();
+  }
+
 
   private boolean isReplyExist(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
     return repliesByDate.containsKey(date);
