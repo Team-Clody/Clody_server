@@ -37,10 +37,8 @@ public class ReplyService {
     replyRemover.removeReplyUserIdAndDate(userId, year, month, date);
   }
 
-  public void createStaticReply(User user, String createdDate) {
   public Reply createStaticReply(User user, String createdDate) {
     LocalDate parsedCreatedDate = LocalDate.parse(createdDate);
-    replyCreator.createStaticReply(user, parsedCreatedDate);
     return replyCreator.createStaticReply(user, parsedCreatedDate);
   }
 
