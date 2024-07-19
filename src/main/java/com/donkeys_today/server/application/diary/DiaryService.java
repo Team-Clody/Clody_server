@@ -18,6 +18,8 @@ import com.donkeys_today.server.presentation.diary.dto.response.DiaryListGetResp
 import com.donkeys_today.server.presentation.diary.dto.response.DiaryResponse;
 import com.donkeys_today.server.presentation.diary.dto.response.DiarySimpleInfo;
 import com.donkeys_today.server.presentation.user.dto.response.DiaryCreatedTimeGetResponse;
+import com.donkeys_today.server.support.dto.type.ErrorType;
+import com.donkeys_today.server.support.exception.DiaryExistException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -121,6 +123,11 @@ public class DiaryService {
       Reply reply = createStaticReply(user, request.date());
       return DiaryCreatedResponse.createDiaryWithStaticReply(reply.getCreatedAt());
     }
+
+    if (diaryPolicy.hasDiary()) {
+      throw new DiaryExistException(ErrorType.DIARY_ALREADY_EXIST);
+    }
+
 
     log.info("diary ; {}", request.content());
     List<Diary> diaryList = diaryCreator.saveAllDiary(user, request.content(), createdAt);

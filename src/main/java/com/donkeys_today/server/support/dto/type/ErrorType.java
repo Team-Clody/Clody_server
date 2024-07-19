@@ -50,6 +50,7 @@ public enum ErrorType {
    * 일기 관련 오류,
    */
   DIARY_MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "일기 데이터가 존재하지 않습니다."),
+  DIARY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "일기는 하루에 한번 쓸 수 있습니다.."),
 
   /**
    * 답장 관련 오류,
