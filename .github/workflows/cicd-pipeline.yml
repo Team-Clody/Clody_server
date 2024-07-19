@@ -27,12 +27,12 @@ jobs:
           cat ./application.yml
         working-directory: ${{ env.working-directory }}
 
-      - name: reply.yml 생성
+      - name: reply.yaml 생성
         run: |
           mkdir -p ./src/main/resources && cd $_
-          touch ./reply.yml
-          echo "${{ secrets.APP_REPLY }}" > ./reply.yml
-          cat ./reply.yml
+          touch ./reply.yaml
+          echo "${{ secrets.APP_REPLY }}" > ./reply.yaml
+          cat ./reply.yaml
         working-directory: ${{ env.working-directory }}
 
     #  - name: logback-local-dev.xml 생성
