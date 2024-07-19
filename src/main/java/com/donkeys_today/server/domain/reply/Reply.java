@@ -47,7 +47,11 @@ public class Reply extends BaseEntity {
         this.is_read = true;
     }
 
-    public boolean isRead() {
+    public boolean isNotRead(){
+        return !this.is_read;
+    }
+
+    public boolean isRead(){
         return this.is_read;
     }
 

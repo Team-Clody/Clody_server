@@ -118,8 +118,8 @@ public class DiaryService {
     // 욕설을 포함한 일기를 작성한 경우, 정적 답변을 생성함 (기존 일기만 업데이트)
     if (diaryPolicy.containsProfanity(request.content())) {
       diaryCreator.saveAllDiary(user, request.content(), createdAt);
-      createStaticReply(user, request.date());
-      return DiaryCreatedResponse.createDiaryWithStaticReply(LocalDateTime.now());
+      Reply reply = createStaticReply(user, request.date());
+      return DiaryCreatedResponse.createDiaryWithStaticReply(reply.getCreatedAt());
     }
 
     log.info("diary ; {}", request.content());
@@ -136,10 +136,8 @@ public class DiaryService {
     return DiaryCreatedResponse.createDiaryWithDynamicReply(LocalDateTime.now());
   }
 
-  public void createStaticReply(User user, String date) {
-    replyService.createStaticReply(user, date);
-
-    // 정적 답변 생성시 어떻게 되는지 ?
+  public Reply createStaticReply(User user, String date) {
+    return replyService.createStaticReply(user, date);
   }
 
   @Transactional
@@ -160,6 +158,7 @@ public class DiaryService {
 
     if (replyService.isReplyExist(user.getId(), year, month, date)) {
       replyService.removeReply(user.getId(), year, month, date);
+      //답변이 있고, 읽은 상태면, CloverCount 1 감소
     }
 
     return DiaryResponse.of(List.of());
