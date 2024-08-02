@@ -65,3 +65,7 @@ replay_pid*
 *.json
 
 *.yml
+/clody-domain/.gradle
+/clody-app/.gradle
+/clody-support/.gradle
+/clody-infra/.gradle
