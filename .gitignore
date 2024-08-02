@@ -61,4 +61,7 @@ replay_pid*
 /secret
 /.gradle/
 /.gradle
-google-services.json
+
+*.json
+
+*.yml
