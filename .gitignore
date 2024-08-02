@@ -69,3 +69,5 @@ replay_pid*
 /clody-app/.gradle
 /clody-support/.gradle
 /clody-infra/.gradle
+/.gradle
+/clody-adapter/.gradle
