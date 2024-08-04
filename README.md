@@ -4,7 +4,6 @@
 ![IMG](https://github.com/user-attachments/assets/f05b42c6-a11a-4977-ab98-27b4a0ce2796)
 
 <p >
-  <img src="https://github.com/user-attachments/assets/fe3cc599-8f4c-419a-bc7e-0858fca28eac" width=247 height=600/>
   <img src="https://github.com/user-attachments/assets/d8b5eadd-6a37-408a-8e07-91b40085f0fe" width=247 height=600/>
     <img src="https://github.com/user-attachments/assets/0662e7a8-ac86-47ee-9bc9-d26c667542b2" width=247 height=600/>
     <img src="https://github.com/user-attachments/assets/28b458ca-52c5-4c8e-b91a-e7c26d93171a" width=247 height=600/>
