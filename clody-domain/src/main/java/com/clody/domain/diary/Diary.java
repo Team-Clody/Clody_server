@@ -54,4 +54,8 @@ public class Diary {
   public void deleteDiary() {
     this.isDeleted = true;
   }
+
+  public boolean checkDiaryDeleted(){
+    return this.isDeleted;
+  }
 }

@@ -2,6 +2,9 @@ package com.clody.domain.user;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import com.clody.domain.base.BaseEntity;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,31 +17,33 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+@Access(AccessType.FIELD)
+@Getter
+public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    private String platformID;
+  private String platformID;
 
-    @Enumerated(EnumType.STRING)
-    private Platform platform;
+  @Enumerated(EnumType.STRING)
+  private Platform platform;
 
-    @Column(name = "email")
-    private String email;
+  @Column(name = "email")
+  private String email;
 
-    private String nickName;
+  private String nickName;
 
-    private boolean is_deleted;
+  private boolean is_deleted;
 
-    private boolean hasWrittenDiary;
+  private boolean hasWrittenDiary;
 
   @Builder
-  public User(String platformID, Platform platform, String email, String nickName, boolean is_deleted) {
+  public User(String platformID, Platform platform, String email, String nickName,
+      boolean is_deleted) {
     this.platformID = platformID;
     this.platform = platform;
     this.email = email;
@@ -46,7 +51,23 @@ public class User {
     this.is_deleted = is_deleted;
   }
 
-    public void updateUserName(String newName) {
-        this.nickName = newName;
+  public void updateUserName(String newName) {
+    this.nickName = newName;
+  }
+
+  public void makeDiaryWritten(){
+    if(!hasWrittenDiary){
+      this.hasWrittenDiary = true;
     }
+  }
+
+  public static User createNewUser(String platformId, Platform platform, String email, String nickName) {
+    return User.builder()
+        .platformID(platformId)
+        .platform(platform)
+        .email(email)
+        .nickName(nickName)
+        .is_deleted(false)
+        .build();
+  }
 }

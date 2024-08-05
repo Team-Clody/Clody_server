@@ -2,6 +2,7 @@ package com.clody.domain.reply;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import com.clody.domain.base.BaseEntity;
 import com.clody.domain.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +24,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @NoArgsConstructor
 @Table(name = "replies", indexes = @Index(name = "idx_diary_created_date", columnList = "diary_created_date"))
-public class Reply {
+public class Reply extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
