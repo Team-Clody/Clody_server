@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @ComponentScan(basePackages = {"com.clody.support"})  // Infrastructure 모듈의 패키지를 스캔
 public class SecurityConfig {
 

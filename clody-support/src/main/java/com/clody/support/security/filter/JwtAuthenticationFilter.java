@@ -4,9 +4,9 @@ import static com.clody.support.constants.HeaderConstants.AUTHORIZATION;
 import static com.clody.support.constants.HeaderConstants.BEARER;
 import static com.clody.support.security.auth.UserAuthentication.createUserAuthentication;
 
+import com.clody.support.constants.WhiteListConstants;
 import com.clody.support.jwt.JwtProvider;
 import com.clody.support.security.auth.UserAuthentication;
-import com.clody.support.constants.WhiteListConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +23,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtProvider jwtProvider;
+
+  private static void createAndSetAuthenticationDetails(HttpServletRequest request,
+      UserAuthentication authentication) {
+    //Authentication에 Detail 추가 (IP + Session ID)
+    WebAuthenticationDetailsSource webAuthenticationDetailsSource = new WebAuthenticationDetailsSource();
+    WebAuthenticationDetails webAuthenticationDetails = webAuthenticationDetailsSource.buildDetails(
+        request);
+    authentication.setDetails(webAuthenticationDetails);
+  }
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -53,27 +62,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private void doAuthentication(HttpServletRequest request, Long userId) {
     UserAuthentication authentication = createUserAuthentication(userId);
-    createAndSetAuthenticationDetails(request , authentication);
+    createAndSetAuthenticationDetails(request, authentication);
     SecurityContext securityContext = SecurityContextHolder.getContext();
     securityContext.setAuthentication(authentication);
-  }
-
-  private static void createAndSetAuthenticationDetails(HttpServletRequest request, UserAuthentication authentication){
-    //Authentication에 Detail 추가 (IP + Session ID)
-    WebAuthenticationDetailsSource webAuthenticationDetailsSource = new WebAuthenticationDetailsSource();
-    WebAuthenticationDetails webAuthenticationDetails = webAuthenticationDetailsSource.buildDetails(request);
-    authentication.setDetails(webAuthenticationDetails);
   }
 
   // signup login 은 그냥 지나가야함.
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
-  String path = request.getRequestURI();
-  for (String whitePath : WhiteListConstants.FILTER_WHITE_LIST) {
-    if (path.equals(whitePath)) {
-      return true;
+    String path = request.getRequestURI();
+    for (String whitePath : WhiteListConstants.FILTER_WHITE_LIST) {
+      if (whitePath.equals(path)) {
+        return true;
+      }
     }
-  }
-  return false;
+    return false;
   }
 }
