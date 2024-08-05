@@ -1,19 +1,18 @@
-package com.clody.infra.models.user;
+package com.clody.infra.models.user.adapter;
 
 import com.clody.domain.user.Platform;
 import com.clody.domain.user.User;
 import com.clody.domain.user.repository.UserRepository;
+import com.clody.infra.models.user.repository.JpaUserRepository;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
   private final JpaUserRepository userRepository;
-
-  public UserRepositoryAdapter(JpaUserRepository userRepository) {
-    this.userRepository= userRepository;
-  }
 
   @Override
   public Optional<User> findByPlatformAndPlatformID(Platform platform, String platformId) {

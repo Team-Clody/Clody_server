@@ -1,6 +1,6 @@
 package com.clody.infra.external.fcm;
 
-import com.clody.clodyapi.service.alarm.MessagingService;
+import com.clody.domain.alarm.service.MessageSender;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class FcmService implements MessagingService {
+public class FcmService implements MessageSender {
 
   private final FirebaseMessaging firebaseMessaging;
 

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaAlarmRepository extends JpaRepository<Alarm, Long>, AlarmRepository {
+public interface JpaAlarmRepository extends JpaRepository<Alarm, Long> {
 
   Alarm findByUser(User user);
 

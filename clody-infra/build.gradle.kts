@@ -6,8 +6,8 @@ plugins {
 }
 dependencies {
     implementation(project(":clody-domain"))
-    implementation(project(":clody-app"))
     implementation(project(":clody-support"))
+//    implementation(project(":clody-app"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")

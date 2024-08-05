@@ -1,16 +1,21 @@
-package com.clody.infra.models.user;
+package com.clody.infra.models.user.repository;
 
 import com.clody.domain.user.Platform;
 import com.clody.domain.user.User;
-import com.clody.domain.user.repository.UserRepository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaUserRepository extends JpaRepository<User, Long>, UserRepository {
+public interface JpaUserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByPlatformAndPlatformID(Platform platform, String platformID);
 
   boolean existsByPlatformAndPlatformID(Platform platform, String platformID);
+
+  Optional<User> findById(Long userId);
+
+  void delete(User user);
+
+  User save(User user);
 }
