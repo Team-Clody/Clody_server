@@ -37,7 +37,7 @@ public class DiaryPolicy {
     LocalDate localDate = LocalDate.parse(date, formatter);
     LocalDateTime localDateTime = localDate.atStartOfDay();
     List<Diary> foundDiary = diaryRetriever.getTodayDiariesByUser(user, localDateTime);
-    return foundDiary.stream().anyMatch(Diary::isDeleted);
+    return foundDiary.stream().anyMatch(Diary::checkDiaryDeleted);
   }
 
   public void updateDeletedDiary(User user, DiaryRequest request) {

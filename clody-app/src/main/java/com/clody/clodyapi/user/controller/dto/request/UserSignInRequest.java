@@ -1,4 +1,4 @@
-package com.clody.clodyapi.presentation.auth.dto.request;
+package com.clody.clodyapi.user.controller.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

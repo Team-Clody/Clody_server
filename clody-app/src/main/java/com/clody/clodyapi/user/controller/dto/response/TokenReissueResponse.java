@@ -1,4 +1,4 @@
-package com.clody.clodyapi.presentation.auth.dto.response;
+package com.clody.clodyapi.user.controller.dto.response;
 
 public record TokenReissueResponse(
         String accessToken,

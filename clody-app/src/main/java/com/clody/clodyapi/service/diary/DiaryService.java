@@ -171,7 +171,7 @@ public class DiaryService {
     LocalDateTime end = start.plusDays(1);
     List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
     List<Diary> filteredDiaries = diaries.stream()
-            .filter(diary -> !diary.isDeleted())
+            .filter(diary -> !diary.checkDiaryDeleted())
             .toList();
 
     LocalDateTime createdTime = filteredDiaries.getFirst().getCreatedAt();
@@ -185,7 +185,7 @@ public class DiaryService {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
     List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
     List<Diary> filteredDiaries = diaries.stream()
-            .filter(diary -> !diary.isDeleted())
+            .filter(diary -> !diary.checkDiaryDeleted())
             .toList();
 
     return filteredDiaries.stream()

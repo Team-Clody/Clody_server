@@ -31,7 +31,7 @@ public class DiaryRetriever {
   }
 
   public List<Diary> findDiariesNotDeleted(List<Diary> diaries) {
-    return diaries.stream().filter(diary -> !diary.isDeleted())
+    return diaries.stream().filter(diary -> !diary.checkDiaryDeleted())
         .collect(Collectors.toUnmodifiableList());
   }
 }
