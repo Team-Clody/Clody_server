@@ -8,7 +8,9 @@ import com.clody.domain.user.repository.UserRepository;
 import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.BusinessException;
 import com.clody.support.exception.auth.SignInException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserAuthService {
 
   private final UserRepository userRepository;

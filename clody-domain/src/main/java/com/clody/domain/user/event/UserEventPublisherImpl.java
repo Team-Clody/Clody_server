@@ -1,7 +1,9 @@
 package com.clody.domain.user.event;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserEventPublisherImpl implements UserEventPublisher{
 
   private final ApplicationEventPublisher eventPublisher;
