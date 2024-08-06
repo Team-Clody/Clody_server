@@ -6,9 +6,11 @@ import com.clody.domain.user.strategy.SocialRegisterStrategyFactory;
 import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Component
+@Primary
 public class SocialRegisterStrategyFactoryImpl implements SocialRegisterStrategyFactory {
 
   private final Map<Platform, SocialRegisterStrategy> strategyMap = new HashMap<>();
@@ -35,6 +37,5 @@ public class SocialRegisterStrategyFactoryImpl implements SocialRegisterStrategy
   @Override
   public SocialRegisterStrategy getStrategy(Platform platform) {
     return strategyMap.get(platform);
-
   }
 }

@@ -44,8 +44,7 @@ public class KakaoAuthStrategy implements SocialRegisterStrategy {
 
     //로컬 테스트 아래의1줄 주석 하셈
 //    KakaoUserInfoResponse userInfo = getKakaoUserInfo(info.authTokenWithBearer());
-
-    validateDuplicateUser(userInfo);
+//    validateDuplicateUser(userInfo);
     return UserSocialInfo.of(userInfo.id(), platform);
   }
 
