@@ -7,10 +7,10 @@ import com.clody.support.security.filter.ExceptionHandlingFilter;
 import com.clody.support.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = true)
-@ComponentScan(basePackages = {"com.clody.support"})  // Infrastructure 모듈의 패키지를 스캔
 public class SecurityConfig {
 
   private final JwtProvider jwtProvider;
@@ -46,4 +45,12 @@ public class SecurityConfig {
         .addFilterBefore(new ExceptionHandlingFilter(), JwtAuthenticationFilter.class)
         .build();
   }
+
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
+    return web -> web.ignoring()
+        // error endpoint를 열어줘야 함, favicon.ico 추가!
+        .requestMatchers("/error", "/favicon.ico");
+  }
+
 }
