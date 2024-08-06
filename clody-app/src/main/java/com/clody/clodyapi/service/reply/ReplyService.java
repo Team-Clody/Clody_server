@@ -37,11 +37,11 @@ public class ReplyService {
     replyRemover.removeReplyUserIdAndDate(userId, year, month, date);
   }
 
-  public Reply createStaticReply(User user, String createdDate) {
-    LocalDate parsedCreatedDate = LocalDate.parse(createdDate);
-    replyCreator.createStaticReply(user, parsedCreatedDate);
-    return replyCreator.createStaticReply(user, parsedCreatedDate);
-  }
+//  public Reply createStaticReply(User user, String createdDate) {
+//    LocalDate parsedCreatedDate = LocalDate.parse(createdDate);
+//    replyCreator.createStaticReply(user, parsedCreatedDate);
+//    return replyCreator.createStaticReply(user, parsedCreatedDate);
+//  }
 
   private ReplyResponse serializeReply(Reply reply) {
     String nickName = reply.getUser().getNickName();

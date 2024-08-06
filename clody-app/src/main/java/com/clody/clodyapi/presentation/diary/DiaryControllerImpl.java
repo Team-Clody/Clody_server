@@ -1,7 +1,7 @@
 package com.clody.clodyapi.presentation.diary;
 
 import com.clody.clodyapi.presentation.diary.dto.response.DiaryCalenderGetResponse;
-import com.clody.clodyapi.service.diary.DiaryService;
+//import com.clody.clodyapi.service.diary.DiaryService;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
 import com.clody.clodyapi.presentation.api.DiaryController;

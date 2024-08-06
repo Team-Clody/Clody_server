@@ -5,6 +5,14 @@ plugins {
     java
     id("org.hidetake.swagger.generator") apply true
 }
+sourceSets {
+    main {
+        java {
+            exclude("com/clody/clodyapi/presentation")
+            exclude("com/clody/clodyapi/service")
+        }
+    }
+}
 
 tasks.withType<BootJar>{
     enabled = true
@@ -39,12 +47,10 @@ dependencies{
 
     //Feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-
 }
+
 the<DependencyManagementExtension>().apply {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudDependenciesVersion")}")
     }
 }
-
-

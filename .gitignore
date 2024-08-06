@@ -77,3 +77,4 @@ replay_pid*
 /server
 /.gradle
 /clody-domain/build
+*.yaml

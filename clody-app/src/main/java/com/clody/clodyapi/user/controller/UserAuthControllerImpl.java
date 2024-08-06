@@ -35,7 +35,7 @@ public class UserAuthControllerImpl implements AuthController {
       @RequestHeader(HeaderConstants.AUTHORIZATION) final String accessTokenWithBearer,
       @RequestBody final UserSignUpRequest userSignUpRequest) {
 
-    jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
+//    jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
     final UserAuthResponse response = userApplicationService.signUp(userSignUpRequest,
         accessTokenWithBearer);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,13 +54,13 @@ public class UserAuthControllerImpl implements AuthController {
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
 
-  @GetMapping("/auth/redirect")
-  public String exRedirect() {
-    return
-        "redirect:https://kauth.kakao.com/oauth/authorize?client_id=7210cddb1650bf64ff6de8902c9f9080&"
-            + "redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code";
-  }
 
+///*
+//kakao:
+//  client-id: eb5b3511f81201dba4850861989793f6
+//  client-secret: vQRSNrKrHg4PIFXJhrO2aW32PxLbA8AV
+//  redirect-uri: https://clody.store/oauth/kakao
+//*/
   @Override
   @GetMapping("/auth/reissue")
   public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
