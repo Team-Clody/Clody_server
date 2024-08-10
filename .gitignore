@@ -54,7 +54,7 @@ replay_pid*
 .github/
 /src/main/resources/
 /build
-!/.idea/
+/.idea/
 /.idea
 ./gradle
 /out

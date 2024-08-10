@@ -2,6 +2,7 @@ import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
+    id("org.springframework.boot") version "3.3.0"
     java
 }
 

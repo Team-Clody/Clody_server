@@ -3,22 +3,19 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     java
+    id("org.springframework.boot") version "3.3.0"
     id("org.hidetake.swagger.generator") apply true
 }
 sourceSets {
     main {
         java {
-            exclude("com/clody/clodyapi/presentation")
-            exclude("com/clody/clodyapi/service")
+            exclude("com/clody/clodyapi/legacy")
         }
     }
 }
 
-tasks.withType<BootJar>{
-    enabled = true
-}
-tasks.withType<Jar>{
-    enabled = false
+tasks.withType<BootJar> {
+    enabled = true;
 }
 
 dependencies{

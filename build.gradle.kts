@@ -59,10 +59,10 @@ subprojects {
     }
 
     tasks.withType<BootJar> {
-        enabled = true;
-    };
-    tasks.withType<Jar> {
         enabled = false;
+    }
+    tasks.withType<Jar> {
+        enabled = true;
     }
 
     java {
