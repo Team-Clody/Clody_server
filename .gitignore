@@ -78,4 +78,4 @@ replay_pid*
 /.gradle
 /clody-domain/build
 *.yaml
-!/clody-app/src/main/java/com/clody/clodyapi/legacy/
+/clody-app/src/main/java/com/clody/clodyapi/legacy/
