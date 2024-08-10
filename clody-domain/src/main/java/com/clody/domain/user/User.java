@@ -61,6 +61,10 @@ public class User extends BaseEntity {
     }
   }
 
+  public boolean hasNoDiary() {
+    return !hasWrittenDiary;
+  }
+
   public static User createNewUser(String platformId, Platform platform, String email, String nickName) {
     return User.builder()
         .platformID(platformId)

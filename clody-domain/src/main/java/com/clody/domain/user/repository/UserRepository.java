@@ -10,7 +10,7 @@ public interface UserRepository {
 
   boolean existsByPlatformAndPlatformID(Platform platform, String platformId);
 
-  Optional<User> findById(Long userId);
+  User findById(Long userId);
 
   void delete(User user);
 
