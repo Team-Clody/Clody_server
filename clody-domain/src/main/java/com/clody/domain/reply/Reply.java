@@ -6,6 +6,8 @@ import com.clody.domain.base.BaseEntity;
 import com.clody.domain.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -25,45 +27,59 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @Table(name = "replies", indexes = @Index(name = "idx_diary_created_date", columnList = "diary_created_date"))
 public class Reply extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
 
-    @Column(name = "content")
-    private String content;
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
+  private Long id;
 
-    @Column(name = "is_read")
-    private Boolean is_read;
+  @Column(name = "content")
+  private String content;
 
-    @Column(name = "diary_created_date")
-    private LocalDate diaryCreatedDate;
+  @Column(name = "is_read")
+  private Boolean is_read;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action= OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private User user;
+  @Column(name = "diary_created_date")
+  private LocalDate diaryCreatedDate;
 
-    public void readReply() {
-        this.is_read = true;
-    }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    public boolean isNotRead(){
-        return !this.is_read;
-    }
+  @Enumerated(EnumType.STRING)
+  private ReplyType replyType;
 
-    public boolean isRead(){
-        return this.is_read;
-    }
+  @Builder
+  public Reply(String content, Boolean is_read, LocalDate diaryCreatedDate, User user,
+      ReplyType replyType) {
+    this.content = content;
+    this.is_read = is_read;
+    this.diaryCreatedDate = diaryCreatedDate;
+    this.user = user;
+    this.replyType = replyType;
+  }
 
-    @Builder
-    public Reply(String content, Boolean is_read, LocalDate diaryCreatedDate, User user) {
-        this.content = content;
-        this.is_read = is_read;
-        this.diaryCreatedDate = diaryCreatedDate;
-        this.user = user;
-    }
+  public static Reply createStaticReply(User user, String content, LocalDate createdDate) {
+    return new Reply(content, false, createdDate, user,ReplyType.STATIC);
+  }
 
-    public static Reply createStaticReply(User user, String content, LocalDate createdDate) {
-        return new Reply(content, false, createdDate, user);
-    }
+  public static Reply createDynamicReply(User user, LocalDate createdDate) {
+    return new Reply(null, false, createdDate, user,ReplyType.DYNAMIC);
+  }
+
+  public static Reply createFastDynamicReply(User user, LocalDate createdDate) {
+    return new Reply(null, false, createdDate, user,ReplyType.FIRST);
+  }
+
+  public void readReply() {
+    this.is_read = true;
+  }
+
+  public boolean isNotRead() {
+    return !this.is_read;
+  }
+
+  public boolean isRead() {
+    return this.is_read;
+  }
 }
