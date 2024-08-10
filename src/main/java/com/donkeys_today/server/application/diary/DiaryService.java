@@ -108,7 +108,13 @@ public class DiaryService {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
     List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
     List<Diary> notDeletedDiaries = diaryRetriever.findDiariesNotDeleted(diaries);
-    return DiaryResponse.of(getDiaryContentList(notDeletedDiaries));
+
+    if(diaries.size() == notDeletedDiaries.size()){
+      // 일기를 쓰고 삭제하지 않은경우
+      return DiaryResponse.of(getDiaryContentList(notDeletedDiaries), false);
+    } else{
+      return DiaryResponse.of(getDiaryContentList(notDeletedDiaries), true);
+    }
   }
 
   public DiaryCreatedResponse createDiary(DiaryRequest request) {

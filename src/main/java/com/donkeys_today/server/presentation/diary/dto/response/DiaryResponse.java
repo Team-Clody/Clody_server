@@ -3,10 +3,15 @@ package com.donkeys_today.server.presentation.diary.dto.response;
 import java.util.List;
 
 public record DiaryResponse(
-        List<DiaryContent> diaries
+        List<DiaryContent> diaries,
+        Boolean isDeleted
 ) {
     public static DiaryResponse of(List<DiaryContent> diaries) {
-        return new DiaryResponse(diaries);
+        return new DiaryResponse(diaries, false);
+    }
+
+    public static DiaryResponse of(List<DiaryContent> diaries, Boolean isDeleted) {
+        return new DiaryResponse(diaries, isDeleted);
     }
 }
 
