@@ -8,9 +8,16 @@ public record DiaryFullInfo(
         int diaryCount,
         ReplyStatus replyStatus,
         LocalDate date,
-        List<DiaryContent> diary
+        List<DiaryContent> diary,
+
+        Boolean isDeleted
 ) {
     public static DiaryFullInfo of(int diaryCount, ReplyStatus replyStatus, LocalDate date, List<DiaryContent> diary) {
-        return new DiaryFullInfo(diaryCount, replyStatus, date, diary);
+        return new DiaryFullInfo(diaryCount, replyStatus, date, diary, false);
+    }
+
+
+    public static DiaryFullInfo of(int diaryCount, ReplyStatus replyStatus, LocalDate date, List<DiaryContent> diary, Boolean isDeleted) {
+        return new DiaryFullInfo(diaryCount, replyStatus, date, diary, isDeleted);
     }
 }

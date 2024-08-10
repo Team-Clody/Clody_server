@@ -23,6 +23,7 @@ import com.donkeys_today.server.support.exception.DiaryExistException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,7 +66,7 @@ public class DiaryService {
         replyStatus = ReplyStatus.UNREADY;
       }
       List<DiaryContent> diaryContents = getDiaryContentList(foundDiaries);
-      DiaryFullInfo diaryFullInfo = DiaryFullInfo.of(diaryCount, replyStatus, date, diaryContents);
+      DiaryFullInfo diaryFullInfo = DiaryFullInfo.of(diaryCount, replyStatus, date, diaryContents, isDeleted(date));
       diaryFullInfos.add(diaryFullInfo);
     }
 
@@ -95,6 +96,9 @@ public class DiaryService {
       DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(diaryCount, replyStatus);
       diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
     }
+
+    setIsDeleted(year, month, diarySimpleInfos);
+
     return DiaryCalenderGetResponse.of(getCloverCount(year), diarySimpleInfos);
   }
 
@@ -104,7 +108,13 @@ public class DiaryService {
     User user = userService.getUserById(JwtUtil.getLoginMemberId());
     List<Diary> diaries = diaryRetriever.getDiariesByUserAndDateBetween(user, start, end);
     List<Diary> notDeletedDiaries = diaryRetriever.findDiariesNotDeleted(diaries);
-    return DiaryResponse.of(getDiaryContentList(notDeletedDiaries));
+
+    if(diaries.size() == notDeletedDiaries.size()){
+      // 일기를 쓰고 삭제하지 않은경우
+      return DiaryResponse.of(getDiaryContentList(notDeletedDiaries), false);
+    } else{
+      return DiaryResponse.of(getDiaryContentList(notDeletedDiaries), true);
+    }
   }
 
   public DiaryCreatedResponse createDiary(DiaryRequest request) {
@@ -252,6 +262,29 @@ public class DiaryService {
     LocalDate requestedDate = LocalDate.parse(date, formatter);
     LocalTime currentTime = LocalTime.now();
     return LocalDateTime.of(requestedDate, currentTime);
+  }
+
+  private Boolean isDeleted(LocalDate date) {
+    User user = userService.getUserById(JwtUtil.getLoginMemberId());
+    LocalDateTime start = date.atStartOfDay();
+    LocalDateTime end = start.plusDays(1);
+    return diaryRetriever.getDiariesByUserAndDateBetween(user, start, end).stream().anyMatch(Diary::isDeleted);
+  }
+
+  private void setIsDeleted(int year, int month, List<DiarySimpleInfo> diarySimpleInfos) {
+    YearMonth yearMonth = YearMonth.of(year, month);
+
+    // 해당 월의 일 수를 가져오기
+    int daysInMonth = yearMonth.lengthOfMonth();
+
+    // 모든 날짜를 순회하는 for 문
+    for (int day = 1; day <= daysInMonth; day++) {
+      LocalDate date = yearMonth.atDay(day);
+      if (isDeleted(date)) {
+        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(0, ReplyStatus.UNREADY, true);
+        diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
+      }
+    }
   }
 
 }

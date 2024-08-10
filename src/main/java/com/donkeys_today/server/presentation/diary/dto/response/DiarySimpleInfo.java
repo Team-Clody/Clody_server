@@ -5,10 +5,16 @@ import com.donkeys_today.server.domain.diary.ReplyStatus;
 
 public record DiarySimpleInfo(
         int diaryCount,
-        ReplyStatus replyStatus
+        ReplyStatus replyStatus,
+        Boolean isDeleted
+
 
 ) {
     public static DiarySimpleInfo of(int diaryCount, ReplyStatus replyStatus) {
-        return new DiarySimpleInfo(diaryCount, replyStatus);
+        return new DiarySimpleInfo(diaryCount, replyStatus, false);
+    }
+
+    public static DiarySimpleInfo of(int diaryCount, ReplyStatus replyStatus, Boolean isDeleted) {
+        return new DiarySimpleInfo(diaryCount, replyStatus, isDeleted);
     }
 }
