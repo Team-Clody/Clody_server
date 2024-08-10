@@ -2,6 +2,7 @@ package com.clody.infra.models.reply;
 
 import com.clody.domain.reply.Reply;
 import com.clody.domain.reply.repository.ReplyRepository;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ public class ReplyRepositoryAdapter implements ReplyRepository {
   }
 
   @Override
+  @Transactional
   public void deleteByUserIdAndDiaryCreatedDate(Long userId, LocalDate date) {
     jpaReplyRepository.deleteByUserIdAndDiaryCreatedDate(userId, date);
   }

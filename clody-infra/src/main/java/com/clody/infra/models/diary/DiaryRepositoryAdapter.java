@@ -22,14 +22,21 @@ public class DiaryRepositoryAdapter implements DiaryRepository {
   }
 
   @Override
-  public List<Diary> findDiariesByUserAndCreatedAtBetween(User user, LocalDateTime start,
+  public List<Diary> findDiariesByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start,
       LocalDateTime end) {
-    return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
+    return diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, start, end);
+  }
+
+  @Override
+  public List<Diary> findDiaryByUserId(Long userId) {
+    return diaryRepository.findDiariesByUserId(userId);
   }
 
   @Override
   public boolean existsByUser(User user) {
     return diaryRepository.existsByUser(user);
   }
+
+
 }
 

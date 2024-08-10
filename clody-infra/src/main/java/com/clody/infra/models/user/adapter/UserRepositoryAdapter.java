@@ -4,6 +4,8 @@ import com.clody.domain.user.Platform;
 import com.clody.domain.user.User;
 import com.clody.domain.user.repository.UserRepository;
 import com.clody.infra.models.user.repository.JpaUserRepository;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.NotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,8 +32,8 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
-  public Optional<User> findById(Long userId) {
-    return userRepository.findById(userId);
+  public User findById(Long userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorType.USER_NOT_FOUND));
   }
 
   @Override

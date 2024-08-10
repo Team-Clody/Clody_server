@@ -12,6 +12,7 @@ public interface JpaDiaryRepository extends JpaRepository<Diary, Long> {
 
   boolean existsByUser(User user);
 
-  List<Diary> findDiariesByUserAndCreatedAtBetween(User user, LocalDateTime start, LocalDateTime end);
+  List<Diary> findDiariesByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
+  List<Diary> findDiariesByUserId(Long userId);
 }
