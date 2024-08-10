@@ -9,7 +9,9 @@ public interface DiaryRepository {
 
   List<Diary> saveAll(List<Diary> diaryList);
 
-  List<Diary> findDiariesByUserAndCreatedAtBetween(User user, LocalDateTime start, LocalDateTime end);
+  List<Diary> findDiariesByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
+
+  List<Diary> findDiaryByUserId(Long userId);
 
   boolean existsByUser(User user);
 }
