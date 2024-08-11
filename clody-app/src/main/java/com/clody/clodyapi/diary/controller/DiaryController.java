@@ -57,7 +57,7 @@ public interface DiaryController {
 
     @Operation(summary = "일기 작성 시간 조회 ", description = "QueryString 을 이용해 일기 작성 시간을 조회합니다.")
     @GetMapping("/diary/time")
-    ResponseEntity<ApiResponse<DiaryCreatedTimeGetResponse>> getDiaryCreatedTime(
+    ResponseEntity<ApiResponse<DiaryCreatedResponse>> getDiaryCreatedTime(
         @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
         @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
         @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int date
