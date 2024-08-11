@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DiaryService {
+public class DiaryCommandService {
 
   private final DiaryRepository diaryRepository;
   private final UserRepository userRepository;
