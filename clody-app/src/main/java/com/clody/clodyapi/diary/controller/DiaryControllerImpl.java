@@ -2,19 +2,24 @@ package com.clody.clodyapi.diary.controller;
 
 import com.clody.clodyapi.diary.controller.dto.request.DiaryRequest;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedResponse;
+import com.clody.domain.diary.dto.DiaryListGetResponse;
 import com.clody.clodyapi.diary.usecase.DiaryCreationUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryDeletionUsecase;
+import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
+import com.clody.support.util.DateTimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,17 +29,18 @@ public class DiaryControllerImpl  {
 
   private final DiaryCreationUsecase diaryCreationUsecase;
   private final DiaryDeletionUsecase diaryDeletionUsecase;
+  private final DiaryRetrieverUsecase diaryRetrieverUsecase;
 
-//  @GetMapping("/calendar/list")
-//  @Override
-//  public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
-//      @RequestParam final int year,
-//      @RequestParam final int month) {
-//    DateTimeValidator.validateLocalDate(year, month);
-//    final DiaryListGetResponse response = diaryService.getDiaryList(year, month);
-//    return ResponseEntity.status(HttpStatus.OK)
-//        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-//  }
+
+  @GetMapping("/calendar/list")
+  public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
+      @RequestParam final int year,
+      @RequestParam final int month) {
+    DateTimeValidator.validateLocalDate(year, month);
+    final DiaryListGetResponse response = diaryRetrieverUsecase.retrieveListDiary(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 //
 //  @GetMapping("/calendar")
 //  @Override
