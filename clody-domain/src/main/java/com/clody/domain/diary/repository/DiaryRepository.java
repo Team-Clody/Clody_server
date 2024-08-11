@@ -14,4 +14,6 @@ public interface DiaryRepository {
   List<Diary> findDiaryByUserId(Long userId);
 
   boolean existsByUser(User user);
+
+  List<Diary> findTodayDiary(LocalDateTime localDateTime);
 }
