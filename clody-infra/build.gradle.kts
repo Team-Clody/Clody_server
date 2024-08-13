@@ -40,6 +40,9 @@ dependencies {
     implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1"))
     implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs")
 
+    //azure
+    implementation("com.azure:azure-ai-openai-assistants:1.0.0-beta.3")
+
 }
 
 tasks.withType<BootJar>{
