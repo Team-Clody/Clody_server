@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfig {
 
   private final JwtProvider jwtProvider;
@@ -52,5 +52,4 @@ public class SecurityConfig {
         // error endpoint를 열어줘야 함, favicon.ico 추가!
         .requestMatchers("/error", "/favicon.ico");
   }
-
 }
