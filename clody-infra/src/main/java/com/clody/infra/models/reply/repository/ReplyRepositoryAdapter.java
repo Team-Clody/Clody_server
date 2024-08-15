@@ -1,7 +1,9 @@
-package com.clody.infra.models.reply;
+package com.clody.infra.models.reply.repository;
 
 import com.clody.domain.reply.Reply;
 import com.clody.domain.reply.repository.ReplyRepository;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,8 +19,10 @@ public class ReplyRepositoryAdapter implements ReplyRepository {
   }
 
   @Override
-  public List<Reply> findByUserIdAndDiaryCreatedDate(Long userId, LocalDate localDate) {
-    return jpaReplyRepository.findByUserIdAndDiaryCreatedDate(userId, localDate);
+  public Reply findByUserIdAndDiaryCreatedDate(Long userId, LocalDate localDate) {
+    return jpaReplyRepository.findByUserIdAndDiaryCreatedDate(userId, localDate).orElseThrow(
+        () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
+    );
   }
 
   @Override
@@ -41,5 +45,12 @@ public class ReplyRepositoryAdapter implements ReplyRepository {
   @Override
   public Reply save(Reply reply) {
     return jpaReplyRepository.save(reply);
+  }
+
+  @Override
+  public Reply findById(Long replyId) {
+    return jpaReplyRepository.findById(replyId).orElseThrow(
+        () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
+    );
   }
 }
