@@ -34,9 +34,9 @@ public class UserService {
   private final ApplicationEventPublisher applicationEventPublisher;
 
   @Transactional
-  public UserSignUpResponse signUp(final String accessTokenWithBearer,
+  public UserSignUpResponse signUp(final String tokenWithBearer,
       final UserSignUpRequest request) {
-    User newUser = userAuthenticator.signUp(accessTokenWithBearer, request);
+    User newUser = userAuthenticator.signUp(tokenWithBearer, request);
     User savedUser = userCreator.saveUser(newUser);
     Token token = userAuthenticator.issueToken(savedUser.getId());
     applicationEventPublisher.publishEvent(new UserSignUpEvent(this, savedUser));
