@@ -34,11 +34,12 @@ public class AuthControllerImpl implements AuthController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(
-            @RequestHeader(Constants.AUTHORIZATION) final String accessTokenWithBearer,
+            @RequestHeader(Constants.AUTHORIZATION) final String tokenWithBearer,
             @RequestBody final UserSignUpRequest userSignUpRequest) {
-
-        jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
-        final UserSignUpResponse response = userService.signUp(accessTokenWithBearer, userSignUpRequest);
+        // 카카오  = accessToken 을 보내줌
+        // 애플 = idToken 을 보내줌
+        jwtProvider.validateTokenStartsWithBearer(tokenWithBearer);
+        final UserSignUpResponse response = userService.signUp(tokenWithBearer, userSignUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
     }
