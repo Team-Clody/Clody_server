@@ -10,8 +10,12 @@ public class AppleIdentityTokenValidator {
     @Value("${apple.client-id}")
     private String clientId;
 
+    @Value("${apple.audience}")
+    private String audience;
+
+
     public boolean isValidAppleIdentityToken(Claims claims) {
-        return claims.getIssuer().contains("https://appleid.apple.com")
+        return claims.getIssuer().contains(audience)
                 && claims.getAudience().equals(clientId);
     }
 }
