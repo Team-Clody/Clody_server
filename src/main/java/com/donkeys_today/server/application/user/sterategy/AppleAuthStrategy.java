@@ -6,9 +6,9 @@ import com.donkeys_today.server.infrastructure.user.UserRepository;
 import com.donkeys_today.server.presentation.auth.dto.request.UserSignInRequest;
 import com.donkeys_today.server.presentation.auth.dto.request.UserSignUpRequest;
 import com.donkeys_today.server.support.dto.type.ErrorType;
-import com.donkeys_today.server.support.exception.BusinessException;
-import com.donkeys_today.server.support.exception.NotFoundException;
 import com.donkeys_today.server.support.exception.UnauthorizedException;
+import com.donkeys_today.server.support.exception.auth.SignInException;
+import com.donkeys_today.server.support.exception.auth.SignUpException;
 import com.donkeys_today.server.support.feign.apple.AppleFeignClient;
 import com.donkeys_today.server.support.feign.apple.AppleIdentityTokenParser;
 import com.donkeys_today.server.support.feign.apple.AppleIdentityTokenValidator;
@@ -62,13 +62,13 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
 
   private User findByPlatformAndPlatformId(Platform platform, String platformId) {
     return userRepository.findByPlatformAndPlatformID(platform, platformId).orElseThrow(
-        () -> new NotFoundException(ErrorType.DUPLICATED_USER_ERROR)
+            () -> new SignInException(ErrorType.USER_NOT_FOUND)
     );
   }
 
   private void validateDuplicateUser(String userId) {
     if (userRepository.existsByPlatformAndPlatformID(Platform.APPLE, userId)) {
-      throw new BusinessException(ErrorType.DUPLICATED_USER_ERROR);
+      throw new SignUpException(ErrorType.DUPLICATED_USER_ERROR);
     }
   }
 
@@ -81,7 +81,6 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
     ApplePublicKeys applePublicKeys = appleFeignClient.getApplePublicKeys();
     PublicKey publicKey = applePublicKeyGenerator.generatePublicKeyWithApplePublicKeys(headers, applePublicKeys);
     Claims claims = appleIdentityTokenParser.parseWithPublicKeyAndGetClaims(identityToken, publicKey);
-    System.out.println(claims.toString());
     validateClaims(claims);
 
     return claims.getSubject();
@@ -92,5 +91,4 @@ public class AppleAuthStrategy implements SocialRegisterSterategy {
       throw new UnauthorizedException(ErrorType.INVALID_ID_TOKEN);
     }
   }
-
 }
