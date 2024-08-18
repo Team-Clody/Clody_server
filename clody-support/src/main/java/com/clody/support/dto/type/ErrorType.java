@@ -56,6 +56,12 @@ public enum ErrorType {
    */
   REPLY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "답장이 존재하지 않습니다."),
   DUPLICATE_REPLY(HttpStatus.BAD_REQUEST.value(), "중복된 답장이 존재합니다."),
+
+  /*
+    * 알람 관련 오류
+   */
+  ALARM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "알람이 존재하지 않습니다."),
+  USER_NOT_AGREED_FOR_REPLY_ALARM(HttpStatus.BAD_REQUEST.value(), "사용자가 답장 알람 수신에 동의하지 않았습니다."),
   ;
   private final int status;
   private final String message;
