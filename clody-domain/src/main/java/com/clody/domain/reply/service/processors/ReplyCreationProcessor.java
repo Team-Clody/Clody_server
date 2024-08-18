@@ -1,4 +1,4 @@
-package com.clody.clodyapi.reply.service;
+package com.clody.domain.reply.service.processors;
 
 import com.clody.domain.reply.dto.Message;
 import com.clody.domain.reply.event.ReplyCreatedEvent;
@@ -13,11 +13,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ReplyCreationProcessor {
 
-  //SQS 등 외부 이벤트 필요
   private final ReplyMessageSender<Message> replyMessageSender;
 
   @EventListener
-  public void handleReply(ReplyCreatedEvent event) {
+  public void handleReplyCreatedEvent(ReplyCreatedEvent event) {
     log.info("Reply Created Event: {}", event);
     Message message = Message.of(event);
     replyMessageSender.sendMessage(message);

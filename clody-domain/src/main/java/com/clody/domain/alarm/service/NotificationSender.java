@@ -1,6 +1,6 @@
 package com.clody.domain.alarm.service;
 
-public interface MessageSender {
+public interface NotificationSender {
 
   void sendDiaryAlarm(String token);
 
