@@ -26,17 +26,17 @@ public class ReplyCompletionProcessor {
   @EventListener
   @Transactional
   public void insertReply(Message message){
-    ReplyInsertionInfo info = ReplyInsertionInfo.of(message.replyId(), message.content());
-    insertReply(info);
-
+    ReplyInsertionInfo info = ReplyInsertionInfo.of(message);
+    Reply reply = replyRepository.findById(info.replyId());
+    reply.insertContentFromRody(info.content(), info.version());
     log.info("Reply Inserted: {}", info.content());
     CompletionEvent completionEvent = alarmEventConverter.convertToCompletionEvent(info.replyId());
     alarmPublisher.publishCompletionEvent(completionEvent);
   }
 
-  public void insertReply(ReplyInsertionInfo info) {
-    Reply reply = replyRepository.findById(info.replyId());
-    reply.insertContentFromRody(info.content());
+  public void insertReply(Reply reply, ReplyInsertionInfo info) {
+    reply.insertContentFromRody(info.content(), info.version());
     replyRepository.save(reply);
   }
+
 }
