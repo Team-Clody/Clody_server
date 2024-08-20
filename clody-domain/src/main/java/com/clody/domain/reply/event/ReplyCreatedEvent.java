@@ -4,6 +4,7 @@ import com.clody.domain.reply.Reply;
 
 public record ReplyCreatedEvent(
     Reply reply,
-    String parsedContent
+    String parsedContent,
+    Integer version
 ) {
 }

@@ -39,7 +39,8 @@ public class ReplyEventListener {
         event.diaryList());
     Reply firstReply = Reply.createFastDynamicReply(user, createdDate);
     Reply savedReply = replyRepository.save(firstReply);
-    replyPublisher.publish(new ReplyCreatedEvent(savedReply,convertedContent));
+    replyPublisher.publish(
+        new ReplyCreatedEvent(savedReply, convertedContent, savedReply.getVersion()));
   }
 
   @EventListener
@@ -51,7 +52,7 @@ public class ReplyEventListener {
     Reply defaultReply = Reply.createDynamicReply(user, createdDate);
     Reply savedReply = replyRepository.save(defaultReply);
     replyRepository.save(defaultReply);
-    replyPublisher.publish(new ReplyCreatedEvent(savedReply,convertedContent));
+    replyPublisher.publish(new ReplyCreatedEvent(savedReply, convertedContent,savedReply.getVersion()));
   }
 
   @EventListener

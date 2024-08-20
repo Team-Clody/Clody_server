@@ -5,9 +5,10 @@ import java.time.LocalDateTime;
 public record DequeuedMessage(
     Long replyId,
     String content,
-    LocalDateTime creationTime
+    LocalDateTime creationTime,
+    Integer version
 ) {
-  public static DequeuedMessage of(Long replyId, String content ) {
-    return new DequeuedMessage(replyId, content, LocalDateTime.now());
+  public static DequeuedMessage of(Long replyId, String content, Integer version ) {
+    return new DequeuedMessage(replyId, content, LocalDateTime.now(), version);
   }
 }
