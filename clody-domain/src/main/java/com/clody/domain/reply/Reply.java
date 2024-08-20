@@ -4,7 +4,10 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.clody.domain.base.BaseEntity;
 import com.clody.domain.user.User;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.BusinessException;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -49,26 +52,33 @@ public class Reply extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private ReplyType replyType;
 
+  @Embedded
+  private ReplyInfo replyInfo;
+
   @Builder
   public Reply(String content, Boolean is_read, LocalDate diaryCreatedDate, User user,
-      ReplyType replyType) {
+      ReplyType replyType, ReplyInfo replyInfo) {
     this.content = content;
     this.is_read = is_read;
     this.diaryCreatedDate = diaryCreatedDate;
     this.user = user;
     this.replyType = replyType;
+    this.replyInfo = replyInfo;
   }
 
   public static Reply createStaticReply(User user, String content, LocalDate createdDate) {
-    return new Reply(content, false, createdDate, user,ReplyType.STATIC);
+    ReplyInfo initialInfo = ReplyInfo.createStaticReplyInfo();
+    return new Reply(content, false, createdDate, user, ReplyType.STATIC, initialInfo);
   }
 
   public static Reply createDynamicReply(User user, LocalDate createdDate) {
-    return new Reply(null, false, createdDate, user,ReplyType.DYNAMIC);
+    ReplyInfo initialInfo = ReplyInfo.createInitialReplyInfo();
+    return new Reply(null, false, createdDate, user, ReplyType.DYNAMIC, initialInfo);
   }
 
   public static Reply createFastDynamicReply(User user, LocalDate createdDate) {
-    return new Reply(null, false, createdDate, user,ReplyType.FIRST);
+    ReplyInfo initialInfo = ReplyInfo.createInitialReplyInfo();
+    return new Reply(null, false, createdDate, user, ReplyType.FIRST, initialInfo);
   }
 
   public void readReply() {
@@ -83,7 +93,28 @@ public class Reply extends BaseEntity {
     return this.is_read;
   }
 
-  public void insertContentFromRody(String content){
+  public Integer getVersion() {
+    return this.replyInfo.getVersion();
+  }
+
+  private ReplyProcessStatus getProcessStatus() {
+    return this.replyInfo.getReplyProcessStatus();
+  }
+
+  public void insertContentFromRody(String content, Integer messageVersion) {
+    if (messageVersion < getVersion() && getProcessStatus()== ReplyProcessStatus.UPDATED) {
+      throw new BusinessException(ErrorType.USER_UPDATED_DIARY);
+    }
+    // 내용 업데이트
     this.content = content;
+    this.replyInfo = replyInfo.update(messageVersion, ReplyProcessStatus.SUCCEED);
+  }
+
+  public boolean checkReplyDeleted() {
+    return this.replyInfo.isDeleted();
+  }
+
+  public void delete(){
+    this.replyInfo = replyInfo.delete();
   }
 }
