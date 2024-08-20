@@ -2,10 +2,12 @@ package com.clody.clodyapi.diary.controller;
 
 import com.clody.clodyapi.diary.controller.dto.request.DiaryRequest;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedResponse;
+import com.clody.domain.diary.dto.DiaryListGetResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedTimeResponse;
 import com.clody.clodyapi.diary.usecase.DiaryCreationUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryDeletionUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryQueryUsecase;
+import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
@@ -25,22 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class DiaryControllerImpl {
+public class DiaryControllerImpl  {
 
   private final DiaryCreationUsecase diaryCreationUsecase;
   private final DiaryDeletionUsecase diaryDeletionUsecase;
+  private final DiaryRetrieverUsecase diaryRetrieverUsecase;
   private final DiaryQueryUsecase diaryQueryUsecase;
 
-//  @GetMapping("/calendar/list")
-//  @Override
-//  public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
-//      @RequestParam final int year,
-//      @RequestParam final int month) {
-//    DateTimeValidator.validateLocalDate(year, month);
-//    final DiaryListGetResponse response = diaryService.getDiaryList(year, month);
-//    return ResponseEntity.status(HttpStatus.OK)
-//        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-//  }
+
+  @GetMapping("/calendar/list")
+  public ResponseEntity<ApiResponse<DiaryListGetResponse>> getDiaryList(
+      @RequestParam final int year,
+      @RequestParam final int month) {
+    DateTimeValidator.validateLocalDate(year, month);
+    final DiaryListGetResponse response = diaryRetrieverUsecase.retrieveListDiary(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 //
 //  @GetMapping("/calendar")
 //  @Override
@@ -62,7 +65,7 @@ public class DiaryControllerImpl {
 //        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
 //  }
 
-  //  @Override
+//  @Override
   @PostMapping("/diary")
   public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
       @RequestHeader(HeaderConstants.AUTHORIZATION) String accessToken,
