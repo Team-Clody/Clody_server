@@ -1,4 +1,4 @@
-package com.clody.clodyapi.diary.controller.dto.response;
+package com.clody.domain.diary.dto;
 
 import java.util.List;
 
