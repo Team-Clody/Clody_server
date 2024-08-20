@@ -3,6 +3,8 @@ package com.clody.infra.models.alarm;
 import com.clody.domain.alarm.Alarm;
 import com.clody.domain.alarm.repository.AlarmRepository;
 import com.clody.domain.user.User;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.NotFoundException;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,13 @@ public class AlarmRepositoryAdapter implements AlarmRepository {
   @Override
   public Alarm findByUser(User user) {
     return alarmRepository.findByUser(user);
+  }
+
+  @Override
+  public Alarm findByUserId(Long userId) {
+    return alarmRepository.findByUserId(userId).orElseThrow(
+        () -> new NotFoundException(ErrorType.ALARM_NOT_FOUND)
+    );
   }
 
   @Override

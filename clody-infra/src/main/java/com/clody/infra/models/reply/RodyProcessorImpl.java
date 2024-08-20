@@ -17,6 +17,7 @@ import com.azure.ai.openai.assistants.models.ThreadRun;
 import com.clody.domain.reply.dto.DequeuedMessage;
 import com.clody.domain.reply.dto.Message;
 import com.clody.domain.reply.event.ReplyMessagePublisher;
+import com.clody.domain.reply.service.RodyProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,13 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class RodyProcessor {
+public class RodyProcessorImpl implements RodyProcessor {
 
   private final AssistantsClient client;
   private final Assistant assistant;
   private final ReplyMessagePublisher replyMessagePublisher;
 
-  public void processMessage(DequeuedMessage messageContent)  {
+  public void createReply(DequeuedMessage messageContent) {
     log.info("Processing message: {}", messageContent);
 
     AssistantThread thread = createAssistantThread();
@@ -45,7 +46,7 @@ public class RodyProcessor {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-    publishResponseEvent(messageContent.replyId(),result);
+    publishResponseEvent(messageContent.replyId(), result);
   }
 
   private AssistantThread createAssistantThread() {
@@ -70,7 +71,7 @@ public class RodyProcessor {
   private List<String> extractMessagesFromResponse(PageableList<ThreadMessage> messages) {
     List<String> result = new ArrayList<>();
     ThreadMessage threadMessage = messages.getData().getFirst();
-    for(MessageContent messageContent : threadMessage.getContent()){
+    for (MessageContent messageContent : threadMessage.getContent()) {
       log.info("Message content: {}", messageContent);
       MessageTextContent messageTextContent = (MessageTextContent) messageContent;
       result.add(messageTextContent.getText().getValue());
@@ -81,7 +82,7 @@ public class RodyProcessor {
   private void publishResponseEvent(Long replyId, List<String> result) {
     String responseMessage = String.join(" ", result);
     log.info("Publishing response message: {}", responseMessage);
-    Message resultMessage = Message.of(replyId,responseMessage);
+    Message resultMessage = Message.of(replyId, responseMessage);
     replyMessagePublisher.publishMessage(resultMessage);
   }
 

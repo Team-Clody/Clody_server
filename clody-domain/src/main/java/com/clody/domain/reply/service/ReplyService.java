@@ -10,11 +10,5 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReplyService {
 
-  private final ReplyRepository replyRepository;
 
-  public void insertReply(ReplyInsertionInfo info) {
-    Reply reply = replyRepository.findById(info.replyId());
-    reply.insertContentFromRody(info.content());
-    replyRepository.save(reply);
-  }
 }

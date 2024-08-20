@@ -1,7 +1,7 @@
-package com.clody.clodyapi.reply.service;
+package com.clody.domain.reply.service.processors;
 
 import com.clody.domain.reply.dto.DequeuedMessage;
-import com.clody.infra.models.reply.RodyProcessor;
+import com.clody.domain.reply.service.RodyProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -15,8 +15,8 @@ public class RodyMessageProcessor {
   private final RodyProcessor rodyProcessor;
 
   @EventListener
-  public void sendEnqueuedMessageToRody(DequeuedMessage message){
-    rodyProcessor.processMessage(message);
+  public void sendDequeuedMessageToRody(DequeuedMessage message){
+    rodyProcessor.createReply(message);
   }
 
 }
