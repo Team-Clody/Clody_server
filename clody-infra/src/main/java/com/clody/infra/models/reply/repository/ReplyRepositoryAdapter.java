@@ -34,7 +34,11 @@ public class ReplyRepositoryAdapter implements ReplyRepository {
   @Override
   @Transactional
   public void deleteByUserIdAndDiaryCreatedDate(Long userId, LocalDate date) {
-    jpaReplyRepository.deleteByUserIdAndDiaryCreatedDate(userId, date);
+    Reply reply = jpaReplyRepository.findByUserIdAndDiaryCreatedDate(userId, date).orElseThrow(
+        () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
+    );
+    reply.delete();
+    jpaReplyRepository.save(reply);
   }
 
   @Override
@@ -52,5 +56,24 @@ public class ReplyRepositoryAdapter implements ReplyRepository {
     return jpaReplyRepository.findById(replyId).orElseThrow(
         () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
     );
+  }
+
+  @Override
+  public void delete(Reply reply) {
+    jpaReplyRepository.delete(reply);
+  }
+
+  @Override
+  public Reply findByReplyId(Long replyId) {
+    return jpaReplyRepository.findById(replyId).orElseThrow(
+        () -> new NotFoundException(ErrorType.REPLY_NOT_FOUND)
+    );
+  }
+
+  @Override
+  public boolean existsDeletedReplyByUserIdAndDiaryCreatedDate(Long userId, LocalDate date) {
+    return jpaReplyRepository.findByUserIdAndDiaryCreatedDate(userId, date)
+        .map(Reply::checkReplyDeleted)
+        .orElse(false);
   }
 }
