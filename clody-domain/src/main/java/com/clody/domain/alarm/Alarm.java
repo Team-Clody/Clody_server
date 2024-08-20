@@ -3,6 +3,8 @@ package com.clody.domain.alarm;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.clody.domain.user.User;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -55,8 +57,8 @@ public class Alarm {
     public static Alarm createInitailDiaryAlarm(User user){
         return Alarm.builder()
             .user(user)
-            .isDiaryAlarm(false)
-            .isReplyAlarm(false)
+            .isDiaryAlarm(true)
+            .isReplyAlarm(true)
             .time(LocalTime.of(21, 0))
             .build();
     }
@@ -77,4 +79,9 @@ public class Alarm {
         this.fcmToken = fcmToken;
     }
 
+    public void validateUserAgreedForReplyAlarm(){
+        if(!isReplyAlarm){
+            throw new BusinessException(ErrorType.USER_NOT_AGREED_FOR_REPLY_ALARM);
+        }
+    }
 }

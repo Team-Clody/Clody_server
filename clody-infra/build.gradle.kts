@@ -35,6 +35,14 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+    //AWS
+    implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1"))
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs")
+
+    //azure
+    implementation("com.azure:azure-ai-openai-assistants:1.0.0-beta.3")
+
 }
 
 tasks.withType<BootJar>{

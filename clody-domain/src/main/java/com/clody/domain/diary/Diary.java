@@ -3,6 +3,8 @@ package com.clody.domain.diary;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.clody.domain.user.User;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.NotFoundException;
 import com.vane.badwordfiltering.BadWordFiltering;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -94,5 +97,11 @@ public class Diary {
 
   public boolean matches(LocalDate localDate, Long userId){
     return this.createdAt.toLocalDate().equals(localDate) && this.user.getId().equals(userId);
+  }
+
+  public static Diary getLatestDiary(List<Diary> diaries) {
+    return diaries.stream()
+        .max(Comparator.comparing(Diary::getCreatedAt))
+        .orElseThrow(() -> new NotFoundException(ErrorType.DIARY_MESSAGE_NOT_FOUND));
   }
 }

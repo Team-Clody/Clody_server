@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class AlarmEventListener {
+public class InitialAlarmEventHandler {
 
   private final AlarmRepository alarmRepository;
 

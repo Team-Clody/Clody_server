@@ -32,7 +32,7 @@ public class Reply extends BaseEntity {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
-  @Column(name = "content")
+  @Column(name = "content", columnDefinition = "TEXT")
   private String content;
 
   @Column(name = "is_read")
@@ -81,5 +81,9 @@ public class Reply extends BaseEntity {
 
   public boolean isRead() {
     return this.is_read;
+  }
+
+  public void insertContentFromRody(String content){
+    this.content = content;
   }
 }

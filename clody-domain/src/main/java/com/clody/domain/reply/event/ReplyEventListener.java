@@ -29,7 +29,6 @@ public class ReplyEventListener {
     LocalDate createdDate = event.diaryList().getFirst().getCreatedAt().toLocalDate();
     Reply staticReply = Reply.createStaticReply(user, replyProperty.getContent(), createdDate);
     Reply savedReply = replyRepository.save(staticReply);
-    replyPublisher.publish(new ReplyCreatedEvent(savedReply));
   }
 
   @EventListener
@@ -40,17 +39,19 @@ public class ReplyEventListener {
         event.diaryList());
     Reply firstReply = Reply.createFastDynamicReply(user, createdDate);
     Reply savedReply = replyRepository.save(firstReply);
-    replyPublisher.publish(new ReplyCreatedEvent(savedReply));
+    replyPublisher.publish(new ReplyCreatedEvent(savedReply,convertedContent));
   }
 
   @EventListener
   public void handleDefaultDiary(DefaultDiaryCreatedEvent event) {
     User user = event.diaryList().getFirst().getUser();
     LocalDate createdDate = event.diaryList().getFirst().getCreatedAt().toLocalDate();
+    String convertedContent = ReplyConverter.convertDiaryContentToReplyRequestForm(
+        event.diaryList());
     Reply defaultReply = Reply.createDynamicReply(user, createdDate);
     Reply savedReply = replyRepository.save(defaultReply);
     replyRepository.save(defaultReply);
-    replyPublisher.publish(new ReplyCreatedEvent(savedReply));
+    replyPublisher.publish(new ReplyCreatedEvent(savedReply,convertedContent));
   }
 
   @EventListener

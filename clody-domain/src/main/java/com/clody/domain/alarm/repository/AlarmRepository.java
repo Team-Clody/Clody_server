@@ -9,6 +9,8 @@ public interface AlarmRepository {
 
   Alarm findByUser(User user);
 
+  Alarm findByUserId(Long userId);
+
   List<Alarm> findAllByTime(LocalTime localTime);
 
   Alarm save(Alarm alarm);
