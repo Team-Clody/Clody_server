@@ -17,4 +17,10 @@ public interface ReplyRepository {
   Reply findById(Long replyId);
 
   Reply save(Reply reply);
+
+  void delete(Reply reply);
+
+  Reply findByReplyId(Long replyId);
+
+  boolean existsDeletedReplyByUserIdAndDiaryCreatedDate(Long userId, LocalDate date);
 }
