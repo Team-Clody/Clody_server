@@ -80,3 +80,6 @@ replay_pid*
 /clody-infra/src/main/resources/instruction.txt
 *.txt
 .gradle/
+*.lock
+*.bin
+*.probe
