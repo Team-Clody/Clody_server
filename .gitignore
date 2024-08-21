@@ -69,13 +69,14 @@ replay_pid*
 /clody-app/.gradle
 /clody-support/.gradle
 /clody-infra/.gradle
-/.gradle
 /clody-adapter/.gradle
 /clody-app/build
 /clody-infra/build
 /clody-support/build
 /server
-/.gradle
 /clody-domain/build
 *.yaml
 /clody-app/src/main/java/com/clody/clodyapi/legacy/
+/clody-infra/src/main/resources/instruction.txt
+*.txt
+.gradle/
