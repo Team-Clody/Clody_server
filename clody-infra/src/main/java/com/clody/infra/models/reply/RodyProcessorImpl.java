@@ -46,7 +46,7 @@ public class RodyProcessorImpl implements RodyProcessor {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-    publishResponseEvent(messageContent.replyId(), result);
+    publishResponseEvent(messageContent.replyId(), result, messageContent.version());
   }
 
   private AssistantThread createAssistantThread() {
@@ -79,10 +79,10 @@ public class RodyProcessorImpl implements RodyProcessor {
     return result;
   }
 
-  private void publishResponseEvent(Long replyId, List<String> result) {
+  private void publishResponseEvent(Long replyId, List<String> result, Integer version) {
     String responseMessage = String.join(" ", result);
     log.info("Publishing response message: {}", responseMessage);
-    Message resultMessage = Message.of(replyId, responseMessage);
+    Message resultMessage = Message.of(replyId, responseMessage, version);
     replyMessagePublisher.publishMessage(resultMessage);
   }
 

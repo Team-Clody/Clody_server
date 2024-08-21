@@ -1,13 +1,13 @@
 package com.clody.clodyapi.diary.controller.dto.response;
 
-import com.clody.domain.diary.ReplyStatus;
+import com.clody.domain.reply.UserReplyReadStatus;
 
 public record DiarySimpleInfo(
         int diaryCount,
-        ReplyStatus replyStatus
+        UserReplyReadStatus userReplyReadStatus
 
 ) {
-    public static DiarySimpleInfo of(int diaryCount, ReplyStatus replyStatus) {
-        return new DiarySimpleInfo(diaryCount, replyStatus);
+    public static DiarySimpleInfo of(int diaryCount, UserReplyReadStatus userReplyReadStatus) {
+        return new DiarySimpleInfo(diaryCount, userReplyReadStatus);
     }
 }
