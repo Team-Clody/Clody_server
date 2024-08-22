@@ -2,6 +2,7 @@ package com.clody.domain.alarm;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import com.clody.domain.alarm.dto.UpdateAlarmCommand;
 import com.clody.domain.user.User;
 import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.BusinessException;
@@ -61,6 +62,24 @@ public class Alarm {
             .isReplyAlarm(true)
             .time(LocalTime.of(21, 0))
             .build();
+    }
+
+    public void updateAlarm(UpdateAlarmCommand command){
+        if(command.isDiaryAlarm()!=null){
+            updateReplyAlarm(command.isReplyAlarm());
+        }
+
+        if(command.isReplyAlarm()!=null){
+            updateDiaryAlarm(command.isReplyAlarm());
+        }
+
+        if(command.time()!=null){
+            updateTime(command.time());
+        }
+
+        if(command.fcmToken()!=null){
+            updateFcmToken(command.fcmToken());
+        }
     }
 
     public void updateDiaryAlarm(boolean isDiaryAlarm){
