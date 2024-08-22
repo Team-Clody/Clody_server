@@ -4,10 +4,11 @@ package com.clody.clodyapi.diary.controller;
 import com.clody.clodyapi.diary.controller.dto.request.DiaryRequest;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCalenderGetResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedResponse;
-import com.clody.clodyapi.diary.controller.dto.response.DiaryListGetResponse;
+import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedTimeResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryResponse;
-import com.clody.support.dto.ApiResponse;
+import com.clody.domain.diary.dto.DiaryListGetResponse;
 import com.clody.support.constants.HeaderConstants;
+import com.clody.support.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -57,7 +58,7 @@ public interface DiaryController {
 
     @Operation(summary = "일기 작성 시간 조회 ", description = "QueryString 을 이용해 일기 작성 시간을 조회합니다.")
     @GetMapping("/diary/time")
-    ResponseEntity<ApiResponse<DiaryCreatedResponse>> getDiaryCreatedTime(
+    ResponseEntity<ApiResponse<DiaryCreatedTimeResponse>> getDiaryCreatedTime(
         @RequestParam @Parameter(name = "연도", description = "조회할 연도", required = true) final int year,
         @RequestParam @Parameter(name = "달", description = "조회할 달", required = true) final int month,
         @RequestParam @Parameter(name = "일", description = "조회할 일", required = true) final int date
