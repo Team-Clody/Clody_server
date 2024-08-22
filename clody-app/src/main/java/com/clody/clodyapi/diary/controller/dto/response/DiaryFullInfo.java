@@ -1,5 +1,6 @@
 package com.clody.clodyapi.diary.controller.dto.response;
 
+import com.clody.domain.diary.dto.DiaryContent;
 import com.clody.domain.reply.UserReplyReadStatus;
 import java.time.LocalDate;
 import java.util.List;

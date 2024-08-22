@@ -1,7 +1,6 @@
 package com.clody.domain.diary.service;
 
 import com.clody.domain.diary.Diary;
-import com.clody.domain.diary.ReplyStatus;
 import com.clody.domain.diary.dto.DiaryContent;
 import com.clody.domain.diary.dto.DiaryDeletionInfo;
 import com.clody.domain.diary.dto.DiaryDomainInfo;
@@ -15,6 +14,7 @@ import com.clody.domain.diary.event.strategy.DiaryStrategyManager;
 import com.clody.domain.diary.repository.DiaryRepository;
 import com.clody.domain.reply.Reply;
 import com.clody.domain.reply.ReplyType;
+import com.clody.domain.reply.UserReplyReadStatus;
 import com.clody.domain.reply.repository.ReplyRepository;
 import com.clody.domain.user.User;
 import com.clody.domain.user.event.UserEventPublisher;
@@ -79,13 +79,13 @@ public class DiaryCommandService {
     for (LocalDate date : diariesByDate.keySet()) {
       List<Diary> foundDiaries = diariesByDate.get(date);
       int diaryCount = foundDiaries.size();
-      ReplyStatus replyStatus = null;
+      UserReplyReadStatus replyStatus = null;
       if (isReplyExist(date, repliesByDate) && isReplyRead(date, repliesByDate)) {
-        replyStatus = ReplyStatus.READY_READ;
+        replyStatus = UserReplyReadStatus.READY_READ;
       } else if (isReplyExist(date, repliesByDate)) {
-        replyStatus = ReplyStatus.READY_NOT_READ;
+        replyStatus = UserReplyReadStatus.READY_NOT_READ;
       } else {
-        replyStatus = ReplyStatus.UNREADY;
+        replyStatus = UserReplyReadStatus.UNREADY;
       }
       List<DiaryContent> diaryContents = getDiaryContentList(foundDiaries);
       DiaryFullInfo diaryFullInfo = DiaryFullInfo.of(diaryCount, replyStatus, date, diaryContents, isDeleted(date));
@@ -140,7 +140,7 @@ public class DiaryCommandService {
     for (int day = 1; day <= daysInMonth; day++) {
       LocalDate date = yearMonth.atDay(day);
       if (isDeleted(date)) {
-        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(0, ReplyStatus.UNREADY, true);
+        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(0, UserReplyReadStatus.UNREADY, true);
         diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
       }
     }
