@@ -20,8 +20,8 @@ public class DiaryRetriever {
   private final DiaryRepository diaryRepository;
 
   public List<Diary> getTodayDiariesByUser(User user, LocalDateTime currentTime) {
-    LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
-    LocalDateTime end = currentTime;
+    LocalDateTime start = LocalDateTime.of(currentTime.getYear(), currentTime.getMonth(), currentTime.getDayOfMonth(), 0, 0);
+    LocalDateTime end = start.plusDays(1);
     return diaryRepository.findDiariesByUserAndCreatedAtBetween(user, start, end);
   }
 

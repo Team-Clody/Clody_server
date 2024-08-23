@@ -51,6 +51,7 @@ public class DiaryPolicy {
             .content(content)
             .user(user)
             .updatedAt(LocalDateTime.now())
+            .createdAt(LocalDateTime.now())
             .build())
         .collect(Collectors.toUnmodifiableList());
     diaryRepository.saveAll(newDiaries);
