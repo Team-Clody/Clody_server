@@ -67,7 +67,7 @@ public class DiaryControllerImpl implements DiaryController {
   public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
       @RequestHeader(Constants.AUTHORIZATION) String accessToken,
       @RequestBody DiaryRequest request) {
-    return ResponseEntity.status(HttpStatus.OK)
+    return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, diaryService.createDiary(request)));
   }
 

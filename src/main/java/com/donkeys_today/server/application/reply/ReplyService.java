@@ -39,7 +39,6 @@ public class ReplyService {
 
   public Reply createStaticReply(User user, String createdDate) {
     LocalDate parsedCreatedDate = LocalDate.parse(createdDate);
-    replyCreator.createStaticReply(user, parsedCreatedDate);
     return replyCreator.createStaticReply(user, parsedCreatedDate);
   }
 
