@@ -281,7 +281,7 @@ public class DiaryService {
     for (int day = 1; day <= daysInMonth; day++) {
       LocalDate date = yearMonth.atDay(day);
       if (isDeleted(date)) {
-        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(0, ReplyStatus.UNREADY, true);
+        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(diarySimpleInfos.get(day-1).diaryCount(), ReplyStatus.UNREADY, true);
         diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
       }
     }
