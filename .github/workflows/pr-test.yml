@@ -17,6 +17,19 @@ jobs:
           distribution: 'corretto'
           java-version: '21'
 
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+            
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Detect changed modules
         id: changed_modules
         run: |
@@ -25,7 +38,7 @@ jobs:
       - name: Run tests on changed modules
         run: |
           for module in $CHANGED_MODULES; do
-            ./gradlew :$module:test
+            ./gradlew --info :$module:test
           done
 
       # 테스트 후 Result를 보기위해 Publish Unit Test Results step 추가
