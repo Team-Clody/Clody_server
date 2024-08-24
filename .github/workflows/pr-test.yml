@@ -1,6 +1,7 @@
 name: Run Tests on Changed Modules
 
 on: [pull_request]
+permissions: read-all
 
 jobs:
   test:
