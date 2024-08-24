@@ -51,7 +51,6 @@ hs_err_pid*
 replay_pid*
 
 .idea/
-.github/
 /src/main/resources/
 /build
 /.idea/
