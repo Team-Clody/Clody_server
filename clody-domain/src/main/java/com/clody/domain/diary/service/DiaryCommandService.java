@@ -7,6 +7,9 @@ import com.clody.domain.diary.dto.DiaryDomainInfo;
 import com.clody.domain.diary.dto.DiaryFullInfo;
 import com.clody.domain.diary.dto.DiaryListGetResponse;
 import com.clody.domain.diary.dto.DiarySimpleInfo;
+import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
+import com.clody.domain.diary.dto.response.DiaryDayInfo;
+import com.clody.domain.diary.dto.response.DiaryListInfo;
 import com.clody.domain.diary.event.DiaryDeletionEvent;
 import com.clody.domain.diary.event.publisher.DiaryEventPublisher;
 import com.clody.domain.diary.event.UserDiaryWrittenEvent;
@@ -71,29 +74,143 @@ public class DiaryCommandService {
   }
 
 
-  public DiaryListGetResponse getDiaryList(int year, int month) {
-    Map<LocalDate, List<Diary>> diariesByDate = getDiariesMap(year, month);
-    Map<LocalDate, Reply> repliesByDate = getRepliesMap(year, month);
-    List<DiaryFullInfo> diaryFullInfos = new ArrayList<>();
+  public DiaryListInfo getDiaryList(int year, int month) {
+    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
 
-    for (LocalDate date : diariesByDate.keySet()) {
-      List<Diary> foundDiaries = diariesByDate.get(date);
-      int diaryCount = foundDiaries.size();
-      UserReplyReadStatus replyStatus = null;
-      if (isReplyExist(date, repliesByDate) && isReplyRead(date, repliesByDate)) {
+
+    List<Diary> diaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(JwtUtil.getLoginMemberId(), start, end);
+    List<Reply> replies = replyRepository.findByUserIdAndDiaryCreatedDateBetween(JwtUtil.getLoginMemberId(), start.toLocalDate(), end.toLocalDate());
+
+    List<DiaryDayInfo> diaryDayInfos = new ArrayList<>();
+
+    Map<LocalDate, List<Diary>> diariesMapByDate = diaries.stream().collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
+    Map<LocalDate, Reply> repliesMapByDate = replies.stream().collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
+    UserReplyReadStatus replyStatus = null;
+
+    for (LocalDate date : diariesMapByDate.keySet()) {
+
+      List<Diary> unDeletedDiaries = diariesMapByDate.get(date).stream()
+              .filter(diary -> !diary.isDeleted())
+              .toList();
+
+      List<Diary> deletedDiaries = diariesMapByDate.get(date).stream()
+              .filter(Diary::isDeleted)
+              .toList();
+      Reply reply = repliesMapByDate.get(date);
+
+
+      if (reply != null && !reply.getReplyInfo().isDeleted() && reply.getIs_read()) {
+        // 답장이 있고 읽음
         replyStatus = UserReplyReadStatus.READY_READ;
-      } else if (isReplyExist(date, repliesByDate)) {
-        replyStatus = UserReplyReadStatus.READY_NOT_READ;
-      } else {
-        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.add(
+                DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
+                        false));
+        continue;
       }
-      List<DiaryContent> diaryContents = getDiaryContentList(foundDiaries);
-      DiaryFullInfo diaryFullInfo = DiaryFullInfo.of(diaryCount, replyStatus, date, diaryContents, isDeleted(date));
-      diaryFullInfos.add(diaryFullInfo);
+
+      if (reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read()) {
+        // 답장이 있고 안읽음
+        replyStatus = UserReplyReadStatus.READY_NOT_READ;
+        diaryDayInfos.add(
+                DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
+                        false));
+        continue;
+      }
+
+      if (reply == null && deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
+        // 삭제한 적이 없고 일기를 쓴 채로 답장을 기다리는중
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.add(
+                DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
+                        false));
+        continue;
+      }
+
+      if (reply != null && reply.getReplyInfo().isDeleted() && !deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
+        // 삭제한 적이 있고 일기를 다시 씀
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.add(
+                DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
+                        true));
+      }
+
+    }
+    return DiaryListInfo.of(getCloverCount(year), diaryDayInfos);
+  }
+
+  public DiaryListInfo getDiaryCalendar(int year, int month) {
+    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
+
+
+    List<Diary> diaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(JwtUtil.getLoginMemberId(), start, end);
+    List<Reply> replies = replyRepository.findByUserIdAndDiaryCreatedDateBetween(JwtUtil.getLoginMemberId(), start.toLocalDate(), end.toLocalDate());
+
+
+    List<DiaryDayInfo> diaryDayInfos = getDiaryDayInfoList(year, month);
+    Map<LocalDate, List<Diary>> diariesMapByDate = diaries.stream().collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
+    Map<LocalDate, Reply> repliesMapByDate = replies.stream().collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
+    UserReplyReadStatus replyStatus = null;
+
+    for (int i = 0; i < getDaysInMonth(year, month); i ++) {
+      LocalDate today = LocalDate.of(year, month, i + 1);
+      List<Diary> t = diariesMapByDate.get(today);
+      if(diariesMapByDate.get(today) == null){
+        continue;
+      }
+      List<Diary> unDeletedDiaries = diariesMapByDate.get(today).stream()
+              .filter(diary -> !diary.isDeleted())
+              .toList();
+
+      List<Diary> deletedDiaries = diariesMapByDate.get(today).stream()
+              .filter(Diary::isDeleted)
+              .toList();
+      Reply reply = repliesMapByDate.get(today);
+
+      if (reply != null && !reply.getReplyInfo().isDeleted() && reply.getIs_read()) {
+        // 답장이 있고 읽음
+        replyStatus = UserReplyReadStatus.READY_READ;
+        diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
+                false));
+        continue;
+      }
+
+      if (reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read()) {
+        // 답장이 있고 안읽음
+        replyStatus = UserReplyReadStatus.READY_NOT_READ;
+        diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
+                false));
+        continue;
+      }
+
+      if (reply == null && deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
+        // 삭제한 적이 없고 일기를 쓴 채로 답장을 기다리는중
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
+                false));
+        continue;
+      }
+
+      if (reply != null && reply.getReplyInfo().isDeleted() && unDeletedDiaries.isEmpty()) {
+        // 일기를 삭제하고 아무것도 안함.
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.set(i, DiaryDayInfo.of(0, replyStatus, today, new ArrayList<>(),
+                true));
+      }
+
+
+      if (reply != null && reply.getReplyInfo().isDeleted() && !deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
+        // 삭제한 적이 있고 일기를 다시 씀
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
+                true));
+      }
+
+
     }
 
-    diaryFullInfos.sort(Comparator.comparing(DiaryFullInfo::date));
-    return DiaryListGetResponse.of(getCloverCount(year), diaryFullInfos);
+    return DiaryListInfo.of(getCloverCount(year), diaryDayInfos);
   }
 
   private int getCloverCount(int year) {
@@ -104,60 +221,22 @@ public class DiaryCommandService {
             .toList().size();
   }
 
-  private Map<LocalDate, List<Diary>> getDiariesMap(int year, int month) {
-    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-    LocalDateTime end = start.plusMonths(1);
-    List<Diary> diaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(JwtUtil.getLoginMemberId(), start, end);
-    List<Diary> filteredDiaries = diaries.stream()
-            .filter(diary -> !diary.isDeleted())
-            .toList();
-
-    return filteredDiaries.stream()
-            .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
-  }
-
-  private Map<LocalDate, Reply> getRepliesMap(int year, int month) {
-    LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-    LocalDateTime end = start.plusMonths(1);
-    List<Reply> replies = replyRepository.findByUserIdAndDiaryCreatedDateBetween(JwtUtil.getLoginMemberId(), start.toLocalDate(),
-            end.toLocalDate());
-    return replies.stream()
-            .collect(Collectors.toMap(Reply::getDiaryCreatedDate, reply -> reply));
-  }
-  private Boolean isDeleted(LocalDate date) {
-    LocalDateTime start = date.atStartOfDay();
-    LocalDateTime end = start.plusDays(1);
-    return diaryRepository.findDiariesByUserIdAndCreatedAtBetween(JwtUtil.getLoginMemberId(), start, end).stream().anyMatch(Diary::isDeleted);
-  }
-
-  private void setIsDeleted(int year, int month, List<DiarySimpleInfo> diarySimpleInfos) {
-    YearMonth yearMonth = YearMonth.of(year, month);
-
-    // 해당 월의 일 수를 가져오기
-    int daysInMonth = yearMonth.lengthOfMonth();
-
-    // 모든 날짜를 순회하는 for 문
-    for (int day = 1; day <= daysInMonth; day++) {
-      LocalDate date = yearMonth.atDay(day);
-      if (isDeleted(date)) {
-        DiarySimpleInfo diarySimpleInfo = DiarySimpleInfo.of(0, UserReplyReadStatus.UNREADY, true);
-        diarySimpleInfos.set(date.getDayOfMonth() - 1, diarySimpleInfo);
-      }
-    }
-  }
-
-  private boolean isReplyExist(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
-    return repliesByDate.containsKey(date);
-  }
-
-  private Boolean isReplyRead(LocalDate date, Map<LocalDate, Reply> repliesByDate) {
-    return repliesByDate.get(date).getIs_read();
-  }
-
   private List<DiaryContent> getDiaryContentList(List<Diary> foundDiaries) {
     return foundDiaries.stream()
             .map(diary -> new DiaryContent(diary.getContent()))
             .toList();
+  }
+
+  private List<DiaryDayInfo> getDiaryDayInfoList(int year, int month) {
+    List<DiaryDayInfo> diaryDayInfos = new ArrayList<>();
+    int daysInMonth = getDaysInMonth(year, month);
+    for (int i = 0; i < daysInMonth; i++) {
+      diaryDayInfos.add(DiaryDayInfo.of(0, UserReplyReadStatus.UNREADY, LocalDate.of(year, month, i+1), new ArrayList<>())); // 빈 요소 추가
+    }
+    return diaryDayInfos;
+  }
+  private int getDaysInMonth(int year, int month) {
+    return LocalDate.of(year, month, 1).lengthOfMonth();
   }
 
 }
