@@ -6,6 +6,7 @@ import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.domain.diary.dto.response.DiaryListInfo;
 import com.clody.domain.diary.service.DiaryCommandService;
+import com.clody.domain.diary.service.DiaryQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DiaryRetrieverService implements DiaryRetrieverUsecase {
 
-    private final DiaryCommandService diaryService;
+    private final DiaryQueryService diaryService;
 
     @Override
     public DiaryListGetResponse retrieveListDiary(int year, int month) {
