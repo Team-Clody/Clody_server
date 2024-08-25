@@ -2,11 +2,11 @@ package com.clody.clodyapi.diary.controller;
 
 
 import com.clody.clodyapi.diary.controller.dto.request.DiaryRequest;
-import com.clody.clodyapi.diary.controller.dto.response.DiaryCalenderGetResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedTimeResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryResponse;
 import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

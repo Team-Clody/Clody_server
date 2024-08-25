@@ -9,6 +9,7 @@ import com.clody.clodyapi.diary.usecase.DiaryDeletionUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryQueryUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
 import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
@@ -45,15 +46,14 @@ public class DiaryControllerImpl  {
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
 
-//  @GetMapping("/calendar")
-//  public ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(
-//      @RequestParam final int year,
-//      @RequestParam final int month) {
-//    DateTimeValidator.validateLocalDate(year, month);
-//    final DiaryCalenderGetResponse response = diaryService.getDiaryCalender(year, month);
-//    return ResponseEntity.status(HttpStatus.OK)
-//        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
-//  }
+  @GetMapping("/calendar")
+  public ResponseEntity<ApiResponse<DiaryCalenderGetResponse>> getDiaryCalender(
+      @RequestParam final int year,
+      @RequestParam final int month) {
+    final DiaryCalenderGetResponse response = diaryRetrieverUsecase.retrieveCalendarDiary(year, month);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
+  }
 
   @GetMapping("/diary")
   public ResponseEntity<ApiResponse<DiaryResponse>> getDiary(final int year, final int month,
@@ -68,7 +68,7 @@ public class DiaryControllerImpl  {
   public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
       @RequestHeader(HeaderConstants.AUTHORIZATION) String accessToken,
       @RequestBody DiaryRequest request) {
-    return ResponseEntity.status(HttpStatus.OK)
+    return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS,
             diaryCreationUsecase.createDiary(request)));
   }

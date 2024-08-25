@@ -7,6 +7,10 @@ import com.clody.domain.diary.dto.DiaryContent;
 import com.clody.domain.diary.dto.DiaryDateInfo;
 import com.clody.domain.diary.dto.DiaryDeletionInfo;
 import com.clody.domain.diary.dto.DiaryDomainInfo;
+import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
+import com.clody.domain.diary.dto.response.DiaryDayInfo;
+import com.clody.domain.diary.dto.response.DiaryListInfo;
 import com.clody.domain.reply.ReplyType;
 import com.clody.support.security.util.JwtUtil;
 import java.time.LocalDateTime;
@@ -36,6 +40,20 @@ public class DiaryMapper {
   public static DiaryCreatedTimeResponse toDiaryCreatedTimeResponse(int hour, int minute,
       int second) {
     return DiaryCreatedTimeResponse.of(hour, minute, second);
+  }
+
+  public static DiaryListGetResponse toDiaryListResponse(DiaryListInfo diaryListInfo){
+
+    int totalCloverCount = diaryListInfo.totalCloverCount();
+    List<DiaryDayInfo> diaries = diaryListInfo.diaries();
+    return DiaryListGetResponse.of(totalCloverCount, diaries);
+  }
+
+  public static DiaryCalenderGetResponse toDiaryCalendarResponse(DiaryListInfo diaryListInfo){
+
+    int totalCloverCount = diaryListInfo.totalCloverCount();
+    List<DiaryDayInfo> diaries = diaryListInfo.diaries();
+    return DiaryCalenderGetResponse.of(totalCloverCount, diaries);
   }
 
 }
