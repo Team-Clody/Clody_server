@@ -1,21 +1,12 @@
 package com.clody.infra.external.feign.apple;
 
-import com.clody.infra.external.feign.dto.response.apple.AppleTokenResponse;
+import com.clody.infra.external.feign.dto.response.apple.ApplePublicKeys;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(name = "AppleAuthClient", url = "https://appleid.apple.com", configuration = AppleFeignConfiguration.class)
+@FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth")
+
 public interface AppleAuthClient {
-
-    @PostMapping(value = "/auth/token")
-    AppleTokenResponse getOauth2AccessToken(
-            @RequestParam("grant_type") String grantType,
-            @RequestParam("client_id") String clientId,
-            @RequestParam("redirect_uri") String redirectUri,
-            @RequestParam("code") String code,
-            @RequestParam("client_secret") String clientSecret
-
-    );
-
+    @GetMapping(value = "/keys")
+    ApplePublicKeys getApplePublicKeys();
 }
