@@ -178,7 +178,7 @@ public class DiaryService {
       //답변이 있고, 읽은 상태면, CloverCount 1 감소
     }
 
-    return DiaryResponse.of(List.of());
+    return DiaryResponse.of(List.of(), true);
   }
 
   public DiaryCreatedTimeGetResponse getDiaryCreatedTime(int year, int month, int date) {
@@ -191,6 +191,10 @@ public class DiaryService {
             .filter(diary -> !diary.isDeleted())
             .toList();
 
+    if (filteredDiaries.isEmpty()) {
+      return DiaryCreatedTimeGetResponse.of(-1, -1,
+              -1);
+    }
     LocalDateTime createdTime = filteredDiaries.getFirst().getCreatedAt();
     return DiaryCreatedTimeGetResponse.of(createdTime.getHour(), createdTime.getMinute(),
         createdTime.getSecond());
