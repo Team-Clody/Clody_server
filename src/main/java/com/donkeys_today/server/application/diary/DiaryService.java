@@ -191,13 +191,15 @@ public class DiaryService {
             .filter(diary -> !diary.isDeleted())
             .toList();
 
+
     if (filteredDiaries.isEmpty()) {
       return DiaryCreatedTimeGetResponse.of(-1, -1,
-              -1);
+              -1, false);
     }
+
     LocalDateTime createdTime = filteredDiaries.getFirst().getCreatedAt();
     return DiaryCreatedTimeGetResponse.of(createdTime.getHour(), createdTime.getMinute(),
-        createdTime.getSecond());
+        createdTime.getSecond(), diaryPolicy.check_fist_diary_and_first_reply(user));
   }
 
   private Map<LocalDate, List<Diary>> getDiariesMap(int year, int month) {

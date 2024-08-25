@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,29 @@ public class DiaryPolicy {
 
   public boolean checkUserInitialDiary(User user) {
     return diaryRepository.existsByUser(user);
+  }
+
+  public boolean check_fist_diary_and_first_reply(User user) {
+    //유저 일기 전부 조회
+    List<Diary> diaries = diaryRepository.findAllByUser(user);
+
+    // 삭제되지 않은 일기 조회
+    List<Diary> filteredDiaries = diaries.stream()
+            .filter(diary -> !diary.isDeleted())
+            .toList();
+
+    // 삭제한 적이 있다면? 최초 답장 이 아님
+    if (diaries.size() != filteredDiaries.size()) {
+      return false;
+    }
+
+    // key 값이 1이 아니라면 일기를 두번 이상 쓴것
+    Map<LocalDate, List<Diary>> map = filteredDiaries.stream()
+            .collect(Collectors.groupingBy(diary -> diary.getCreatedAt().toLocalDate()));
+    if (map.keySet().size() == 1) {
+      return true;
+    }
+    return false;
   }
 
   public boolean containsProfanity(List<String> content) {
