@@ -8,7 +8,6 @@ import com.clody.clodyapi.user.service.UserApplicationService;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
-import com.clody.support.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,14 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserAuthControllerImpl implements AuthController {
 
   private final UserApplicationService userApplicationService;
-  private final JwtProvider jwtProvider;
 
   @PostMapping("/auth/signup")
   public ResponseEntity<ApiResponse<UserAuthResponse>> signUp(
       @RequestHeader(HeaderConstants.AUTHORIZATION) final String accessTokenWithBearer,
       @RequestBody final UserSignUpRequest userSignUpRequest) {
-
-//    jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
     final UserAuthResponse response = userApplicationService.signUp(userSignUpRequest,
         accessTokenWithBearer);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -47,26 +43,16 @@ public class UserAuthControllerImpl implements AuthController {
   public ResponseEntity<ApiResponse<UserAuthResponse>> signIn(
       @RequestHeader(HeaderConstants.AUTHORIZATION) String accessTokenWithBearer,
       @RequestBody final UserSignInRequest userSignInRequest) {
-    jwtProvider.validateTokenStartsWithBearer(accessTokenWithBearer);
     final UserAuthResponse response = userApplicationService.signIn(userSignInRequest,
         accessTokenWithBearer);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }
 
-
-///*
-//kakao:
-//  client-id: eb5b3511f81201dba4850861989793f6
-//  client-secret: vQRSNrKrHg4PIFXJhrO2aW32PxLbA8AV
-//  redirect-uri: https://clody.store/oauth/kakao
-//*/
   @Override
   @GetMapping("/auth/reissue")
   public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
       @RequestHeader(HeaderConstants.AUTHORIZATION) final String refreshTokenWithBearer) {
-
-    jwtProvider.validateTokenStartsWithBearer(refreshTokenWithBearer);
     TokenReissueResponse response = userApplicationService.reissue(refreshTokenWithBearer);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
