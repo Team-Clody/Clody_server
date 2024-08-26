@@ -47,6 +47,7 @@ public class UserApplicationService implements UserAuthUsecase {
     User newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name());
     User savedUser = userAuthService.registerUser(newUser);
     Token token = issueToken(savedUser.getId());
+    //#TODO 로그인/회원가입 시 FCM토큰 갱신 필요
     return UserAuthResponse.of(savedUser.getId(), token.accessToken(),token.refreshToken());
   }
 
@@ -58,6 +59,7 @@ public class UserApplicationService implements UserAuthUsecase {
     UserSocialInfo userSocialInfo = strategy.getUserInfo(info);
     User foundUser = userAuthService.findUserByPlatformAndPlatformId(platform, userSocialInfo.id());
     Token token = issueToken(foundUser.getId());
+    //#TODO 로그인/회원가입 시 FCM토큰 갱신 필요
     return UserAuthResponse.of(foundUser.getId(), token.accessToken(),token.refreshToken());
   }
 
