@@ -1,5 +1,10 @@
 package com.clody.infra.models.reply.sqs;
 
+import static com.clody.support.constants.MessageProcessConstants.DEFAULT_DURATION;
+import static com.clody.support.constants.MessageProcessConstants.FIRST_DURATION;
+import static com.clody.support.constants.MessageProcessConstants.STATIC_DURATION;
+
+import com.clody.domain.reply.ReplyType;
 import com.clody.domain.reply.dto.DequeuedMessage;
 import com.clody.domain.reply.event.ReplyMessagePublisher;
 import com.clody.domain.reply.repository.ReplyMessageReceiver;
@@ -31,8 +36,18 @@ public class SqsMessageReceiverImpl implements ReplyMessageReceiver {
     try {
       DequeuedMessage payload = convertMessage(message);
       LocalDateTime messageTime = payload.creationTime();
+      ReplyType replyType = payload.type();
 
-      if (LocalDateTime.now().isAfter(messageTime.plusSeconds(10))) {
+      long delayInSeconds;
+      if (replyType == ReplyType.FIRST) {
+        delayInSeconds = FIRST_DURATION; // 1분
+      } else if (replyType == ReplyType.DYNAMIC) {
+        delayInSeconds = DEFAULT_DURATION; // 5분
+      } else {
+        delayInSeconds = STATIC_DURATION;
+      }
+
+      if (LocalDateTime.now().isAfter(messageTime.plusSeconds(delayInSeconds))) {
         processMessage(payload);
       } else {
         resendMessage(message);
