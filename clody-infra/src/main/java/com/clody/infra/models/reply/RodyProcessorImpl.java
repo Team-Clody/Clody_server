@@ -14,6 +14,7 @@ import com.azure.ai.openai.assistants.models.RunStatus;
 import com.azure.ai.openai.assistants.models.ThreadMessage;
 import com.azure.ai.openai.assistants.models.ThreadMessageOptions;
 import com.azure.ai.openai.assistants.models.ThreadRun;
+import com.clody.domain.reply.ReplyType;
 import com.clody.domain.reply.dto.DequeuedMessage;
 import com.clody.domain.reply.dto.Message;
 import com.clody.domain.reply.event.ReplyMessagePublisher;
@@ -46,7 +47,8 @@ public class RodyProcessorImpl implements RodyProcessor {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-    publishResponseEvent(messageContent.replyId(), result, messageContent.version());
+    publishResponseEvent(messageContent.replyId(), result, messageContent.version(),
+        messageContent.type());
   }
 
   private AssistantThread createAssistantThread() {
@@ -79,10 +81,11 @@ public class RodyProcessorImpl implements RodyProcessor {
     return result;
   }
 
-  private void publishResponseEvent(Long replyId, List<String> result, Integer version) {
+  private void publishResponseEvent(Long replyId, List<String> result, Integer version,
+      ReplyType replyType) {
     String responseMessage = String.join(" ", result);
     log.info("Publishing response message: {}", responseMessage);
-    Message resultMessage = Message.of(replyId, responseMessage, version);
+    Message resultMessage = Message.of(replyId, responseMessage, version, replyType);
     replyMessagePublisher.publishMessage(resultMessage);
   }
 

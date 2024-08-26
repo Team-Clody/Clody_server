@@ -10,8 +10,8 @@ public class ReplyMapper {
     return ReplyInsertionInfo.of(message.replyId(), message.content(), message.version());
   }
 
-  public static Message parseToMessage(Reply reply){
-    return Message.of(reply.getId(), reply.getContent(), reply.getVersion());
+  public static Message parseToMessage(Reply reply) {
+    return Message.of(reply.getId(), reply.getContent(), reply.getVersion(),reply.getReplyType());
   }
 
 }
