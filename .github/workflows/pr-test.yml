@@ -3,7 +3,7 @@ name: Run Tests on Changed Modules
 on:
   pull_request:
     branches: [ prod ]
-    
+
 permissions: write-all
 
 jobs:
