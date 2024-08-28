@@ -2,6 +2,7 @@ package com.clody.clodyapi.user.service;
 
 import static com.clody.support.constants.JwtConstants.REFRESH_TOKEN_EXPIRATION_TIME;
 
+import com.clody.clodyapi.alarm.service.AlarmUpdateService;
 import com.clody.clodyapi.user.controller.dto.request.UserSignInRequest;
 import com.clody.clodyapi.user.controller.dto.request.UserSignUpRequest;
 import com.clody.clodyapi.user.controller.dto.response.TokenReissueResponse;
@@ -27,15 +28,18 @@ public class UserApplicationService implements UserAuthUsecase {
   private final UserAuthService userAuthService;
   private final JwtProvider jwtProvider;
   private final RefreshTokenRepository refreshTokenRepository;
+  private final AlarmUpdateService alarmUpdateService;
 
   public UserApplicationService(SocialRegisterStrategyFactory strategyFactory,
       UserAuthService userAuthService,
       JwtProvider jwtProvider,
-      RefreshTokenRepository refreshTokenRepository) {
+      RefreshTokenRepository refreshTokenRepository,
+      AlarmUpdateService alarmUpdateService) {
     this.strategyFactory = strategyFactory;
     this.userAuthService = userAuthService;
     this.jwtProvider = jwtProvider;
     this.refreshTokenRepository = refreshTokenRepository;
+    this.alarmUpdateService = alarmUpdateService;
   }
 
   @Override
@@ -47,7 +51,8 @@ public class UserApplicationService implements UserAuthUsecase {
     User newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name());
     User savedUser = userAuthService.registerUser(newUser);
     Token token = issueToken(savedUser.getId());
-    //#TODO 로그인/회원가입 시 FCM토큰 갱신 필요
+
+    alarmUpdateService.updateFcmToken(savedUser.getId(), request.fcmToken());
     return UserAuthResponse.of(savedUser.getId(), token.accessToken(),token.refreshToken());
   }
 
@@ -59,7 +64,8 @@ public class UserApplicationService implements UserAuthUsecase {
     UserSocialInfo userSocialInfo = strategy.getUserInfo(info);
     User foundUser = userAuthService.findUserByPlatformAndPlatformId(platform, userSocialInfo.id());
     Token token = issueToken(foundUser.getId());
-    //#TODO 로그인/회원가입 시 FCM토큰 갱신 필요
+
+    alarmUpdateService.updateFcmToken(foundUser.getId(), request.fcmToken());
     return UserAuthResponse.of(foundUser.getId(), token.accessToken(),token.refreshToken());
   }
 
@@ -77,7 +83,7 @@ public class UserApplicationService implements UserAuthUsecase {
     return Token.of(accessToken, refreshToken);
   }
 
-  private void storeRefreshToken(Long id, String refreshToken) {
+  public void storeRefreshToken(Long id, String refreshToken) {
     refreshTokenRepository.saveRefreshToken(id, refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
   }
 

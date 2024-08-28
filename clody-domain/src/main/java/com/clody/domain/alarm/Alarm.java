@@ -103,4 +103,8 @@ public class Alarm {
             throw new BusinessException(ErrorType.USER_NOT_AGREED_FOR_REPLY_ALARM);
         }
     }
+
+    public void renewFcmToken(String fcmToken){
+        this.fcmToken = fcmToken;
+    }
 }

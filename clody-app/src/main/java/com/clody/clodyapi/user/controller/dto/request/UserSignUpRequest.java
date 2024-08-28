@@ -8,6 +8,7 @@ public record UserSignUpRequest(
     String email,
     String name,
     @Schema(description = "애플 로그인", example = "ey23asdf.asdasdd.asdasd")
-    String id_token
+    String id_token,
+    String fcmToken
 ) {
 }
