@@ -24,4 +24,9 @@ public class AlarmUpdateService implements UpdateAlarmInfoUsecase {
     AlarmTotalInfo info = alarmCommandService.updateAlarm(userId, command);
     return AlarmFullResponse.parseFromAlarmInfo(info);
   }
+
+  public void updateFcmToken(Long userId, String fcmToken){
+    alarmCommandService.updateToken(userId, fcmToken);
+  }
+
 }

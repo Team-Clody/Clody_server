@@ -20,4 +20,10 @@ public class AlarmCommandService {
     alarm.updateAlarm(command);
     return AlarmTotalInfo.of(alarm);
   }
+
+  @Transactional
+  public void updateToken(Long userId, String fcmToken){
+    Alarm alarm = alarmRepository.findByUserId(userId);
+    alarm.renewFcmToken(fcmToken);
+  }
 }
