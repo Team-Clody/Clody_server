@@ -82,3 +82,4 @@ replay_pid*
 *.lock
 *.bin
 *.probe
+/clody-batch/build
