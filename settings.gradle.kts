@@ -20,3 +20,5 @@ include(":clody-support")
 include(":clody-domain")
 include(":clody-infra")
 include(":clody-app")
+include(":clody-batch")
+
