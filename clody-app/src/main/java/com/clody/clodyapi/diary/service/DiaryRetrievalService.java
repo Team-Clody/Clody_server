@@ -6,7 +6,7 @@ import com.clody.clodyapi.diary.mapper.DiaryMapper;
 import com.clody.clodyapi.diary.usecase.DiaryQueryUsecase;
 import com.clody.domain.diary.dto.DiaryContent;
 import com.clody.domain.diary.dto.DiaryDateInfo;
-import com.clody.domain.diary.dto.response.DiaryTimeInfo;
+import com.clody.domain.diary.dto.response.DiaryCreatedInfo;
 import com.clody.domain.diary.service.DiaryQueryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,13 @@ public class DiaryRetrievalService implements DiaryQueryUsecase {
   @Override
   public DiaryCreatedTimeResponse getCreatedTime(int year, int month, int date) {
     DiaryDateInfo diaryDateInfo = DiaryMapper.toDiaryDateInfo(year, month, date);
-    DiaryTimeInfo diaryTimeInfo = diaryQueryService.getCreatedTime(diaryDateInfo);
+    DiaryCreatedInfo diaryCreatedInfo = diaryQueryService.getCreatedTime(diaryDateInfo);
 
-    return DiaryMapper.toDiaryCreatedTimeResponse(diaryTimeInfo.HH(), diaryTimeInfo.MM(),
-        diaryTimeInfo.SS());
+    return DiaryMapper.toDiaryCreatedTimeResponse(diaryCreatedInfo);
   }
 
   @Override
-  public DiaryResponse getDiary(final int year,final int month,final int date) {
+  public DiaryResponse getDiary(final int year, final int month, final int date) {
     DiaryDateInfo diaryDateInfo = DiaryMapper.toDiaryDateInfo(year, month, date);
     List<DiaryContent> diaryContentList = diaryQueryService.getDiary(diaryDateInfo);
     return DiaryMapper.toDiaryResponse(diaryContentList);

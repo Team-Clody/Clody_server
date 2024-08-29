@@ -11,7 +11,7 @@ public class ReplyMapper {
   }
 
   public static Message parseToMessage(Reply reply) {
-    return Message.of(reply.getId(), reply.getContent(), reply.getVersion(),reply.getReplyType());
+    return Message.of(reply.getId(),reply.getUser().getId(), reply.getContent(), reply.getVersion(),reply.getReplyType());
   }
 
 }
