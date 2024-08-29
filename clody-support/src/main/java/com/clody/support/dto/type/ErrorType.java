@@ -57,6 +57,7 @@ public enum ErrorType {
   REPLY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "답장이 존재하지 않습니다."),
   DUPLICATE_REPLY(HttpStatus.BAD_REQUEST.value(), "중복된 답장이 존재합니다."),
   USER_UPDATED_DIARY(HttpStatus.BAD_REQUEST.value(), "사용자가 수정한 일기입니다."),
+  INVALID_REPLY_TYPE(HttpStatus.BAD_REQUEST.value(), "올바르지 않은 답장 타입입니다."),
   /*
     * 알람 관련 오류
    */
