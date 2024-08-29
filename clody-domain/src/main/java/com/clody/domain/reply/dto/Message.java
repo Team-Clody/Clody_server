@@ -6,17 +6,18 @@ import java.time.LocalDateTime;
 
 public record Message(
     Long replyId,
+    Long userId,
     String content,
     LocalDateTime creationTime,
     Integer version,
     ReplyType type
 ) {
-  public static Message of(Long replyId, String content,Integer version, ReplyType type) {
-    return new Message(replyId, content, LocalDateTime.now(), version,type);
+  public static Message of(Long replyId, Long userId, String content,Integer version, ReplyType type) {
+    return new Message(replyId, userId, content, LocalDateTime.now(), version,type);
   }
 
   public static Message of(ReplyCreatedEvent event){
-    return new Message(event.reply().getId(), event.parsedContent(), event.reply().getCreatedAt(), event.version(),event.reply().getReplyType());
+    return new Message(event.reply().getId(),event.userId(), event.parsedContent(), event.reply().getCreatedAt(), event.version(),event.reply().getReplyType());
   }
 
 }

@@ -5,14 +5,15 @@ import java.time.LocalDateTime;
 
 public record DequeuedMessage(
     Long replyId,
+    Long userId,
     String content,
     LocalDateTime creationTime,
     Integer version,
     ReplyType type
 ) {
 
-  public static DequeuedMessage of(Long replyId, String content, Integer version,
+  public static DequeuedMessage of(Long replyId, Long userId, String content, Integer version,
       ReplyType type) {
-    return new DequeuedMessage(replyId, content, LocalDateTime.now(), version, type);
+    return new DequeuedMessage(replyId, userId, content, LocalDateTime.now(), version, type);
   }
 }

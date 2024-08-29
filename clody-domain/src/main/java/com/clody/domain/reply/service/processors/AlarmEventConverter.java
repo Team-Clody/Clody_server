@@ -1,8 +1,7 @@
 package com.clody.domain.reply.service.processors;
 
-import com.clody.domain.alarm.event.CompletionEvent;
-import com.clody.domain.reply.Reply;
-import com.clody.domain.reply.repository.ReplyRepository;
+import com.clody.meta.Schedule;
+import com.clody.domain.alarm.event.ScheduleEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,11 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AlarmEventConverter {
 
-  private final ReplyRepository replyRepository;
-
-  public CompletionEvent convertToCompletionEvent(Long replyId) {
-    Reply reply = replyRepository.findById(replyId);
-    return CompletionEvent.of(reply.getUser(),replyId);
+  public ScheduleEvent convertToCompletionEvent(Schedule schedule) {
+    return new ScheduleEvent(schedule);
   }
-
 }
