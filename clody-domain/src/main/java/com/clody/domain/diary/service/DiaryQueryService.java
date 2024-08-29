@@ -5,7 +5,7 @@ import com.clody.domain.diary.dto.DiaryContent;
 import com.clody.domain.diary.dto.DiaryDateInfo;
 import com.clody.domain.diary.dto.response.DiaryDayInfo;
 import com.clody.domain.diary.dto.response.DiaryListInfo;
-import com.clody.domain.diary.dto.response.DiaryTimeInfo;
+import com.clody.domain.diary.dto.response.DiaryCreatedInfo;
 import com.clody.domain.diary.repository.DiaryRepository;
 import com.clody.domain.reply.Reply;
 import com.clody.domain.reply.UserReplyReadStatus;
@@ -27,12 +27,14 @@ public class DiaryQueryService {
   private final DiaryRepository diaryRepository;
   private final ReplyRepository replyRepository;
 
-  public DiaryTimeInfo getCreatedTime(DiaryDateInfo info) {
+  public DiaryCreatedInfo getCreatedTime(DiaryDateInfo info) {
 
+    Long userId = JwtUtil.getLoginMemberId();
     LocalDateTime localDateTime = info.parseToLocalDateTime();
     List<Diary> diaryList = diaryRepository.findTodayDiary(localDateTime);
     Diary latestDiary = Diary.getLatestDiary(diaryList);
-    return DiaryTimeInfo.from(latestDiary.getCreatedAt());
+    Reply reply = replyRepository.findByUserIdAndDiaryCreatedDate(userId, localDateTime.toLocalDate());
+    return DiaryCreatedInfo.from(latestDiary.getCreatedAt(),reply.getReplyType());
   }
 
   public List<DiaryContent> getDiary(DiaryDateInfo info) {

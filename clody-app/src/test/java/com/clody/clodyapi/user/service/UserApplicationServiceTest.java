@@ -74,7 +74,7 @@ public class UserApplicationServiceTest {
 
     // then
     assertNotNull(response);
-    verify(alarmUpdateService).updateFcmToken(userSignUpRequest.fcmToken());
+    verify(alarmUpdateService).updateFcmToken(newUser.getId(),userSignUpRequest.fcmToken());
   }
 
 }

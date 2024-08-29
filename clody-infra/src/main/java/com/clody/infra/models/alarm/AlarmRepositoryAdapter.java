@@ -7,6 +7,7 @@ import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.NotFoundException;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,5 +39,10 @@ public class AlarmRepositoryAdapter implements AlarmRepository {
   @Override
   public Alarm save(Alarm alarm) {
     return alarmRepository.save(alarm);
+  }
+
+  @Override
+  public Optional<Alarm> findUserAgreedForReply(Long userId) {
+    return alarmRepository.findByUserIdAndReplyAlarmIsTrue(userId);
   }
 }

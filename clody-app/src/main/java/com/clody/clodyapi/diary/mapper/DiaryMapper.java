@@ -9,6 +9,7 @@ import com.clody.domain.diary.dto.DiaryDeletionInfo;
 import com.clody.domain.diary.dto.DiaryDomainInfo;
 import com.clody.domain.diary.dto.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
+import com.clody.domain.diary.dto.response.DiaryCreatedInfo;
 import com.clody.domain.diary.dto.response.DiaryDayInfo;
 import com.clody.domain.diary.dto.response.DiaryListInfo;
 import com.clody.domain.reply.ReplyType;
@@ -37,9 +38,8 @@ public class DiaryMapper {
     return DiaryDateInfo.of(year, month, date);
   }
 
-  public static DiaryCreatedTimeResponse toDiaryCreatedTimeResponse(int hour, int minute,
-      int second) {
-    return DiaryCreatedTimeResponse.of(hour, minute, second);
+  public static DiaryCreatedTimeResponse toDiaryCreatedTimeResponse(DiaryCreatedInfo info) {
+    return DiaryCreatedTimeResponse.of(info.HH(), info.MM(), info.SS(), info.replyType());
   }
 
   public static DiaryListGetResponse toDiaryListResponse(DiaryListInfo diaryListInfo){
