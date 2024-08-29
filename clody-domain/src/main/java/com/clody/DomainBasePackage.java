@@ -1,3 +1,3 @@
-package com.clody.domain;
+package com.clody;
 
 public class DomainBasePackage { }
