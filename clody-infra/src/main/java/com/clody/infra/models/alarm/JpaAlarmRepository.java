@@ -18,4 +18,6 @@ public interface JpaAlarmRepository extends JpaRepository<Alarm, Long> {
   List<Alarm> findAllByTime(LocalTime time);
 
   Alarm save(Alarm alarm);
+
+  Optional<Alarm> findByUserIdAndReplyAlarmIsTrue(Long userId);
 }
