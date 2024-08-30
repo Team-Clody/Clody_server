@@ -31,7 +31,8 @@ public class AppleAuthStrategy implements SocialRegisterStrategy {
   public UserSocialInfo getUserInfo(UserDomainInfo info) {
 
     Platform platform = info.platform();
-    String platformId = getApplePlatformId(info.idToken());
+    String idToken = info.tokenWithBearer().split(" ")[1];
+    String platformId = getApplePlatformId(idToken);
     return UserSocialInfo.of(platformId, platform);
   }
 

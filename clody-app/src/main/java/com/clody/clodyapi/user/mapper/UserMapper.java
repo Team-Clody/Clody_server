@@ -8,23 +8,15 @@ import com.clody.domain.user.dto.UserDomainInfo;
 public class UserMapper {
 
   public static UserDomainInfo toDomainInfo(UserSignUpRequest request,
-      String authToken) {
-    if(request.id_token()==null){
-      return UserDomainInfo.toUserDomainInfo(Platform.fromString(request.platform()),
-          authToken);
-    }
-    return UserDomainInfo.toUserDomainInfo(Platform.fromString(request.platform()),
-        request.id_token(), authToken);
+      String tokenWithBearer) {
+
+    return UserDomainInfo.toUserDomainInfo(Platform.fromString(request.platform()), tokenWithBearer);
   }
 
   public static UserDomainInfo toDomainInfo(UserSignInRequest request,
-      String authToken) {
-    if(request.id_token()==null){
-      return UserDomainInfo.toUserDomainInfo(Platform.fromString(request.platform()),
-          authToken);
-    }
-    return UserDomainInfo.toUserDomainInfo(Platform.fromString(request.platform()),
-        request.id_token(), authToken);
+                                            String tokenWithBearer) {
+
+    return UserDomainInfo.toUserDomainInfo(Platform.fromString(request.platform()), tokenWithBearer);
   }
 
 }

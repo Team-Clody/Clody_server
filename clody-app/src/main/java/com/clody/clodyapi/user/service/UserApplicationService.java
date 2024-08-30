@@ -43,12 +43,22 @@ public class UserApplicationService implements UserAuthUsecase {
   }
 
   @Override
-  public UserAuthResponse signUp(UserSignUpRequest request, String authToken) {
+  public UserAuthResponse signUp(UserSignUpRequest request, String tokenWithBearer) {
     Platform platform = Platform.fromString(request.platform());
-    UserDomainInfo info = UserMapper.toDomainInfo(request,authToken);
+    UserDomainInfo info = UserMapper.toDomainInfo(request,tokenWithBearer);
     SocialRegisterStrategy strategy = strategyFactory.getStrategy(platform);
     UserSocialInfo userSocialInfo = strategy.getUserInfo(info);
-    User newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name());
+
+    User newUser = null;
+    if (platform == Platform.APPLE)
+    {
+      newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name());
+    }
+    else
+    {
+      newUser = User.createNewUser(userSocialInfo.id(), platform, userSocialInfo.email(), request.name());
+    }
+
     User savedUser = userAuthService.registerUser(newUser);
     Token token = issueToken(savedUser.getId());
 
@@ -57,9 +67,9 @@ public class UserApplicationService implements UserAuthUsecase {
   }
 
   @Override
-  public UserAuthResponse signIn(UserSignInRequest request, String authToken) {
+  public UserAuthResponse signIn(UserSignInRequest request, String tokenWithBearer) {
     Platform platform = Platform.fromString(request.platform());
-    UserDomainInfo info = UserMapper.toDomainInfo(request,authToken);
+    UserDomainInfo info = UserMapper.toDomainInfo(request, tokenWithBearer);
     SocialRegisterStrategy strategy = strategyFactory.getStrategy(platform);
     UserSocialInfo userSocialInfo = strategy.getUserInfo(info);
     User foundUser = userAuthService.findUserByPlatformAndPlatformId(platform, userSocialInfo.id());
