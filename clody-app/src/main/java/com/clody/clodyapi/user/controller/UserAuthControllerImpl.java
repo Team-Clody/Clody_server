@@ -30,10 +30,10 @@ public class UserAuthControllerImpl implements AuthController {
 
   @PostMapping("/auth/signup")
   public ResponseEntity<ApiResponse<UserAuthResponse>> signUp(
-      @RequestHeader(HeaderConstants.AUTHORIZATION) final String accessTokenWithBearer,
+      @RequestHeader(HeaderConstants.AUTHORIZATION) final String tokenWithBearer,
       @RequestBody final UserSignUpRequest userSignUpRequest) {
     final UserAuthResponse response = userApplicationService.signUp(userSignUpRequest,
-        accessTokenWithBearer);
+            tokenWithBearer);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
   }
@@ -41,10 +41,10 @@ public class UserAuthControllerImpl implements AuthController {
   @ResponseBody
   @PostMapping("/auth/signin")
   public ResponseEntity<ApiResponse<UserAuthResponse>> signIn(
-      @RequestHeader(HeaderConstants.AUTHORIZATION) String accessTokenWithBearer,
+      @RequestHeader(HeaderConstants.AUTHORIZATION) String tokenWithBearer,
       @RequestBody final UserSignInRequest userSignInRequest) {
     final UserAuthResponse response = userApplicationService.signIn(userSignInRequest,
-        accessTokenWithBearer);
+            tokenWithBearer);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
   }

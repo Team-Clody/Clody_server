@@ -4,16 +4,11 @@ import com.clody.domain.user.Platform;
 
 public record UserDomainInfo(
     Platform platform,
-    String idToken,
-    String authTokenWithBearer
+    String tokenWithBearer
 ) {
 
-  public static UserDomainInfo toUserDomainInfo(Platform platform, String authTokenWithBearer) {
-    return new UserDomainInfo(platform,null, authTokenWithBearer);
+  public static UserDomainInfo toUserDomainInfo(Platform platform, String tokenWithBearer) {
+    return new UserDomainInfo(platform, tokenWithBearer);
   }
 
-  public static UserDomainInfo toUserDomainInfo(Platform platform, String idToken, String authTokenWithBearer) {
-    return new UserDomainInfo(platform, idToken
-        , authTokenWithBearer);
-  }
 }
