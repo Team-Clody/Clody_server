@@ -10,7 +10,6 @@ import com.clody.clodyapi.diary.usecase.DiaryQueryUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
 import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
-import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
 import com.clody.support.util.DateTimeValidator;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class DiaryControllerImpl  {
+public class DiaryControllerImpl  implements DiaryController{
 
   private final DiaryCreationUsecase diaryCreationUsecase;
   private final DiaryDeletionUsecase diaryDeletionUsecase;
@@ -66,7 +64,6 @@ public class DiaryControllerImpl  {
   //  @Override
   @PostMapping("/diary")
   public ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
-      @RequestHeader(HeaderConstants.AUTHORIZATION) String accessToken,
       @RequestBody DiaryRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS,
@@ -86,7 +83,7 @@ public class DiaryControllerImpl  {
   @DeleteMapping("/diary")
   public ResponseEntity<ApiResponse<?>> deleteDiary(
       int year, int month, int date) {
-    return ResponseEntity.status(HttpStatus.OK)
+    return ResponseEntity.status(HttpStatus.NO_CONTENT)
         .body(ApiResponse.success(SuccessType.DELETED_SUCCESS,
             diaryDeletionUsecase.deleteDiary(year, month, date)));
   }
