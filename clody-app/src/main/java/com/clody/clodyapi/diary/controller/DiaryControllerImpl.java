@@ -8,7 +8,7 @@ import com.clody.clodyapi.diary.usecase.DiaryCreationUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryDeletionUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryQueryUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
-import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;

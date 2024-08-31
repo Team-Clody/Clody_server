@@ -3,6 +3,7 @@ package com.clody.domain.user;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.clody.domain.base.BaseEntity;
+import com.clody.domain.user.strategy.UserSocialInfo;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
@@ -65,13 +66,28 @@ public class User extends BaseEntity {
     return !hasWrittenDiary;
   }
 
-  public static User createNewUser(String platformId, Platform platform, String email, String nickName) {
-    return User.builder()
-        .platformID(platformId)
-        .platform(platform)
-        .email(email)
-        .nickName(nickName)
-        .is_deleted(false)
-        .build();
+  public static User createNewUser(String platformId, Platform platform, String appleEmail, String nickName,
+                                   String kakaoEmail) {
+    if (platform == Platform.APPLE)
+    {
+      return User.builder()
+              .platformID(platformId)
+              .platform(platform)
+              .email(appleEmail)
+              .nickName(nickName)
+              .is_deleted(false)
+              .build();
+    }
+    else
+    {
+      return User.builder()
+              .platformID(platformId)
+              .platform(platform)
+              .email(kakaoEmail)
+              .nickName(nickName)
+              .is_deleted(false)
+              .build();
+    }
+
   }
 }

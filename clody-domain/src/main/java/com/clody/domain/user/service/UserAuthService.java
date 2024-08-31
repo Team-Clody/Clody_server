@@ -8,6 +8,7 @@ import com.clody.domain.user.repository.UserRepository;
 import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.BusinessException;
 import com.clody.support.exception.auth.SignInException;
+import com.clody.support.security.util.JwtUtil;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,12 @@ public class UserAuthService {
     User registeredUser = userRepository.save(user);
     userEventPublisher.publishUserCreatedEvent(new UserCreatedEvent(registeredUser));
     return userRepository.save(user);
+  }
+
+  public User deleteUser() {
+    User user = userRepository.findById(JwtUtil.getLoginMemberId());
+    userRepository.delete(user);
+    return user;
   }
 
   private void validateDuplicateUser(User user) {
