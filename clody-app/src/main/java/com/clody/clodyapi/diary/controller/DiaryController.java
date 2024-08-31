@@ -52,7 +52,6 @@ public interface DiaryController {
     @Operation(summary = "일기 작성 ", description = "작성 일자와 일기 리스트를 이용해 일기를 작성하고, 답변을 요청합니다. 첫 요청의 응답은 짧습니다.")
     @PostMapping("/diary")
     ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
-        @RequestHeader(HeaderConstants.AUTHORIZATION) String accessToken,
         @RequestBody @Parameter(name = "연도", description = "작성할 연도", required = true) final DiaryRequest request
     );
 
