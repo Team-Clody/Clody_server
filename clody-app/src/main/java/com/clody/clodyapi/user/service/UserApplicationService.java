@@ -49,16 +49,7 @@ public class UserApplicationService implements UserAuthUsecase {
     SocialRegisterStrategy strategy = strategyFactory.getStrategy(platform);
     UserSocialInfo userSocialInfo = strategy.getUserInfo(info);
 
-    User newUser = null;
-    if (platform == Platform.APPLE)
-    {
-      newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name());
-    }
-    else
-    {
-      newUser = User.createNewUser(userSocialInfo.id(), platform, userSocialInfo.email(), request.name());
-    }
-
+    User newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name(), userSocialInfo.email());
     User savedUser = userAuthService.registerUser(newUser);
     Token token = issueToken(savedUser.getId());
 

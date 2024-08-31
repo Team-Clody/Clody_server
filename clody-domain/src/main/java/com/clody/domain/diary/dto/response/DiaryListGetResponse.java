@@ -1,6 +1,5 @@
-package com.clody.domain.diary.dto;
+package com.clody.domain.diary.dto.response;
 
-import com.clody.domain.diary.dto.response.DiaryDayInfo;
 import java.util.List;
 
 public record DiaryListGetResponse(
