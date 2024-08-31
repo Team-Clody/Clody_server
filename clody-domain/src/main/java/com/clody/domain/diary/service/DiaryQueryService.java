@@ -8,6 +8,7 @@ import com.clody.domain.diary.dto.response.DiaryListInfo;
 import com.clody.domain.diary.dto.response.DiaryCreatedInfo;
 import com.clody.domain.diary.repository.DiaryRepository;
 import com.clody.domain.reply.Reply;
+import com.clody.domain.reply.ReplyProcessStatus;
 import com.clody.domain.reply.UserReplyReadStatus;
 import com.clody.domain.reply.repository.ReplyRepository;
 import com.clody.support.security.util.JwtUtil;
@@ -61,18 +62,22 @@ public class DiaryQueryService {
 
     for (LocalDate date : diariesMapByDate.keySet()) {
 
+      // date의 모든 일기중 삭제 되지 않은 일기
       List<Diary> unDeletedDiaries = diariesMapByDate.get(date).stream()
               .filter(diary -> !diary.isDeleted())
               .toList();
 
+      // date 모든 일기중 삭제된 일기
       List<Diary> deletedDiaries = diariesMapByDate.get(date).stream()
               .filter(Diary::isDeleted)
               .toList();
+
+      // date의 답변
       Reply reply = repliesMapByDate.get(date);
 
 
-      if (reply != null && !reply.getReplyInfo().isDeleted() && reply.getIs_read()) {
-        // 답장이 있고 읽음
+      if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
+        // 일기 삭제한 적 없음 + 답장 있음 + 답장 읽음 + 답장 상태 SUCCESS임
         replyStatus = UserReplyReadStatus.READY_READ;
         diaryDayInfos.add(
                 DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
@@ -80,8 +85,8 @@ public class DiaryQueryService {
         continue;
       }
 
-      if (reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read()) {
-        // 답장이 있고 안읽음
+      if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
+        // 일기 삭제한 적 없음 + 답장 있음 + 답장 안읽음 + 답장 상태 SUCCESS 임
         replyStatus = UserReplyReadStatus.READY_NOT_READ;
         diaryDayInfos.add(
                 DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
@@ -89,8 +94,8 @@ public class DiaryQueryService {
         continue;
       }
 
-      if (reply == null && deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
-        // 삭제한 적이 없고 일기를 쓴 채로 답장을 기다리는중
+      if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.PENDING)) {
+        // 일기 삭제한 적이 없음 + 답장 안옴
         replyStatus = UserReplyReadStatus.UNREADY;
         diaryDayInfos.add(
                 DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
@@ -98,12 +103,23 @@ public class DiaryQueryService {
         continue;
       }
 
-      if (reply != null && reply.getReplyInfo().isDeleted() && !deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
+
+      if (!deletedDiaries.isEmpty() && reply != null && reply.getReplyInfo().isDeleted() && !unDeletedDiaries.isEmpty()) {
         // 삭제한 적이 있고 일기를 다시 씀
         replyStatus = UserReplyReadStatus.UNREADY;
         diaryDayInfos.add(
                 DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
                         true));
+        continue;
+      }
+
+      if (!deletedDiaries.isEmpty() && reply != null && reply.getReplyInfo().isDeleted() && unDeletedDiaries.isEmpty()) {
+        // 일기를 삭제하고 아무것도 안함
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.add(
+                DiaryDayInfo.of(0, replyStatus, date, getDiaryContentList(unDeletedDiaries),
+                        true));
+        continue;
       }
 
     }
@@ -130,6 +146,7 @@ public class DiaryQueryService {
       if(diariesMapByDate.get(today) == null){
         continue;
       }
+
       List<Diary> unDeletedDiaries = diariesMapByDate.get(today).stream()
               .filter(diary -> !diary.isDeleted())
               .toList();
@@ -139,45 +156,46 @@ public class DiaryQueryService {
               .toList();
       Reply reply = repliesMapByDate.get(today);
 
-      if (reply != null && !reply.getReplyInfo().isDeleted() && reply.getIs_read()) {
-        // 답장이 있고 읽음
+
+      if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
+        // 일기 삭제한 적 없음 + 답장 있음 + 답장 읽음 + 답장 상태 SUCCESS임
         replyStatus = UserReplyReadStatus.READY_READ;
         diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
                 false));
         continue;
       }
 
-      if (reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read()) {
-        // 답장이 있고 안읽음
+      if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
+        // 일기 삭제한 적 없음 + 답장 있음 + 답장 안읽음 + 답장 상태 SUCCESS 임
         replyStatus = UserReplyReadStatus.READY_NOT_READ;
         diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
                 false));
         continue;
       }
 
-      if (reply == null && deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
-        // 삭제한 적이 없고 일기를 쓴 채로 답장을 기다리는중
+      if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.PENDING)) {
+        // 일기 삭제한 적이 없음 + 답장 안옴
         replyStatus = UserReplyReadStatus.UNREADY;
         diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
                 false));
         continue;
       }
 
-      if (reply != null && reply.getReplyInfo().isDeleted() && unDeletedDiaries.isEmpty()) {
-        // 일기를 삭제하고 아무것도 안함.
-        replyStatus = UserReplyReadStatus.UNREADY;
-        diaryDayInfos.set(i, DiaryDayInfo.of(0, replyStatus, today, new ArrayList<>(),
-                true));
-      }
-
-
-      if (reply != null && reply.getReplyInfo().isDeleted() && !deletedDiaries.isEmpty() && !unDeletedDiaries.isEmpty()) {
+      if (!deletedDiaries.isEmpty() && reply != null && reply.getReplyInfo().isDeleted() && !unDeletedDiaries.isEmpty()) {
         // 삭제한 적이 있고 일기를 다시 씀
         replyStatus = UserReplyReadStatus.UNREADY;
         diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
                 true));
+        continue;
       }
 
+      if (!deletedDiaries.isEmpty() && reply != null && reply.getReplyInfo().isDeleted() && unDeletedDiaries.isEmpty()) {
+        // 일기를 삭제하고 아무것도 안함
+        replyStatus = UserReplyReadStatus.UNREADY;
+        diaryDayInfos.set(i, DiaryDayInfo.of(0, replyStatus, today, new ArrayList<>(),
+                true));
+        continue;
+      }
 
     }
 
@@ -188,7 +206,7 @@ public class DiaryQueryService {
     LocalDateTime start = LocalDateTime.of(year, 1, 1, 0, 0);
     LocalDateTime end = start.plusYears(1);
     return replyRepository.findByUserIdAndDiaryCreatedDateBetween(JwtUtil.getLoginMemberId(), start.toLocalDate(),
-                    end.toLocalDate()).stream().filter(Reply::isRead)  // is_read가 true 인 것만 필터링
+                    end.toLocalDate()).stream().filter(Reply::getIs_read).filter(reply -> !reply.getReplyInfo().isDeleted())  // is_read가 true 인 것만 필터링
             .toList().size();
   }
 
