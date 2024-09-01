@@ -43,6 +43,6 @@ public class AlarmRepositoryAdapter implements AlarmRepository {
 
   @Override
   public Optional<Alarm> findUserAgreedForReply(Long userId) {
-    return alarmRepository.findByUserIdAndReplyAlarmIsTrue(userId);
+    return alarmRepository.findByUserIdAndIsReplyAlarmTrue(userId);
   }
 }
