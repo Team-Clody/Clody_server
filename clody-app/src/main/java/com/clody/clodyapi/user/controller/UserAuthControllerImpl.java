@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,7 +37,6 @@ public class UserAuthControllerImpl implements AuthController {
         .body(ApiResponse.success(SuccessType.CREATED_SUCCESS, response));
   }
 
-  @ResponseBody
   @PostMapping("/auth/signin")
   public ResponseEntity<ApiResponse<UserAuthResponse>> signIn(
       @RequestHeader(HeaderConstants.AUTHORIZATION) String tokenWithBearer,
