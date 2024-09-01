@@ -17,5 +17,5 @@ public interface JpaDiaryRepository extends JpaRepository<Diary, Long> {
 
   List<Diary> findDiariesByUserId(Long userId);
 
-  boolean findDiariesByUserIdAndCreatedAtBetweenAndDeletedTrue(Long userId, LocalDateTime start, LocalDateTime end);
+  boolean existsByUserIdAndCreatedAtBetweenAndIsDeletedTrue(Long userId, LocalDateTime start, LocalDateTime end);
 }

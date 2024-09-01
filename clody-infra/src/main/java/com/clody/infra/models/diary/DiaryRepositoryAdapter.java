@@ -53,7 +53,7 @@ public class DiaryRepositoryAdapter implements DiaryRepository {
   public boolean findIfUserHasDeletedDiary(LocalDateTime start) {
     Long userId = JwtUtil.getLoginMemberId();
     LocalDateTime end = start.plusDays(1);
-    return diaryRepository.findDiariesByUserIdAndCreatedAtBetweenAndDeletedTrue(userId, start, end);
+    return diaryRepository.existsByUserIdAndCreatedAtBetweenAndIsDeletedTrue(userId, start, end);
   }
 }
 
