@@ -46,6 +46,11 @@ public class DiaryQueryService {
         .collect(Collectors.toUnmodifiableList());
   }
 
+  public boolean isUserHasDeletedDiary(DiaryDateInfo info){
+    LocalDateTime localDateTime = info.parseToLocalDateTime();
+    return diaryRepository.findIfUserHasDeletedDiary(localDateTime);
+  }
+
   public DiaryListInfo getDiaryList(int year, int month) {
     LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
     LocalDateTime end = start.plusMonths(1);
