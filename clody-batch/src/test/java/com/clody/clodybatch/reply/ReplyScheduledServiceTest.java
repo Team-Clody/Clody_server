@@ -3,7 +3,7 @@ package com.clody.clodybatch.reply;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import com.clody.clodybatch.service.ScheduleService;
+import com.clody.clodybatch.service.ReplyScheduleService;
 import com.clody.domain.reply.ReplyType;
 import com.clody.meta.Schedule;
 import com.clody.meta.repository.ScheduleMetaRepository;
@@ -24,7 +24,7 @@ public class ReplyScheduledServiceTest {
   private ScheduleMetaRepository scheduleMetaRepository;
 
   @InjectMocks
-  private ScheduleService scheduleService;
+  private ReplyScheduleService replyScheduleService;
 
 
   @Test
@@ -44,7 +44,7 @@ public class ReplyScheduledServiceTest {
         Collections.singletonList(schedule));
 
     //then
-    List<Schedule> result = scheduleService.findSchedulesToNotify(now);
+    List<Schedule> result = replyScheduleService.findSchedulesToNotify(now);
     assertEquals(1, result.size());
     assertEquals(schedule, result.getFirst());
   }

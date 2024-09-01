@@ -30,8 +30,6 @@ public class UserControllerImpl implements UserController {
   private final UserUpdateUsecase userUpdateUsecase;
   private final UserDeletionUsecase userDeletionUsecase;
 
-
-
   @Override
   @GetMapping("/user/info")
   public ResponseEntity<ApiResponse<UserInfoGetResponse>> getUserInfo() {
