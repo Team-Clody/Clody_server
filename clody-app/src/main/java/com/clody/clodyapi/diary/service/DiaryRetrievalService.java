@@ -30,6 +30,7 @@ public class DiaryRetrievalService implements DiaryQueryUsecase {
   public DiaryResponse getDiary(final int year, final int month, final int date) {
     DiaryDateInfo diaryDateInfo = DiaryMapper.toDiaryDateInfo(year, month, date);
     List<DiaryContent> diaryContentList = diaryQueryService.getDiary(diaryDateInfo);
-    return DiaryMapper.toDiaryResponse(diaryContentList);
+    boolean userHasDeletedDiary = diaryQueryService.isUserHasDeletedDiary(diaryDateInfo);
+    return DiaryMapper.toDiaryResponse(diaryContentList, userHasDeletedDiary);
   }
 }

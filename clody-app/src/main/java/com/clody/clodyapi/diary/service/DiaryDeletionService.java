@@ -19,7 +19,7 @@ public class DiaryDeletionService implements DiaryDeletionUsecase {
     //Mapper에서 변환
     DiaryDeletionInfo diaryDeletionInfo = DiaryMapper.toDiaryDeletionInfo(year, month, date);
     diaryCommandService.removeDiarySoft(diaryDeletionInfo);
-    return DiaryResponse.of(List.of());
+    return DiaryResponse.of(List.of(),true);
 
   }
 }
