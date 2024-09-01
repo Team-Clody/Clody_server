@@ -2,7 +2,7 @@ package com.clody.clodyapi.diary.service;
 
 import com.clody.clodyapi.diary.mapper.DiaryMapper;
 import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
-import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.domain.diary.dto.response.DiaryListInfo;
 import com.clody.domain.diary.service.DiaryQueryService;

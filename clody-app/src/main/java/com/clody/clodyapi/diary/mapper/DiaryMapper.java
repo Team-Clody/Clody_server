@@ -7,7 +7,7 @@ import com.clody.domain.diary.dto.DiaryContent;
 import com.clody.domain.diary.dto.DiaryDateInfo;
 import com.clody.domain.diary.dto.DiaryDeletionInfo;
 import com.clody.domain.diary.dto.DiaryDomainInfo;
-import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCreatedInfo;
 import com.clody.domain.diary.dto.response.DiaryDayInfo;

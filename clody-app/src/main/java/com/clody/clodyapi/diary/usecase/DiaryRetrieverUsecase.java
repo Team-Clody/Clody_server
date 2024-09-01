@@ -1,6 +1,6 @@
 package com.clody.clodyapi.diary.usecase;
 
-import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 
 public interface DiaryRetrieverUsecase {

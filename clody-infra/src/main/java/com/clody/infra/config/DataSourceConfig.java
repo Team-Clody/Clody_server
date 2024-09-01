@@ -18,15 +18,7 @@ public class DataSourceConfig {
   @Bean
   @ConfigurationProperties(prefix = "spring.datasource.meta.hikari")
   public HikariConfig metaHikariConfig() {
-    HikariConfig config = new HikariConfig();
-
-    config.setDriverClassName("org.postgresql.Driver");
-    config.setJdbcUrl("jdbc:postgresql://localhost:5432/donkey_meta");
-    config.setUsername("hyunw9");
-    config.setPassword("1228");
-    System.out.println("DriverClassName: " + config.getDriverClassName());
-    System.out.println("JdbcUrl: " + config.getJdbcUrl());
-    return config;
+    return new HikariConfig();
   }
 
   @Primary
@@ -37,18 +29,13 @@ public class DataSourceConfig {
 
   @Bean
   @ConfigurationProperties(prefix = "spring.datasource.domain.hikari")
-  public HikariConfig domainHikariConfig() {
-    HikariConfig config = new HikariConfig();
-    config.setDriverClassName("org.postgresql.Driver");
-    config.setJdbcUrl("jdbc:postgresql://localhost:5432/donkey_local");
-    config.setUsername("hyunw9");
-    config.setPassword("1228");
-    return config;
+  public HikariConfig businessHikariConfig() {
+    return new HikariConfig();
   }
 
   @Bean(DOMAIN_DATASOURCE)
-  public DataSource domainDataSource(){
-    return new LazyConnectionDataSourceProxy(new HikariDataSource(domainHikariConfig()));
+  public DataSource businessDataSource(){
+    return new LazyConnectionDataSourceProxy(new HikariDataSource(businessHikariConfig()));
   }
 
 

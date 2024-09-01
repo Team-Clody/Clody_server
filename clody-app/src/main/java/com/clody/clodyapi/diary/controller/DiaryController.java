@@ -5,7 +5,7 @@ import com.clody.clodyapi.diary.controller.dto.request.DiaryRequest;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryCreatedTimeResponse;
 import com.clody.clodyapi.diary.controller.dto.response.DiaryResponse;
-import com.clody.domain.diary.dto.DiaryListGetResponse;
+import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
 import com.clody.support.constants.HeaderConstants;
 import com.clody.support.dto.ApiResponse;
@@ -52,7 +52,6 @@ public interface DiaryController {
     @Operation(summary = "일기 작성 ", description = "작성 일자와 일기 리스트를 이용해 일기를 작성하고, 답변을 요청합니다. 첫 요청의 응답은 짧습니다.")
     @PostMapping("/diary")
     ResponseEntity<ApiResponse<DiaryCreatedResponse>> postDiary(
-        @RequestHeader(HeaderConstants.AUTHORIZATION) String accessToken,
         @RequestBody @Parameter(name = "연도", description = "작성할 연도", required = true) final DiaryRequest request
     );
 
