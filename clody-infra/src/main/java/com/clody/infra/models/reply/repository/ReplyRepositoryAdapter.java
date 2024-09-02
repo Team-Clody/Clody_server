@@ -2,12 +2,13 @@ package com.clody.infra.models.reply.repository;
 
 import com.clody.domain.reply.Reply;
 import com.clody.domain.reply.repository.ReplyRepository;
+import com.clody.infra.config.TransactionManagerConfig;
 import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.NotFoundException;
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ReplyRepositoryAdapter implements ReplyRepository {
@@ -47,6 +48,7 @@ public class ReplyRepositoryAdapter implements ReplyRepository {
   }
 
   @Override
+  @Transactional(TransactionManagerConfig.DOMAIN_TRANSACTION_MANAGER)
   public Reply save(Reply reply) {
     return jpaReplyRepository.save(reply);
   }
