@@ -42,8 +42,6 @@ public class KakaoAuthStrategy implements SocialRegisterStrategy {
 
     //로컬 테스트 아래의1줄 주석 하셈
     KakaoUserInfoResponse userInfo = getKakaoUserInfo(info.tokenWithBearer());
-
-    validateDuplicateUser(userInfo);
     return UserSocialInfo.of(userInfo.id(), platform, userInfo.kakaoAccount().email());
   }
 
@@ -59,11 +57,5 @@ public class KakaoAuthStrategy implements SocialRegisterStrategy {
 
   private KakaoUserInfoResponse getKakaoUserInfo(String accessToken) {
     return kakaoUserInfoClient.getUserInformation(accessToken);
-  }
-
-  private void validateDuplicateUser(KakaoUserInfoResponse userInfo) {
-    if (userRepository.existsByPlatformAndPlatformID(Platform.KAKAO, userInfo.id())) {
-      throw new SignUpException(ErrorType.DUPLICATED_USER_ERROR);
-    }
   }
 }
