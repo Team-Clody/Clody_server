@@ -8,6 +8,7 @@ import com.clody.support.exception.NotFoundException;
 import com.clody.support.security.util.JwtUtil;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -46,7 +47,10 @@ public class DiaryRepositoryAdapter implements DiaryRepository {
     Long userId = JwtUtil.getLoginMemberId();
 
     LocalDateTime end = start.plusDays(1);
-    return findDiariesByUserIdAndCreatedAtBetween(userId, start, end);
+
+    return findDiariesByUserIdAndCreatedAtBetween(userId, start, end).stream()
+        .filter(diary -> !diary.checkDiaryDeleted())
+        .collect(Collectors.toUnmodifiableList());
   }
 
   @Override
