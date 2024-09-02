@@ -49,8 +49,8 @@ public class UserControllerImpl implements UserController {
   @Override
   @DeleteMapping("/user/revoke")
   public ResponseEntity<ApiResponse<UserDeleteResponse>> deleteUser() {
-    return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(ApiResponse.success(SuccessType.DELETED_SUCCESS,
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(SuccessType.OK_SUCCESS,
                     userDeletionUsecase.deleteUser()));
   }
 }
