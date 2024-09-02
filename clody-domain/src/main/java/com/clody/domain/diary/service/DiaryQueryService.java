@@ -35,7 +35,7 @@ public class DiaryQueryService {
     List<Diary> diaryList = diaryRepository.findTodayDiary(localDateTime);
     Diary latestDiary = Diary.getLatestDiary(diaryList);
     Reply reply = replyRepository.findByUserIdAndDiaryCreatedDate(userId, localDateTime.toLocalDate());
-    return DiaryCreatedInfo.from(latestDiary.getCreatedAt(),reply.getReplyType());
+    return DiaryCreatedInfo.from(latestDiary.getCreatedAt(),reply.checkIfFirstReply());
   }
 
   public List<DiaryContent> getDiary(DiaryDateInfo info) {
