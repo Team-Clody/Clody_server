@@ -81,7 +81,7 @@ public class DiaryControllerImpl  implements DiaryController{
   @DeleteMapping("/diary")
   public ResponseEntity<ApiResponse<?>> deleteDiary(
       int year, int month, int date) {
-    return ResponseEntity.status(HttpStatus.NO_CONTENT)
+    return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.DELETED_SUCCESS,
             diaryDeletionUsecase.deleteDiary(year, month, date)));
   }
