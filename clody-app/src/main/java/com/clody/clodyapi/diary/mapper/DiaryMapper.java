@@ -40,7 +40,7 @@
     }
 
     public static DiaryCreatedTimeResponse toDiaryCreatedTimeResponse(DiaryCreatedInfo info) {
-      return DiaryCreatedTimeResponse.of(info.HH(), info.MM(), info.SS(), info.replyType());
+      return DiaryCreatedTimeResponse.of(info.HH(), info.MM(), info.SS(), info.isFirst());
     }
 
     public static DiaryListGetResponse toDiaryListResponse(DiaryListInfo diaryListInfo) {

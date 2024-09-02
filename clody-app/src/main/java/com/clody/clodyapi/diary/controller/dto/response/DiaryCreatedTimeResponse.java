@@ -1,14 +1,12 @@
 package com.clody.clodyapi.diary.controller.dto.response;
 
-import com.clody.domain.reply.ReplyType;
-
 public record DiaryCreatedTimeResponse(
     int HH,
     int mm,
     int ss,
-    ReplyType replyType
+    boolean isFirst
 ) {
-    public static DiaryCreatedTimeResponse of(int HH, int mm, int ss, ReplyType type) {
-        return new DiaryCreatedTimeResponse(HH, mm, ss, type);
+    public static DiaryCreatedTimeResponse of(int HH, int mm, int ss, boolean isFirst) {
+        return new DiaryCreatedTimeResponse(HH, mm, ss, isFirst);
     }
 }

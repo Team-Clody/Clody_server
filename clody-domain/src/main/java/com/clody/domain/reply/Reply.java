@@ -117,4 +117,8 @@ public class Reply extends BaseEntity {
   public void delete(){
     this.replyInfo = replyInfo.delete();
   }
+
+  public boolean checkIfFirstReply(){
+    return this.replyType == ReplyType.FIRST;
+  }
 }

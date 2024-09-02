@@ -8,11 +8,10 @@ import com.clody.clodyapi.diary.usecase.DiaryCreationUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryDeletionUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryQueryUsecase;
 import com.clody.clodyapi.diary.usecase.DiaryRetrieverUsecase;
-import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.domain.diary.dto.response.DiaryCalenderGetResponse;
+import com.clody.domain.diary.dto.response.DiaryListGetResponse;
 import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.SuccessType;
-import com.clody.support.util.DateTimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +73,6 @@ public class DiaryControllerImpl  implements DiaryController{
   public ResponseEntity<ApiResponse<DiaryCreatedTimeResponse>> getDiaryCreatedTime(
       @RequestParam final int year, @RequestParam final int month,
       @RequestParam final int date) {
-    DateTimeValidator.validateLocalDateTime(year, month, date);
     final DiaryCreatedTimeResponse response = diaryQueryUsecase.getCreatedTime(year, month, date);
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(SuccessType.OK_SUCCESS, response));
