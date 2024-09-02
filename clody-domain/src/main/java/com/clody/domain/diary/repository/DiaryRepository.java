@@ -16,4 +16,6 @@ public interface DiaryRepository {
   boolean existsByUser(User user);
 
   List<Diary> findTodayDiary(LocalDateTime localDateTime);
+
+  boolean findIfUserHasDeletedDiary(LocalDateTime localDateTime);
 }

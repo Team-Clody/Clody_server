@@ -3,7 +3,7 @@ package com.clody.clodybatch.reply;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.clody.clodybatch.service.AlarmNotifyService;
+import com.clody.clodybatch.service.ReplyNotificationService;
 import com.clody.domain.alarm.Alarm;
 import com.clody.domain.alarm.repository.AlarmRepository;
 import com.clody.domain.alarm.service.NotificationSender;
@@ -22,7 +22,7 @@ public class ReplyAlarmServiceTest {
   private NotificationSender notificationSender;
 
   @Mock
-  private AlarmNotifyService alarmNotifyService;
+  private ReplyNotificationService replyNotificationService;
 
   @Test
   public void 알람_발송_테스트(){
@@ -30,8 +30,8 @@ public class ReplyAlarmServiceTest {
     alarm.renewFcmToken("testToken");
     Long userId = 1L;
 
-    alarmNotifyService.sendReplyNotification(alarm);
-    verify(alarmNotifyService).sendReplyNotification(alarm);
+    replyNotificationService.sendReplyNotification(alarm);
+    verify(replyNotificationService).sendReplyNotification(alarm);
   }
 
   @Test

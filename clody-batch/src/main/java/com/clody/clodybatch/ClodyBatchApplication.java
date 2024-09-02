@@ -1,22 +1,26 @@
 package com.clody.clodybatch;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import static com.clody.clodybatch.config.BatchConfig.BATCH_DATASOURCE;
+import static com.clody.clodybatch.config.BatchConfig.BATCH_TRANSACTION_MANAGER;
 
-@EnableBatchProcessing
+import com.clody.clodybatch.config.BatchConfig;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Import;
+
+@Import({BatchConfig.class})
+@EnableBatchProcessing(dataSourceRef = BATCH_DATASOURCE, transactionManagerRef = BATCH_TRANSACTION_MANAGER)
 @SpringBootApplication
-@Slf4j
-@ConditionalOnMissingBean(value = DefaultBatchConfiguration.class, annotation = EnableBatchProcessing.class)
 public class ClodyBatchApplication {
 
   public static void main(String[] args) {
-    int exit = SpringApplication.exit(SpringApplication.run(ClodyBatchApplication.class, args));
-    log.info("exit = {}", exit);
-    System.exit(exit);
+    System.setProperty("spring.config.name","application-batch");
+    SpringApplication springApplication = new SpringApplicationBuilder(ClodyBatchApplication.class).web(
+        WebApplicationType.NONE).build();
+    springApplication.run(args);
   }
 
 }

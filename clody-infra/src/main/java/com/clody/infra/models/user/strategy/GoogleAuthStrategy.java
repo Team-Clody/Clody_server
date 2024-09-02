@@ -36,7 +36,7 @@ public class GoogleAuthStrategy implements SocialRegisterStrategy {
     public UserSocialInfo getUserInfo(UserDomainInfo info) {
 
         Platform platform = info.platform();
-        GoogleTokenResponse token = getGoogleToken(info.authTokenWithBearer());
+        GoogleTokenResponse token = getGoogleToken(info.tokenWithBearer());
         String accessTokenWithPrefix = GoogleTokenResponse.getTokenWithPrefix(token.access_token());
         GoogleUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
         return UserSocialInfo.of(userInfo.sub(), platform);
@@ -44,7 +44,7 @@ public class GoogleAuthStrategy implements SocialRegisterStrategy {
 
     public User signIn(UserDomainInfo info) {
         Platform platform = info.platform();
-        GoogleTokenResponse token = getGoogleToken(info.authTokenWithBearer());
+        GoogleTokenResponse token = getGoogleToken(info.tokenWithBearer());
         String accessTokenWithPrefix = KakaoTokenResponse.getTokenWithPrefix(token.access_token());
         GoogleUserInfoResponse userInfo = getKakaoUserInfo(accessTokenWithPrefix);
         return findByPlatformAndPlatformId(platform, userInfo.sub());

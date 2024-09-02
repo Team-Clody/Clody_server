@@ -104,6 +104,10 @@ public class Alarm {
         }
     }
 
+    public boolean checkUserAgreedForReplyAlarm(){
+        return isReplyAlarm;
+    }
+
     public void renewFcmToken(String fcmToken){
         this.fcmToken = fcmToken;
     }

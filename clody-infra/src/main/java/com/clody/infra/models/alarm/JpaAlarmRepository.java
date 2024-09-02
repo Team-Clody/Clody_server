@@ -19,5 +19,5 @@ public interface JpaAlarmRepository extends JpaRepository<Alarm, Long> {
 
   Alarm save(Alarm alarm);
 
-  Optional<Alarm> findByUserIdAndReplyAlarmIsTrue(Long userId);
+  Optional<Alarm> findByUserIdAndIsReplyAlarmTrue(Long userId);
 }

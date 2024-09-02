@@ -9,4 +9,8 @@ public interface ScheduleMetaRepository {
   void save(Schedule schedule);
 
   List<Schedule> findSchedulesToNotify(LocalDateTime now);
+
+//  Page<Schedule> findByIsSentFalseAndNotificationTimeLessThanEqual(LocalDateTime now, Pageable pageable);
+
+//  void saveAll(List<Schedule> scheduleList);
 }

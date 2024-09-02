@@ -43,6 +43,10 @@ dependencies {
     //azure
     implementation("com.azure:azure-ai-openai-assistants:1.0.0-beta.3")
 
+    //scheduling
+    implementation("org.springframework.boot:spring-boot-starter-quartz:3.2.3")
+
+
 }
 
 tasks.withType<BootJar>{

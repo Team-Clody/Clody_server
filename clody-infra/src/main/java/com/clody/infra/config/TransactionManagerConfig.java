@@ -34,13 +34,13 @@ public class TransactionManagerConfig {
   private final EntityManagerFactoryBuilder entityManagerFactoryBuilder;
 
   // Meta Database Transaction Manager 설정
-  @Bean(name = META_TRANSACTION_MANAGER)
+  @Bean(META_TRANSACTION_MANAGER)
   public PlatformTransactionManager metaTransactionManager(
       @Qualifier(META_ENTITY_MANAGER_FACTORY) EntityManagerFactory metaEntityManagerFactory) {
     return new JpaTransactionManager(metaEntityManagerFactory);
   }
 
-  @Bean(name = META_ENTITY_MANAGER_FACTORY)
+  @Bean(META_ENTITY_MANAGER_FACTORY)
   public LocalContainerEntityManagerFactoryBean metaEntityManagerFactory(
       @Qualifier(META_DATASOURCE) DataSource metaDataSource) {
     return entityManagerFactoryBuilder
@@ -53,14 +53,14 @@ public class TransactionManagerConfig {
 
   // Domain Database Transaction Manager 설정
   @Primary
-  @Bean(name = DOMAIN_TRANSACTION_MANAGER)
+  @Bean(DOMAIN_TRANSACTION_MANAGER)
   public PlatformTransactionManager domainTransactionManager(
       @Qualifier(DOMAIN_ENTITY_MANAGER_FACTORY) EntityManagerFactory domainEntityManagerFactory) {
     return new JpaTransactionManager(domainEntityManagerFactory);
   }
 
   @Primary
-  @Bean(name = DOMAIN_ENTITY_MANAGER_FACTORY)
+  @Bean(DOMAIN_ENTITY_MANAGER_FACTORY)
   public LocalContainerEntityManagerFactoryBean domainEntityManagerFactory(
       @Qualifier(DOMAIN_DATASOURCE) DataSource domainDataSource) {
     return entityManagerFactoryBuilder

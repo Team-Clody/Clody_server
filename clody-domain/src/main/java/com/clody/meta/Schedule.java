@@ -56,4 +56,8 @@ public class Schedule {
       default -> throw new BusinessException(ErrorType.INVALID_REPLY_TYPE);
     };
   }
+
+  public static Schedule truncateSeconds(Schedule schedule){
+    return new Schedule(schedule.getUserId(), schedule.getNotificationTime().truncatedTo(ChronoUnit.SECONDS));
+  }
 }
