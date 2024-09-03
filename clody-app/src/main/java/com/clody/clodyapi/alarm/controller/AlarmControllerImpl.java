@@ -28,7 +28,7 @@ public class AlarmControllerImpl implements AlarmSwagger{
   public ResponseEntity<ApiResponse<AlarmResponse>> getUserAlarmInfo() {
     AlarmResponse response = retrieveAlarmInfoUsecase.retrieveAlarmInfo();
     return ResponseEntity.status(HttpStatus.OK).body(
-        ApiResponse.success(SuccessType.OK_SUCCESS, retrieveAlarmInfoUsecase.retrieveAlarmInfo())
+        ApiResponse.success(SuccessType.OK_SUCCESS, response)
     );
   }
 
