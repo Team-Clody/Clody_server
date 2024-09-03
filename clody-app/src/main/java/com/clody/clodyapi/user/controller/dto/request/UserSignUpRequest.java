@@ -7,7 +7,6 @@ public record UserSignUpRequest(
     String platform,
     String email,
     String name,
-
     String fcmToken
 ) {
 }

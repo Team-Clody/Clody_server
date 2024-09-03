@@ -4,7 +4,7 @@ import com.clody.domain.diary.Diary;
 import com.clody.domain.diary.repository.DiaryRepository;
 import com.clody.domain.user.User;
 import com.clody.support.dto.type.ErrorType;
-import com.clody.support.exception.NotFoundException;
+import com.clody.support.exception.BusinessException;
 import com.clody.support.security.util.JwtUtil;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,7 @@ public class DiaryRepositoryAdapter implements DiaryRepository {
   public List<Diary> findDiariesByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start,
       LocalDateTime end) {
     return diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, start, end)
-        .orElseThrow(() -> new NotFoundException(ErrorType.DIARY_MESSAGE_NOT_FOUND));
+        .orElseThrow(() -> new BusinessException(ErrorType.DIARY_MESSAGE_NOT_FOUND));
   }
 
   @Override
