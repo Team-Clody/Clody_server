@@ -66,11 +66,11 @@ public class Alarm {
 
     public void updateAlarm(UpdateAlarmCommand command){
         if(command.isDiaryAlarm()!=null){
-            updateReplyAlarm(command.isReplyAlarm());
+            updateDiaryAlarm(command.isDiaryAlarm());
         }
 
         if(command.isReplyAlarm()!=null){
-            updateDiaryAlarm(command.isReplyAlarm());
+            updateReplyAlarm(command.isReplyAlarm());
         }
 
         if(command.time()!=null){

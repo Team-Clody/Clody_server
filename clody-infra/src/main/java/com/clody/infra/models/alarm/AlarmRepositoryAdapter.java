@@ -3,12 +3,14 @@ package com.clody.infra.models.alarm;
 import com.clody.domain.alarm.Alarm;
 import com.clody.domain.alarm.repository.AlarmRepository;
 import com.clody.domain.user.User;
+import com.clody.infra.config.TransactionManagerConfig;
 import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.NotFoundException;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class AlarmRepositoryAdapter implements AlarmRepository {
@@ -37,6 +39,7 @@ public class AlarmRepositoryAdapter implements AlarmRepository {
   }
 
   @Override
+  @Transactional(TransactionManagerConfig.DOMAIN_TRANSACTION_MANAGER)
   public Alarm save(Alarm alarm) {
     return alarmRepository.save(alarm);
   }
