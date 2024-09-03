@@ -120,10 +120,10 @@ public class DiaryQueryService {
 
       if (!deletedDiaries.isEmpty() && reply != null && reply.getReplyInfo().isDeleted() && unDeletedDiaries.isEmpty()) {
         // 일기를 삭제하고 아무것도 안함
-        replyStatus = UserReplyReadStatus.UNREADY;
-        diaryDayInfos.add(
-                DiaryDayInfo.of(0, replyStatus, date, getDiaryContentList(unDeletedDiaries),
-                        true));
+//        replyStatus = UserReplyReadStatus.UNREADY;
+//        diaryDayInfos.add(
+//                DiaryDayInfo.of(0, replyStatus, date, getDiaryContentList(unDeletedDiaries),
+//                        true));
         continue;
       }
 
