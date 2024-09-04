@@ -55,14 +55,14 @@
 
 <div align=center>
   
-<img width="943" src="https://github.com/Team-Clody/Clody_server/assets/107605573/5154cf45-588a-4974-a9b7-73fb82a541f5">
+  ![architecture drawio](https://github.com/user-attachments/assets/d31446be-3aef-4109-bf78-33011b296a94)
+![multimodule drawio](https://github.com/user-attachments/assets/734f39d4-dc93-4332-8d56-42d8956d65ba)
+
 
 </div>
 
 
 ## ERD ✨
-
-![Clody_ERD](https://github.com/user-attachments/assets/e7c8fedd-a1a0-40ed-b2e5-038116ac8710)
 
 
 ## Teck Stack ✨
@@ -74,8 +74,12 @@
 | Authentication | Spring Security, JSON Web Tokens |
 | ORM | Spring Data JPA |
 | Database | PostgreSQL |
-| External | AWS EC2, AWS RDS, Nginx, Docker, Docker-Compose, Redis, FCM |
-| CI/CD | Github Action |
+| Testing | Mockito, Junit5 |
+| Scheduling | Spring Scheduler, Quartz |
+| Model | Azure Cloud SDK |
+| Infra | AWS EC2, AWS RDS, AWS SQS, Nginx, Docker, Docker-Compose, Redis |
+| Messaging | Firebase FCM |
+| CI/CD | Github Action, Jenkins |
 | API Docs | Notion, Swagger |
 | Other Tool | Discord, Postman, Figma |
 <br>
