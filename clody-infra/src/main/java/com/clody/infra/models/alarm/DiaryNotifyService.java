@@ -3,6 +3,7 @@ package com.clody.infra.models.alarm;
 import com.clody.domain.alarm.Alarm;
 import com.clody.domain.alarm.repository.AlarmRepository;
 import com.clody.infra.external.fcm.FcmService;
+import java.time.Clock;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -18,10 +19,11 @@ public class DiaryNotifyService {
 
   private final AlarmRepository alarmRepository;
   private final FcmService fcmService;
+  private final Clock clock;
 
   @Scheduled(cron = "0 0/10 * * * *")
   public void sendDiaryAlarms() {
-    LocalTime time = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+    LocalTime time = LocalTime.now(clock).truncatedTo(ChronoUnit.SECONDS);
 
     List<Alarm> alarmTarget = alarmRepository.findAllByTime(time);
 
