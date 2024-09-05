@@ -16,7 +16,7 @@ public class FcmService implements NotificationSender {
   private final FirebaseMessaging firebaseMessaging;
 
   public void sendDiaryAlarm(String fcmToken){
-    MessageContent diaryAlert = MessageContent.REPLY_COMPLETED_REQUEST;
+    MessageContent diaryAlert = MessageContent.DIARY_WRITE_REQUEST;
     Notification notification = Notification.builder()
         .setTitle(diaryAlert.getTitle())
         .setBody(diaryAlert.getBody())
