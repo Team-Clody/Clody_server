@@ -22,6 +22,10 @@ public class ReplyInfo {
     }
   }
 
+  public boolean checkReadable(){
+    return this.replyProcessStatus.equals(ReplyProcessStatus.SUCCEED);
+  }
+
   public void incrementVersion() {
     this.version++;
   }
