@@ -7,7 +7,7 @@ public class FirstAlarmDelayStrategy implements ScheduleTimeStrategy{
 
   @Override
   public Optional<RelativeTime> calculateAlarmDelayTime() {
-    return Optional.of(new RelativeTime(1, TimeUnit.MINUTES));
+    return Optional.of(new RelativeTime(20, TimeUnit.SECONDS));
   }
 
 }
