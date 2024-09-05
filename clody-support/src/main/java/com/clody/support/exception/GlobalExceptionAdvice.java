@@ -4,6 +4,7 @@ import com.clody.support.dto.ApiResponse;
 import com.clody.support.dto.type.ErrorType;
 import com.clody.support.exception.auth.SignInException;
 import com.clody.support.exception.auth.SignUpException;
+import com.clody.support.exception.diary.DiaryCreateException;
 import com.clody.support.exception.reply.ReplyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(SignInException.class)
     protected ResponseEntity<ApiResponse<?>> SignUpException(SignInException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getErrorType()));
+    }
+
+    @ExceptionHandler(DiaryCreateException.class)
+    protected ResponseEntity<ApiResponse<?>> DiaryCreateException(DiaryCreateException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getErrorType()));
     }
 
     @ExceptionHandler(ReplyException.class)

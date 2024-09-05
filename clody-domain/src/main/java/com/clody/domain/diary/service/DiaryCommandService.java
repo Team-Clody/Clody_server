@@ -12,8 +12,11 @@ import com.clody.domain.reply.ReplyType;
 import com.clody.domain.user.User;
 import com.clody.domain.user.event.UserEventPublisher;
 import com.clody.domain.user.repository.UserRepository;
+import com.clody.support.dto.type.ErrorType;
+import com.clody.support.exception.diary.DiaryCreateException;
 import com.clody.support.security.util.JwtUtil;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,10 +36,22 @@ public class DiaryCommandService {
   public DiaryDomainInfo createDiary(List<String> diaryContents) {
     Long userId = JwtUtil.getLoginMemberId();
     User user = userRepository.findById(userId);
+    LocalDateTime now = LocalDateTime.now();
+
+    LocalDateTime start = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0);
+    LocalDateTime end = start.plusMonths(1);
+
+    // isDeleted 가 true 인 일기가 있으면
+    List<Diary> unDeletedDiaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, start, end).stream()
+            .filter(diary -> !diary.isDeleted())
+            .toList();
+    if (!unDeletedDiaries.isEmpty()){
+      throw new DiaryCreateException(ErrorType.EXCESS_DIARY_CREATE);
+    }
 
     List<Diary> diaryList = Diary.createDiaryList(user, diaryContents);
-    List<Diary> savedDiaryList = diaryRepository.saveAll(diaryList);
 
+    List<Diary> savedDiaryList = diaryRepository.saveAll(diaryList);
     //각 event 프로세서에 이벤트 전파
     diaryEventProcessor.publish(savedDiaryList);
     ReplyType replyType = strategyManager.determineReplyType(savedDiaryList);
