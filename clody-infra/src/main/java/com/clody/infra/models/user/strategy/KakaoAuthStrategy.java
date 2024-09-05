@@ -9,8 +9,6 @@ import com.clody.infra.external.feign.dto.response.kakao.KakaoTokenResponse;
 import com.clody.infra.external.feign.dto.response.kakao.KakaoUserInfoResponse;
 import com.clody.infra.external.feign.kakao.KakaoAuthClient;
 import com.clody.infra.external.feign.kakao.KakaoUserInfoClient;
-import com.clody.support.dto.type.ErrorType;
-import com.clody.support.exception.auth.SignUpException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
