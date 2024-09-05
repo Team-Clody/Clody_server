@@ -82,15 +82,37 @@ public class Reply extends BaseEntity {
   }
 
   public void readReply() {
-    this.is_read = true;
+    if (this.replyInfo.checkReadable()) {
+      this.is_read = true;
+    }
   }
 
-  public boolean isNotRead() {
+  public boolean userNotRead() {
     return !this.is_read;
   }
 
-  public boolean isRead() {
+  public boolean checkUserReadReply() {
     return this.is_read;
+  }
+
+  public UserReplyReadStatus processReadStatus(Reply reply) {
+
+    //답변이 빈 경우, 읽지 못함
+    if (reply.getContent() == null) {
+      return UserReplyReadStatus.UNREADY;
+    }
+
+    //정적 답변은 컨텐츠가 이미 존재함
+    if (reply.getReplyType().equals(ReplyType.STATIC) && reply.userNotRead()) {
+      return UserReplyReadStatus.UNREADY;
+    }
+    //답변은 준비되었고, 읽지 않은 상태
+    if (reply.userNotRead()) {
+      return UserReplyReadStatus.READY_NOT_READ;
+    }
+
+    //답변도 존재하고, 읽은 상태
+    return UserReplyReadStatus.READY_READ;
   }
 
   public Integer getVersion() {
@@ -102,7 +124,7 @@ public class Reply extends BaseEntity {
   }
 
   public void insertContentFromRody(String content, Integer messageVersion) {
-    if (messageVersion < getVersion() && getProcessStatus()== ReplyProcessStatus.UPDATED) {
+    if (messageVersion < getVersion() && getProcessStatus() == ReplyProcessStatus.UPDATED) {
       throw new BusinessException(ErrorType.USER_UPDATED_DIARY);
     }
     // 내용 업데이트
@@ -114,11 +136,11 @@ public class Reply extends BaseEntity {
     return this.replyInfo.isDeleted();
   }
 
-  public void delete(){
+  public void delete() {
     this.replyInfo = replyInfo.delete();
   }
 
-  public boolean checkIfFirstReply(){
+  public boolean checkIfFirstReply() {
     return this.replyType == ReplyType.FIRST;
   }
 }
