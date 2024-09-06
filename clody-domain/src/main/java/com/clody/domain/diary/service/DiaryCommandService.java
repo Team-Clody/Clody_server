@@ -37,13 +37,13 @@ public class DiaryCommandService {
   public DiaryDomainInfo createDiary(List<String> diaryContents) {
     Long userId = JwtUtil.getLoginMemberId();
     User user = userRepository.findById(userId);
-    LocalDateTime now = LocalDateTime.now();
+    LocalDate today = LocalDate.now();
 
-    LocalDateTime start = LocalDateTime.of(now.getYear(), now.getMonthValue(), 0,0,0);
-    LocalDateTime endOfDay = start.plusDays(1);
+    LocalDateTime startOfDay = today.atStartOfDay();
+    LocalDateTime endOfDay = today.atTime(23, 59, 59, 999999999);
 
     // isDeleted 가 true 인 일기가 있으면
-    List<Diary> unDeletedDiaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, start, endOfDay).stream()
+    List<Diary> unDeletedDiaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, startOfDay, endOfDay).stream()
             .filter(diary -> !diary.isDeleted())
             .collect(Collectors.toUnmodifiableList());
     if (!unDeletedDiaries.isEmpty()){
