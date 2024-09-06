@@ -18,6 +18,7 @@ import com.clody.support.security.util.JwtUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,13 +39,13 @@ public class DiaryCommandService {
     User user = userRepository.findById(userId);
     LocalDateTime now = LocalDateTime.now();
 
-    LocalDateTime start = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0);
-    LocalDateTime end = start.plusMonths(1);
+    LocalDateTime start = LocalDateTime.of(now.getYear(), now.getMonthValue(), 0,0,0);
+    LocalDateTime endOfDay = start.plusDays(1);
 
     // isDeleted 가 true 인 일기가 있으면
-    List<Diary> unDeletedDiaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, start, end).stream()
+    List<Diary> unDeletedDiaries = diaryRepository.findDiariesByUserIdAndCreatedAtBetween(userId, start, endOfDay).stream()
             .filter(diary -> !diary.isDeleted())
-            .toList();
+            .collect(Collectors.toUnmodifiableList());
     if (!unDeletedDiaries.isEmpty()){
       throw new DiaryCreateException(ErrorType.EXCESS_DIARY_CREATE);
     }
