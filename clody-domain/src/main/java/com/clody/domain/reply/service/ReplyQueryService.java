@@ -17,9 +17,14 @@ public class ReplyQueryService {
   public ReplyResponse retrieveReplyByDate(LocalDate date){
     Long userId = JwtUtil.getLoginMemberId();
     Reply reply = replyRepository.findByUserIdAndDiaryCreatedDate(userId, date);
+
+    //처음 읽은 시점에는 isRead == false;
+    //TODO 굉장히 절차 지향적인 로직 같습니다! 런칭 이후 도메인 로직 중심으로 개편이 필요할거 같습니다.
+    ReplyResponse response = ReplyResponse.from(reply);
     reply.readReply();
+
     replyRepository.save(reply);
-    return ReplyResponse.from(reply);
+    return response;
   }
 
 }

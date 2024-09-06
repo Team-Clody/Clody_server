@@ -15,6 +15,6 @@ public record ReplyResponse(
 
   public static ReplyResponse from(Reply reply) {
     return new ReplyResponse(reply.getUser().getNickName(), reply.getContent(),
-        reply.getCreatedAt().getMonthValue(), reply.getCreatedAt().getDayOfMonth(), reply.checkUserReadReply());
+        reply.getDiaryCreatedDate().getMonthValue(), reply.getDiaryCreatedDate().getDayOfMonth(), reply.checkUserReadReply());
   }
 }
