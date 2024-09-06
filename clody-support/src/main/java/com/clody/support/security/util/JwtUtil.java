@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class JwtUtil {
 
+  //Todo Static -> DI 를 이용한 방식으로 리팩토링 필요. (테스트 용이성)
   public static Long getLoginMemberId() {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
