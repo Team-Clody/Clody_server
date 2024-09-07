@@ -27,7 +27,8 @@ public class ReplyCompletionHandler {
     * 사용자가 알람 수신에 동의한 경우, 알림 스케줄에 등록
      */
     Alarm alarm = alarmRepository.findByUserId(event.userId());
-    alarm.validateUserAgreedForReplyAlarm();
+    //TODO 트랜잭션 분리해야 합니다. 
+    if(!alarm.checkUserAgreedForReplyAlarm()) return;
 
     ScheduleTimeStrategy scheduleTimeStrategy = alarmTimeFactory.getStrategy(event.type());
     scheduleTimeStrategy.calculateAlarmDelayTime()
