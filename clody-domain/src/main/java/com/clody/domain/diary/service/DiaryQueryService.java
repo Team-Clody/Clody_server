@@ -9,6 +9,7 @@ import com.clody.domain.diary.dto.response.DiaryCreatedInfo;
 import com.clody.domain.diary.repository.DiaryRepository;
 import com.clody.domain.reply.Reply;
 import com.clody.domain.reply.ReplyProcessStatus;
+import com.clody.domain.reply.ReplyType;
 import com.clody.domain.reply.UserReplyReadStatus;
 import com.clody.domain.reply.repository.ReplyRepository;
 import com.clody.support.security.util.JwtUtil;
@@ -90,9 +91,18 @@ public class DiaryQueryService {
         continue;
       }
 
+      // 1분
+      // 12시간
       if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
-        // 일기 삭제한 적 없음 + 답장 있음 + 답장 안읽음 + 답장 상태 SUCCESS 임
-        replyStatus = UserReplyReadStatus.READY_NOT_READ;
+
+        if(reply.getReplyType().equals(ReplyType.FIRST) && (LocalDateTime.now().isBefore(unDeletedDiaries.get(0).getCreatedAt().plusMinutes(1)))){
+          replyStatus = UserReplyReadStatus.UNREADY;
+        } else if (reply.getReplyType().equals(ReplyType.DYNAMIC) && (LocalDateTime.now().isBefore(unDeletedDiaries.get(0).getCreatedAt().plusHours(12)))) {
+          replyStatus = UserReplyReadStatus.UNREADY;
+        } else{
+          // 일기 삭제한 적 없음 + 답장 있음 + 답장 안읽음 + 답장 상태 SUCCESS 임
+          replyStatus = UserReplyReadStatus.READY_NOT_READ;
+        }
         diaryDayInfos.add(
                 DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, date, getDiaryContentList(unDeletedDiaries),
                         false));
