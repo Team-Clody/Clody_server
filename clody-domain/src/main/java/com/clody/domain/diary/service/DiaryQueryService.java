@@ -94,7 +94,6 @@ public class DiaryQueryService {
       // 1분
       // 12시간
       if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
-
         if(reply.getReplyType().equals(ReplyType.FIRST) && (LocalDateTime.now().isBefore(unDeletedDiaries.get(0).getCreatedAt().plusMinutes(1)))){
           replyStatus = UserReplyReadStatus.UNREADY;
         } else if (reply.getReplyType().equals(ReplyType.DYNAMIC) && (LocalDateTime.now().isBefore(unDeletedDiaries.get(0).getCreatedAt().plusHours(12)))) {
@@ -181,8 +180,15 @@ public class DiaryQueryService {
       }
 
       if (deletedDiaries.isEmpty() && reply != null && !reply.getReplyInfo().isDeleted() && !reply.getIs_read() && reply.getReplyInfo().getReplyProcessStatus().equals(ReplyProcessStatus.SUCCEED)) {
-        // 일기 삭제한 적 없음 + 답장 있음 + 답장 안읽음 + 답장 상태 SUCCESS 임
-        replyStatus = UserReplyReadStatus.READY_NOT_READ;
+
+        if(reply.getReplyType().equals(ReplyType.FIRST) && (LocalDateTime.now().isBefore(unDeletedDiaries.get(0).getCreatedAt().plusMinutes(1)))){
+          replyStatus = UserReplyReadStatus.UNREADY;
+        } else if (reply.getReplyType().equals(ReplyType.DYNAMIC) && (LocalDateTime.now().isBefore(unDeletedDiaries.get(0).getCreatedAt().plusHours(12)))) {
+          replyStatus = UserReplyReadStatus.UNREADY;
+        } else{
+          // 일기 삭제한 적 없음 + 답장 있음 + 답장 안읽음 + 답장 상태 SUCCESS 임
+          replyStatus = UserReplyReadStatus.READY_NOT_READ;
+        }
         diaryDayInfos.set(i, DiaryDayInfo.of(unDeletedDiaries.size(), replyStatus, today, new ArrayList<>(),
                 false));
         continue;

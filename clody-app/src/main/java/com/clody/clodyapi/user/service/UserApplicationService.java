@@ -71,8 +71,8 @@ public class UserApplicationService implements UserAuthUsecase {
   }
 
   @Override
-  public TokenReissueResponse reissue(String refreshToken) {
-    Token token = jwtProvider.getTokenReissueResponse(refreshToken);
+  public TokenReissueResponse reissue(String refreshTokenWithBearer) {
+    Token token = jwtProvider.getTokenReissueResponse(refreshTokenWithBearer);
     return TokenReissueResponse.of(token.accessToken(),token.refreshToken());
 
   }

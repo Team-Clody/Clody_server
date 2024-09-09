@@ -133,8 +133,10 @@ public class JwtProviderImpl implements JwtProvider {
                 .setSigningKey(secretKey).build();
     }
 
-    public Token getTokenReissueResponse(String refreshToken) {
+    public Token getTokenReissueResponse(String refreshTokenWithBearer) {
 
+        validateTokenStartsWithBearer(refreshTokenWithBearer);
+        String refreshToken = refreshTokenWithBearer.split(" ")[1];
         validateRefreshToken(refreshToken);
         Long userId = getUserIdFromJwtSubject(refreshToken);
         return Token.of(issueAccessToken(userId),
