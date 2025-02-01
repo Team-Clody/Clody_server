@@ -46,4 +46,8 @@ public class UserAuthService {
         () -> new SignInException(ErrorType.USER_NOT_FOUND)
     );
   }
+
+  public Long countUser() {
+    return userRepository.count();
+  }
 }

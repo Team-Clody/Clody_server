@@ -15,4 +15,7 @@ public interface UserRepository {
   void delete(User user);
 
   User save(User user);
+
+
+  Long count();
 }
