@@ -21,11 +21,6 @@ public class DiscordNotifier {
 
     private final ObjectMapper objectMapper;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("registerWebhookUrl = " + webhookUrlRegister);
-    }
-
 
     /**
      * 기본 알림 전송 메서드.
