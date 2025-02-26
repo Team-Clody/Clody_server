@@ -6,6 +6,7 @@ import com.clody.support.exception.auth.SignInException;
 import com.clody.support.exception.auth.SignUpException;
 import com.clody.support.exception.diary.DiaryCreateException;
 import com.clody.support.exception.reply.ReplyException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,5 +38,10 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(InvalidDateFormatException.class)
     protected ResponseEntity<ApiResponse<?>> BusinessException(InvalidDateFormatException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_DATE_FORMAT,e.getErrorType()));
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    protected ResponseEntity<ApiResponse<?>> BusinessException(SignatureException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(ErrorType.WRONG_SIGNATURE_TOKEN));
     }
 }
