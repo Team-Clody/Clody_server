@@ -40,4 +40,9 @@ public class UserRepositoryAdapter implements UserRepository {
   public void delete(User user) {
     userRepository.delete(user);
   }
+
+  @Override
+  public Long count() {return userRepository.count();
+  };
+
 }

@@ -19,9 +19,13 @@ import com.clody.domain.user.strategy.UserSocialInfo;
 import com.clody.support.jwt.JwtProvider;
 import com.clody.support.jwt.RefreshTokenRepository;
 import com.clody.support.jwt.Token;
+import com.clody.support.util.DiscordNotifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
+@Slf4j
 public class UserApplicationService implements UserAuthUsecase {
 
   private final SocialRegisterStrategyFactory strategyFactory;
@@ -30,16 +34,21 @@ public class UserApplicationService implements UserAuthUsecase {
   private final RefreshTokenRepository refreshTokenRepository;
   private final AlarmUpdateService alarmUpdateService;
 
+  private final DiscordNotifier discordNotifier;
+
   public UserApplicationService(SocialRegisterStrategyFactory strategyFactory,
-      UserAuthService userAuthService,
-      JwtProvider jwtProvider,
-      RefreshTokenRepository refreshTokenRepository,
-      AlarmUpdateService alarmUpdateService) {
+                                UserAuthService userAuthService,
+                                JwtProvider jwtProvider,
+                                RefreshTokenRepository refreshTokenRepository,
+                                AlarmUpdateService alarmUpdateService,
+                                DiscordNotifier discordNotifier
+  ) {
     this.strategyFactory = strategyFactory;
     this.userAuthService = userAuthService;
     this.jwtProvider = jwtProvider;
     this.refreshTokenRepository = refreshTokenRepository;
     this.alarmUpdateService = alarmUpdateService;
+    this.discordNotifier = discordNotifier;
   }
 
   @Override
@@ -52,6 +61,13 @@ public class UserApplicationService implements UserAuthUsecase {
     User newUser = User.createNewUser(userSocialInfo.id(), platform, request.email(), request.name(), userSocialInfo.email());
     User savedUser = userAuthService.registerUser(newUser);
     Token token = issueToken(savedUser.getId());
+    Long userCount = userAuthService.countUser();
+
+    discordNotifier.sendRegistrationNotification(savedUser.getEmail(), userCount)
+            .subscribe(result -> System.out.println("알림 전송 완료: " + result),
+                        error -> System.err.println("알림 전송 실패: " + error.getMessage()));
+
+
 
     alarmUpdateService.updateFcmToken(savedUser.getId(), request.fcmToken());
     return UserAuthResponse.of(savedUser.getId(), token.accessToken(),token.refreshToken());

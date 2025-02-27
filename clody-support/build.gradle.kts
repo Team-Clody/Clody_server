@@ -36,6 +36,10 @@ dependencies {
     //client secret생성
     implementation("com.nimbusds:nimbus-jose-jwt:3.10")
 
+    // WebClient 의존성
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+
 }
 
 tasks.withType<BootJar> {

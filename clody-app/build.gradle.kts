@@ -44,6 +44,10 @@ dependencies{
 
     //Feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // Webflux(Mono Access - webhook)
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
 }
 
 the<DependencyManagementExtension>().apply {
